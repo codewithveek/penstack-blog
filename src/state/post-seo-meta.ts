@@ -14,22 +14,25 @@ type PostSeoMeta = {
   canonical_url?: string;
   postIdOrSlug: string | null;
 };
+
 type PostSeoMetaOpts = {
   isSaving: boolean;
   error: string | null;
   isLoading: boolean;
+  hasChanges: boolean;
 };
+
 type PostSeoMetaActions = {
-  saveSeoMeta: () => DebouncedFunc<() => Promise<void>>;
+  saveSeoMeta: DebouncedFunc<() => Promise<void>>;
   setPostIdOrSlug: (postIdOrSlug: string) => void;
   fetchSeoMeta: () => Promise<void>;
-  setKeyValue: (
-    key: keyof Partial<PostSeoMeta>,
-    value: PostSeoMeta[keyof PostSeoMeta]
+  setKeyValue: <K extends keyof PostSeoMeta>(
+    key: K,
+    value: PostSeoMeta[K]
   ) => void;
-  setSeoMetaOpts: (
-    key: keyof Partial<PostSeoMetaOpts>,
-    value: PostSeoMetaOpts[keyof PostSeoMetaOpts]
+  setSeoMetaOpts: <K extends keyof PostSeoMetaOpts>(
+    key: K,
+    value: PostSeoMetaOpts[K]
   ) => void;
 };
 
@@ -37,6 +40,7 @@ export const usePostSeoMetaStore = create<
   PostSeoMetaActions & PostSeoMeta & PostSeoMetaOpts
 >((set, get) => {
   let initialValues: PostSeoMeta | null = null;
+
   const debouncedSave = debounce(async () => {
     const state = get();
     const {
@@ -63,33 +67,22 @@ export const usePostSeoMetaStore = create<
       set({ error: "Post ID or slug is required to save SEO meta." });
       return;
     }
+
     const changedValues: Partial<PostSeoMeta> = {};
     Object.keys(postSeoData).forEach((key) => {
-      // Skip excluded fields and undefined values
-      if (postSeoData[key as keyof PostSeoMeta] === undefined) {
-        return;
-      }
-
-      // Only include if value has changed from original
       const currentValue = postSeoData[key as keyof PostSeoMeta];
       const originalValue = initialValues?.[key as keyof PostSeoMeta];
 
-      if (
-        !isEqual(currentValue, originalValue) &&
-        currentValue !== undefined &&
-        currentValue !== null
-      ) {
+      // Include value if it has changed from original (including null values for clearing fields)
+      if (!isEqual(currentValue, originalValue) && currentValue !== undefined) {
         (changedValues as any)[key as keyof PostSeoMeta] = currentValue;
       }
     });
+
     // If no changes, skip the API call
     if (isEmpty(changedValues)) {
       set({ isSaving: false });
       return;
-    }
-    // Check if there are any changes from initial values
-    if (isEqual(changedValues, initialValues)) {
-      return; // No changes, skip saving
     }
 
     set({ isSaving: true });
@@ -119,12 +112,14 @@ export const usePostSeoMetaStore = create<
         canonical_url: data.data.canonical_url,
         postIdOrSlug,
       };
+
       initialValues = { ...updatedValues }; // Update initial values after successful save
+
       set({
         ...updatedValues,
-
         isSaving: false,
         error: null,
+        hasChanges: false,
       });
     } catch (error: any) {
       set({
@@ -145,14 +140,18 @@ export const usePostSeoMetaStore = create<
     postIdOrSlug: null,
     error: null,
     isLoading: false,
+    hasChanges: false,
+
     setKeyValue: (key, value) => {
-      set({ [key]: value });
-      debouncedSave();
+      set({ [key]: value, hasChanges: true });
     },
-    setSeoMetaOpts(key, value) {
+
+    setSeoMetaOpts: (key, value) => {
       set({ [key]: value });
     },
-    saveSeoMeta: () => debouncedSave,
+
+    saveSeoMeta: debouncedSave,
+
     setPostIdOrSlug: (postIdOrSlug: string) => {
       set({ postIdOrSlug });
     },
@@ -177,11 +176,13 @@ export const usePostSeoMetaStore = create<
           canonical_url: data.data.canonical_url,
           postIdOrSlug,
         };
+
         initialValues = { ...fetchedValues }; // Set initial values for future comparisons
+
         set({
           ...fetchedValues,
-
           error: null,
+          hasChanges: false,
         });
       } catch (error: any) {
         set({ error: error.message });

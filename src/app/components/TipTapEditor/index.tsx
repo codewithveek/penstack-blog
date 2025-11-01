@@ -48,6 +48,7 @@ function TipTapEditor({
         text,
       });
     },
+    immediatelyRender: false,
   });
   return (
     <>

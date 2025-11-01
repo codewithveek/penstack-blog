@@ -15,7 +15,7 @@ import {
 import isEmpty from "just-is-empty";
 import { useCallback, useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
-import { MediaModal } from "../../../Dashboard/Medias/MediaModal";
+import { MediaModal } from "@/components/Dashboard/Medias/MediaModal";
 
 interface ImageCardProps {
   image: string;

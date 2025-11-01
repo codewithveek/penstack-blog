@@ -31,7 +31,7 @@ export async function GET() {
   posts.data.forEach((post) => {
     feed.addItem({
       title: post.title,
-      id: generatePostUrl(post as any),
+      id: generatePostUrl(post as any, undefined, undefined, true),
       link: generatePostUrl(post as any),
       description: generatePostDescription(post as any),
       published: new Date(post.published_at as Date),

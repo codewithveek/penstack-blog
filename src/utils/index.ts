@@ -141,7 +141,8 @@ export function shortenText(text: string, len = 50) {
 export function generatePostUrl(
   post: PostSelect | FeaturedPostType,
   format: PermalinkType = defaultPermalinkType,
-  prefix = ""
+  prefix = "",
+  useId = false
 ): string {
   const date = new Date((post?.published_at as Date) || post?.updated_at);
   const year = date.getFullYear();
@@ -154,7 +155,7 @@ export function generatePostUrl(
     .replace("%month%", month)
     .replace("%day%", day)
     .replace("%category%", post?.category?.slug || "")
-    .replace("%postname%", post?.slug || "");
+    .replace("%postname%", useId ? (post?.post_id ?? "") : (post?.slug ?? ""));
 
   return resolveUrl(getSiteUrl(), cleanUrl(permalink));
 }

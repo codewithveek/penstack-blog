@@ -9,9 +9,11 @@ import {
   Textarea,
   Stack,
   FormHelperText,
+  Box,
+  Button,
 } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
-import { ImageCard } from "../../components/ImageCard";
+import { ImageCard } from "@/components/TipTapEditor/Sidebar/components/ImageCard";
 
 export const SeoPanel = () => {
   const fetchSeoMeta = usePostSeoMetaStore((state) => state.fetchSeoMeta);
@@ -21,7 +23,10 @@ export const SeoPanel = () => {
   const canonicalUrl = usePostSeoMetaStore((state) => state.canonical_url);
   const keywords = usePostSeoMetaStore((state) => state.keywords);
   const setKeyValue = usePostSeoMetaStore((state) => state.setKeyValue);
+  const saveSeoMeta = usePostSeoMetaStore((state) => state.saveSeoMeta);
   const isLoading = usePostSeoMetaStore((state) => state.isLoading);
+  const isSaving = usePostSeoMetaStore((state) => state.isSaving);
+  const hasChanges = usePostSeoMetaStore((state) => state.hasChanges);
   useEffect(() => {
     if (!isFetched.current) {
       fetchSeoMeta();
@@ -38,7 +43,6 @@ export const SeoPanel = () => {
               placeholder="Enter title for SEO"
               value={title}
               onChange={(e) => setKeyValue("title", e.target.value)}
-              isDisabled={isLoading}
             />
           </FormControl>
           <FormControl>
@@ -48,7 +52,6 @@ export const SeoPanel = () => {
               maxLength={160}
               maxH={100}
               value={description}
-              isDisabled={isLoading}
               onChange={(e) => setKeyValue("description", e.target.value)}
             />
           </FormControl>
@@ -59,10 +62,9 @@ export const SeoPanel = () => {
               of the post.
             </FormHelperText>
             <Input
-              placeholder="Enter canonical URL for SEO"
+              placeholder="https://example.com/post-title"
               value={canonicalUrl}
               onChange={(e) => setKeyValue("canonical_url", e.target.value)}
-              isDisabled={isLoading}
             />
           </FormControl>
           <FormControl>
@@ -79,7 +81,6 @@ export const SeoPanel = () => {
             </FormHelperText>
             <PillInput
               placeholder="Enter keywords for SEO"
-              disabled={isLoading}
               value={keywords}
               onPillAdd={(pill, allPills) => {
                 setKeyValue("keywords", allPills);
@@ -89,6 +90,18 @@ export const SeoPanel = () => {
               }}
             />
           </FormControl>
+          <Box mt={4}>
+            <Button
+              isLoading={isSaving}
+              isDisabled={isLoading || isSaving || !hasChanges}
+              loadingText={"Saving changes.."}
+              onClick={() => {
+                saveSeoMeta();
+              }}
+            >
+              Save Changes
+            </Button>
+          </Box>
         </Stack>
       </SectionCard>
     </Stack>
@@ -101,7 +114,7 @@ const ImageUploadAndPreview = () => {
     setKeyValue("image", media.url);
   };
   const handleImageRemove = () => {
-    setKeyValue("image", null);
+    setKeyValue("image", "");
   };
   return (
     <>

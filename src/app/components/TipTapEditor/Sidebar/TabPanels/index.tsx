@@ -29,21 +29,20 @@ export const EditorSidebarTabPanels = () => {
       >
         <TabList
           bg="white"
-          borderBottom="1px solid"
+          borderBottom="2px solid"
           borderColor="gray.200"
           className="rounded-t-lg "
         >
           <Tab>Post</Tab>
-          <Tab>Block</Tab>
           <Tab>SEO</Tab>
         </TabList>
         <TabPanels>
           <TabPanel px={0} pt={1}>
             <PublishPanel />
           </TabPanel>
-          <TabPanel px={0} pt={1}>
+          {/* <TabPanel px={0} pt={1}>
             <BlockPanel />
-          </TabPanel>
+          </TabPanel> */}
           <TabPanel px={0} pt={1}>
             <SeoPanel />
           </TabPanel>

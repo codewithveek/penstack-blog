@@ -24,12 +24,12 @@ type EditorPostManagerActions = {
     shouldAutosave?: boolean,
     updateSlug?: boolean
   ) => void;
-  lastUpdate: string | Date | null;
   savePost: () => Promise<void>;
   setIsSaving: (isSaving: boolean) => void;
   setIsDirty: (isDirty: boolean) => void;
   setHasError: (hasError: boolean) => void;
 };
+
 export const useEditorPostManagerStore = create<
   EditorPostManagerState & EditorPostManagerActions
 >((set, get) => {
@@ -43,67 +43,53 @@ export const useEditorPostManagerStore = create<
 
         set({ isSaving: true });
         const { autoSave } = get();
+
         // Only include fields that have changed from original values
         const changedValues: Partial<PostInsert> = {};
         Object.keys(postData).forEach((key) => {
-          // Skip excluded fields and undefined values
-          if (postData[key as keyof PostInsert] === undefined) {
-            return;
-          }
-
-          // Only include if value has changed from original
           const currentValue = postData[key as keyof PostInsert];
           const originalValue = originalPost?.[key as keyof PostInsert];
 
+          // Only include if value has changed from original and is not undefined
           if (
             !isEqual(currentValue, originalValue) &&
-            currentValue !== undefined &&
-            currentValue !== null
+            currentValue !== undefined
           ) {
             (changedValues as any)[key as keyof PostInsert] = currentValue;
           }
         });
-        // If no changes, skip the API call
+
+        // If no changes, skip everything
         if (isEmpty(changedValues)) {
           set({ isDirty: false, isSaving: false });
           return;
         }
-        // If autosave is disabled, skip saving
-        if (!isEmpty(changedValues) && !autoSave && !canSave) {
+
+        // If autosave is disabled and not manually saving, just mark as dirty
+        if (!autoSave && !canSave) {
           set({ isDirty: true, isSaving: false });
           return;
         }
-        let responseData: {
+
+        // Perform the actual save to server
+        const { status, data } = await axios.put<{
           data: NonNullable<PostSelectForEditing>;
           message: string;
           lastUpdate: string | Date;
-        } = {} as {
-          data: NonNullable<PostSelectForEditing>;
-          message: string;
-          lastUpdate: string | Date;
-        };
-        let responsePost: PostSelectForEditing = {} as PostSelectForEditing;
-        // If autoSave is enabled or canSave is true, proceed with the API call
-        if (autoSave || canSave) {
-          const { status, data } = await axios.put<{
-            data: NonNullable<PostSelectForEditing>;
-            message: string;
-            lastUpdate: string | Date;
-          }>(`/api/posts/${postData.post_id}`, {
-            generate_toc: postData.generate_toc,
-            status: postData.status,
-            toc_depth: postData.toc_depth,
-            ...changedValues,
-          });
+        }>(`/api/posts/${postData.post_id}`, {
+          generate_toc: postData.generate_toc,
+          status: postData.status,
+          toc_depth: postData.toc_depth,
+          ...changedValues,
+        });
 
-          if (status < 200 || status >= 300) {
-            throw new Error("Failed to update post");
-          }
-
-          responsePost = data?.data;
+        if (status < 200 || status >= 300) {
+          throw new Error("Failed to update post");
         }
-        if (!responseData || !responsePost) return;
-        // Update the original post with the new values
+
+        const responsePost = data.data;
+
+        // Update the original post with the saved values
         originalPost = {
           ...originalPost,
           ...responsePost,
@@ -116,7 +102,7 @@ export const useEditorPostManagerStore = create<
             ...responsePost,
             author_id: responsePost.author_id,
           },
-          lastUpdate: responseData?.lastUpdate,
+          lastUpdate: data.lastUpdate,
           isDirty: false,
           hasError: false,
           isSaving: false,
@@ -136,13 +122,11 @@ export const useEditorPostManagerStore = create<
     hasError: false,
     lastUpdate: null,
     autoSave: true,
+
     setAutosave: (enabled) => {
       set({ autoSave: enabled });
-      if (!enabled) {
-        // If autosave is disabled, reset dirty state
-        // set({ isDirty: false });
-      }
     },
+
     setPost: (post) => {
       // Store the original post data for future comparisons
       originalPost = post || null;
@@ -174,8 +158,10 @@ export const useEditorPostManagerStore = create<
         ) ||
         (updateSlug && !isEqual(newPost.slug, originalPost.slug));
 
+      // Always update state with new data
       set({ activePost: newPost, isDirty });
 
+      // Only trigger save if autosave is enabled and shouldAutosave is true
       if (autoSave && shouldAutosave && isDirty) {
         debouncedSave(newPost);
       }
