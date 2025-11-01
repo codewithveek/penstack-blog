@@ -1,6 +1,6 @@
 // SEOSection.tsx
 import { Stack, Text } from "@chakra-ui/react";
-import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/Sidebar/components/FeaturedImageCard";
+import { FeaturedImageCard } from "@/components//TipTapEditor/Sidebar/components/FeaturedImageCard";
 import { SlugInput } from "../components/SlugInput";
 import { SummaryInput } from "../components/SummaryInput";
 

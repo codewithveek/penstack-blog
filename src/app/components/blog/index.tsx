@@ -1,6 +1,6 @@
-import PostPage from "@/src/app/components/pages/PostPage";
+import PostPage from "@/components//pages/PostPage";
 
-import { PostSelect, SiteSettings } from "@/src/types";
+import { PostSelect, SiteSettings } from "@/types";
 
 export default function BlogPage({
   post,

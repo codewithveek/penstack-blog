@@ -1,4 +1,4 @@
-import { getPostsByCategory } from "@/src/lib/queries/category-posts";
+import { getPostsByCategory } from "@/lib/queries/category-posts";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

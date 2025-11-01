@@ -1,6 +1,6 @@
 import { Text, ListItem, HStack, Icon } from "@chakra-ui/react";
 import { LuFileText, LuType } from "react-icons/lu";
-import { usePenstackEditorStore } from "@/src/state/penstack-editor";
+import { usePenstackEditorStore } from "@/state/penstack-editor";
 
 export const MetricsItem = () => {
   const wordCount = usePenstackEditorStore((state) =>

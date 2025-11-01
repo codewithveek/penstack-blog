@@ -1,9 +1,9 @@
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
+import { db } from "@/db";
+import { posts } from "@/db/schemas";
 import {
   getEngagementBasedFeaturedPosts,
   getPublishedPostsQuery,
-} from "@/src/lib/queries/featured";
+} from "@/lib/queries/featured";
 import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -1,5 +1,5 @@
-import { db } from "@/src/db";
-import { postViewAnalytics } from "@/src/db/schemas";
+import { db } from "@/db";
+import { postViewAnalytics } from "@/db/schemas";
 import { randomBytes } from "crypto";
 import { eq } from "drizzle-orm";
 import {

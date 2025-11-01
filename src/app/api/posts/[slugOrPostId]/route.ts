@@ -1,19 +1,19 @@
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
-import { checkPermission } from "@/src/lib/auth/check-permission";
-import { getSession } from "@/src/lib/auth/next-auth";
+import { db } from "@/db";
+import { posts } from "@/db/schemas";
+import { checkPermission } from "@/lib/auth/check-permission";
+import { getSession } from "@/lib/auth/next-auth";
 import {
   getPlainPost,
   getPlainPostWithCache,
   getPost,
   getPostForEditing,
-} from "@/src/lib/queries/post";
-import { parseHtmlHeadings, TocItem } from "@/src/lib/toc-generator";
+} from "@/lib/queries/post";
+import { parseHtmlHeadings, TocItem } from "@/lib/toc-generator";
 import {
   calculateReadingTime,
   decodeAndSanitizeHtml,
   stripHtml,
-} from "@/src/utils";
+} from "@/utils";
 import { or, eq } from "drizzle-orm";
 import isEmpty from "just-is-empty";
 import { revalidateTag } from "next/cache";

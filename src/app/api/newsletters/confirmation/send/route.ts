@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { NewsletterConfirmationTemplate } from "@/src/app/components/Emails/Newsletter/Confirmation";
-import { db } from "@/src/db";
-import { newsletterSubscribers } from "@/src/db/schemas/newsletter.sql";
+import { NewsletterConfirmationTemplate } from "@/components//Emails/Newsletter/Confirmation";
+import { db } from "@/db";
+import { newsletterSubscribers } from "@/db/schemas/newsletter.sql";
 import { addHours } from "date-fns";
 import crypto from "crypto";
-import { sendEmail } from "@/src/lib/send-email";
-import { getSettings } from "@/src/lib/queries/settings";
+import { sendEmail } from "@/lib/send-email";
+import { getSettings } from "@/lib/queries/settings";
 import { eq, sql } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {

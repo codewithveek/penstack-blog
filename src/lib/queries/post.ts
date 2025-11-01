@@ -1,5 +1,5 @@
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
+import { db } from "@/db";
+import { posts } from "@/db/schemas";
 import { eq, or } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

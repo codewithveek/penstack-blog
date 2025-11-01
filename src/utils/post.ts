@@ -5,7 +5,7 @@ import {
   decodeAndSanitizeHtml,
   isAllowedPrefix,
 } from ".";
-import { getPostBySlug } from "../lib/queries/post";
+import { getPostBySlug } from "@/lib/queries/post";
 import {
   defaultPermalinkType,
   permalinkFormats,

@@ -1,4 +1,4 @@
-import { useFeaturedPost } from "@/src/hooks/useFeaturedPost";
+import { useFeaturedPost } from "@/hooks/useFeaturedPost";
 import {
   Box,
   Grid,
@@ -16,8 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { Suspense } from "react";
 import { FeaturedPostSkeleton } from "./LoadingSkeleton";
-import { generatePostUrl, objectToQueryParams } from "@/src/utils";
-import { FeaturedPostType } from "@/src/types";
+import { generatePostUrl, objectToQueryParams } from "@/utils";
+import { FeaturedPostType } from "@/types";
 
 export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
   const textColor = useColorModeValue("gray.600", "gray.300");

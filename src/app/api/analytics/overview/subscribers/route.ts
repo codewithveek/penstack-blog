@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { db } from "@/src/db";
-import { newsletterSubscribers } from "@/src/db/schemas/newsletter.sql";
+import { db } from "@/db";
+import { newsletterSubscribers } from "@/db/schemas/newsletter.sql";
 import { desc, sql, count, and, eq, gte, lt } from "drizzle-orm";
-import { calculatePercentageDifference } from "@/src/utils";
+import { calculatePercentageDifference } from "@/utils";
 
 export async function GET() {
   try {

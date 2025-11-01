@@ -1,4 +1,4 @@
-import { SiteSettings } from "@/src/types";
+import { SiteSettings } from "@/types";
 import {
   FormLabel,
   VStack,

@@ -1,5 +1,5 @@
-import { SearchPostsComponent } from "@/src/lib/editor/nodes/MiniPostCard/SearchPostsComponent";
-import { PostSelect } from "@/src/types";
+import { SearchPostsComponent } from "@/lib/editor/nodes/MiniPostCard/SearchPostsComponent";
+import { PostSelect } from "@/types";
 import {
   decodeAndSanitizeHtml,
   generatePostDescription,
@@ -7,7 +7,7 @@ import {
   objectToQueryParams,
   shortenText,
   stripHtml,
-} from "@/src/utils";
+} from "@/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,

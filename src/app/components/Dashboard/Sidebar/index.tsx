@@ -13,10 +13,10 @@ import { AppLogo } from "../../AppLogoAndName/AppLogo";
 import { SidebarNavItem } from "./NavItem";
 import { NavItemWithChildren } from "./NavItemWithDropdown";
 import { AppLogoAndName } from "../../AppLogoAndName";
-import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useSiteConfig } from "@/context/SiteConfig";
 import { Link } from "@chakra-ui/next-js";
-import { processedNavLinksWithIcons } from "@/src/lib/dashboard/nav-links";
-import { NavItemWithoutPermission } from "@/src/types";
+import { processedNavLinksWithIcons } from "@/lib/dashboard/nav-links";
+import { NavItemWithoutPermission } from "@/types";
 
 export const DashboardSidebar = ({
   onClose,

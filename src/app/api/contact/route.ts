@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { contactMessages } from "@/src/db/schemas/contact.sql";
-import { sanitizeAndEncodeHtml } from "@/src/utils";
+import { db } from "@/db";
+import { contactMessages } from "@/db/schemas/contact.sql";
+import { sanitizeAndEncodeHtml } from "@/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

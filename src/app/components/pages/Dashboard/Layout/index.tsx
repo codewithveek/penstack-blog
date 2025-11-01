@@ -17,10 +17,10 @@ import { ReactNode } from "react";
 import { DashboardSidebar } from "../../../Dashboard/Sidebar";
 import { LuMenu } from "react-icons/lu";
 import NetworkAvailabiltyCheck from "../../../NetworkAvailabiltyCheck";
-import { useSiteConfig } from "@/src/context/SiteConfig";
-import { useDashboardSidebarState } from "@/src/hooks/useDashboardSidebarState";
+import { useSiteConfig } from "@/context/SiteConfig";
+import { useDashboardSidebarState } from "@/hooks/useDashboardSidebarState";
 import Loader from "../../../Loader";
-import { NavItemWithoutPermission } from "@/src/types";
+import { NavItemWithoutPermission } from "@/types";
 
 export default memo(function DashboardLayout({
   children,

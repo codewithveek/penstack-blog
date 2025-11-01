@@ -49,7 +49,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { PaginatedResponse, RolesSelect, UserSelect } from "@/src/types";
+import { PaginatedResponse, RolesSelect, UserSelect } from "@/types";
 import axios from "axios";
 import Loader from "../../../Loader";
 import DashHeader from "../../../Dashboard/Header";

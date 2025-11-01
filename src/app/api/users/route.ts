@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { users } from "@/src/db/schemas";
-import { checkPermission } from "@/src/lib/auth/check-permission";
+import { db } from "@/db";
+import { users } from "@/db/schemas";
+import { checkPermission } from "@/lib/auth/check-permission";
 import { hash } from "bcryptjs";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";

@@ -1,6 +1,6 @@
 import "server-only";
-import { db } from "@/src/db";
-import { tags, postTags, posts } from "@/src/db/schemas/posts.sql";
+import { db } from "@/db";
+import { tags, postTags, posts } from "@/db/schemas/posts.sql";
 import { sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

@@ -1,7 +1,7 @@
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
-import { getSession } from "@/src/lib/auth/next-auth";
-import { PostInsert } from "@/src/types";
+import { db } from "@/db";
+import { posts } from "@/db/schemas";
+import { getSession } from "@/lib/auth/next-auth";
+import { PostInsert } from "@/types";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

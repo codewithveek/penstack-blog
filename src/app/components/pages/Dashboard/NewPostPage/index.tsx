@@ -1,13 +1,13 @@
 "use client";
 import { Box } from "@chakra-ui/react";
-import TipTapEditor from "@/src/app/components/TipTapEditor";
+import TipTapEditor from "@/components//TipTapEditor";
 import { PermissionGuard } from "../../../PermissionGuard";
-import { useAuth } from "@/src/hooks/useAuth";
-import { usePenstackEditorStore } from "@/src/state/penstack-editor";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
-import { decodeAndSanitizeHtml, sanitizeAndEncodeHtml } from "@/src/utils";
-import { PostSelectForEditing } from "@/src/types";
-import { usePostSeoMetaStore } from "@/src/state/post-seo-meta";
+import { useAuth } from "@/hooks/useAuth";
+import { usePenstackEditorStore } from "@/state/penstack-editor";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
+import { decodeAndSanitizeHtml, sanitizeAndEncodeHtml } from "@/utils";
+import { PostSelectForEditing } from "@/types";
+import { usePostSeoMetaStore } from "@/state/post-seo-meta";
 
 export default function NewPostPage({ post }: { post: PostSelectForEditing }) {
   useEditorPostManagerStore.getState().setPost(post!);

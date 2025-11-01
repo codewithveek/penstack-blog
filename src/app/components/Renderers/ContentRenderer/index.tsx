@@ -31,7 +31,7 @@ import { PenstackCodeBlockRenderer } from "../PenstackCodeBlockRenderer";
 import PenstackBlockquoteRenderer from "../PenstackBlockquoteRenderer";
 import { PenstackHeadingsRenderer } from "../HeadingsRenderer";
 import { MediaRenderer } from "../MediaRenderer";
-import { MediaAspectRatios, MediaObjectFits } from "@/src/lib/editor/types";
+import { MediaAspectRatios, MediaObjectFits } from "@/lib/editor/types";
 
 interface ContentRendererProps {
   content: string;
@@ -77,8 +77,6 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
             );
           }
           if (domNode.attribs?.["data-type"] === "media") {
-            console.log({ attrs: domNode.attribs, attrs2: domNode.attributes });
-
             return (
               <MediaRenderer
                 attrs={{

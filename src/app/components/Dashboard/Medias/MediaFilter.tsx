@@ -8,7 +8,7 @@ import {
   InputLeftAddon,
 } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
-import { FilterParams, MediaType } from "@/src/types";
+import { FilterParams, MediaType } from "@/types";
 
 interface MediaFilterProps {
   onFilterChange: (filters: Partial<FilterParams>) => void;

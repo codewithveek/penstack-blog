@@ -1,4 +1,4 @@
-import CommentsPage from "@/src/app/components/pages/Dashboard/Comments";
+import CommentsPage from "@/components//pages/Dashboard/Comments";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -17,7 +17,7 @@ import { useColorModeValue } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import isEmpty from "just-is-empty";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/lib/utils";
 
 export const Newsletter = ({
   title,

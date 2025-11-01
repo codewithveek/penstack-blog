@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { LuBookmark, LuHeart, LuShare } from "react-icons/lu";
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 
 interface SocialActionsProps {
   post: PostSelect;

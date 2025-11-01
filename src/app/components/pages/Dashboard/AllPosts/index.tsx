@@ -36,9 +36,9 @@ import {
 import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
 import { PermissionGuard } from "../../../PermissionGuard";
-import { useAuth } from "@/src/hooks/useAuth";
-import { PaginatedResponse, PostInsert, PostSelect } from "@/src/types";
-import { generatePostUrl, objectToQueryParams } from "@/src/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { PaginatedResponse, PostInsert, PostSelect } from "@/types";
+import { generatePostUrl, objectToQueryParams } from "@/utils";
 import DashHeader from "../../../Dashboard/Header";
 import Loader from "../../../Loader";
 import axios from "axios";
@@ -53,7 +53,7 @@ import {
 } from "@tanstack/react-table";
 import {
   LuExternalLink,
-  LuFileEdit,
+  LuFilePen,
   LuPlus,
   LuSearch,
   LuTrash2,
@@ -131,7 +131,7 @@ const PostsDashboard = () => {
             >
               <Tooltip label="Edit">
                 <IconButton
-                  icon={<LuFileEdit />}
+                  icon={<LuFilePen />}
                   as={Link}
                   href={`/dashboard/posts/edit/${post?.post_id}`}
                   aria-label="Edit"

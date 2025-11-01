@@ -11,8 +11,8 @@ import {
 import { useCallback } from "react";
 import { useMediaAttrs, useMediaActions } from "../../../stores/mediaStore";
 import { MediaAspectRatios, MediaObjectFits } from "../../../types";
-import { SectionCard } from "@/src/app/components/Dashboard/SectionCard";
-import { usePenstackEditorStore } from "@/src/state/penstack-editor";
+import { SectionCard } from "@/components//Dashboard/SectionCard";
+import { usePenstackEditorStore } from "@/state/penstack-editor";
 
 // Memoized aspect ratio options
 const ASPECT_RATIO_OPTIONS = [

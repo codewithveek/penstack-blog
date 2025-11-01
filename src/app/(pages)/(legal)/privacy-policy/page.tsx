@@ -1,6 +1,6 @@
 "use client";
 
-import PageWrapper from "@/src/app/components/PageWrapper";
+import PageWrapper from "@/components//PageWrapper";
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,

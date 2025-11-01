@@ -6,8 +6,7 @@ import {
   LuFileAudio,
   LuFileText,
   LuEye,
-  LuCheckSquare,
-  LuBoxSelect,
+  LuSquareCheck,
   LuSquare,
 } from "react-icons/lu";
 import {
@@ -26,9 +25,9 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
-import { formatBytes } from "@/src/utils";
+import { formatBytes } from "@/utils";
 import { Image } from "@chakra-ui/react";
-import { MediaResponse } from "@/src/types";
+import { MediaResponse } from "@/types";
 import FilePreview from "./FilePreview";
 
 interface MediaCardProps {
@@ -119,7 +118,7 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
                 size="sm"
                 aria-label="Select"
                 icon={
-                  selected ? <LuCheckSquare /> : <LuSquare fontWeight={500} />
+                  selected ? <LuSquareCheck /> : <LuSquare fontWeight={500} />
                 }
                 onClick={(e) => {
                   e.stopPropagation();

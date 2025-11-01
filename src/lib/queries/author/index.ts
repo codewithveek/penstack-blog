@@ -1,7 +1,7 @@
 import "server-only";
-import { db } from "@/src/db";
-import { posts, users } from "@/src/db/schemas";
-import { AuthorSelect, PostInsert, UserSelect } from "@/src/types";
+import { db } from "@/db";
+import { posts, users } from "@/db/schemas";
+import { AuthorSelect, PostInsert, UserSelect } from "@/types";
 import { desc, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

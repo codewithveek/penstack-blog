@@ -22,9 +22,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { LuMessageCircle } from "react-icons/lu";
 import { CommentCard } from "./CommentCard";
-import { PostSelect } from "@/src/types";
-import { sanitizeAndEncodeHtml } from "@/src/utils";
-import { useAuth } from "@/src/hooks/useAuth";
+import { PostSelect } from "@/types";
+import { sanitizeAndEncodeHtml } from "@/utils";
+import { useAuth } from "@/hooks/useAuth";
 import isEmpty from "just-is-empty";
 import { SignInComponent } from "../../Auth/SignIn";
 

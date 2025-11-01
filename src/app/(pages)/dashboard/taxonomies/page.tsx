@@ -1,4 +1,4 @@
-import DashboardTaxonomyPage from "@/src/app/components/pages/Dashboard/Taxonomies";
+import DashboardTaxonomyPage from "@/components//pages/Dashboard/Taxonomies";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

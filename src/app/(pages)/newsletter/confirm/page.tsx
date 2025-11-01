@@ -1,5 +1,5 @@
-import NewsletterConfirm from "@/src/app/components/pages/NewsletterPage/Confirm";
-import PageWrapper from "@/src/app/components/PageWrapper";
+import NewsletterConfirm from "@/components//pages/NewsletterPage/Confirm";
+import PageWrapper from "@/components//PageWrapper";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

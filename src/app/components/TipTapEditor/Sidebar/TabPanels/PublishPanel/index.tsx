@@ -7,14 +7,14 @@ import {
   StackDivider,
 } from "@chakra-ui/react";
 
-import { SectionCard } from "@/src/app/components/Dashboard/SectionCard";
+import { SectionCard } from "@/components//Dashboard/SectionCard";
 
 import { LuCheck } from "react-icons/lu";
 import { CategorySection } from "../../CategorySection";
 import { TagsSection } from "../../TagsSection";
 import { SEOSection } from "../../SEOSection";
 import { ActionButtons } from "../../components/ActionButtons";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { PublishMetadata } from "../../components/PublishMetadata";
 
 export const PublishPanel = () => {

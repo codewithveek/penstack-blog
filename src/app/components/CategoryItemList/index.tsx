@@ -1,4 +1,4 @@
-import { useCategories } from "@/src/hooks/useCategories";
+import { useCategories } from "@/hooks/useCategories";
 import { HStack, Skeleton, Button, Card, CardBody } from "@chakra-ui/react";
 import { useQueryState } from "nuqs";
 import { useCallback, useEffect } from "react";

@@ -4,7 +4,7 @@ import { MetricsItem } from "./MetricsItem";
 import { PinnedToggle } from "./PinnedToggle";
 import { ScheduleItem } from "./ScheduleItem";
 import { VisibilityItem } from "./VisibilityItem";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { TocActions } from "./TocActions";
 
 export const PublishMetadata = () => {

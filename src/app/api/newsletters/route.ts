@@ -1,10 +1,10 @@
-import { db } from "@/src/db";
-import { newsletterSubscribers } from "@/src/db/schemas";
-import { NewsletterInsert } from "@/src/types";
+import { db } from "@/db";
+import { newsletterSubscribers } from "@/db/schemas";
+import { NewsletterInsert } from "@/types";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { checkPermission } from "@/src/lib/auth/check-permission";
+import { checkPermission } from "@/lib/auth/check-permission";
 
 export async function GET(req: NextRequest) {
   return await checkPermission(

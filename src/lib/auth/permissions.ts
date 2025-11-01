@@ -1,7 +1,7 @@
 import "server-only";
-import { db } from "@/src/db";
-import { users } from "@/src/db/schemas";
-import { TPermissions } from "@/src/types";
+import { db } from "@/db";
+import { users } from "@/db/schemas";
+import { TPermissions } from "@/types";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

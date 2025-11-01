@@ -1,6 +1,6 @@
 "use client";
 import { Box, SimpleGrid, Heading, Container, VStack } from "@chakra-ui/react";
-import { PenstackYouTubeEmbed } from "@/src/app/components/Renderers/YoutubeEmbedRenderer";
+import { PenstackYouTubeEmbed } from "@/components//Renderers/YoutubeEmbedRenderer";
 import PageWrapper from "../../../PageWrapper";
 
 const tutorials = [

@@ -1,5 +1,5 @@
 import { ReactNode, useMemo, useRef, useState } from "react";
-import Calendar from "../../Calendar";
+import Calendar from "@/components/Calendar";
 import {
   Button,
   Popover,
@@ -11,10 +11,10 @@ import {
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { CRON_REQUEST_METHOD, CronJobPayload } from "@/src/lib/cron";
-import { dateTimeToCronJobSchedule } from "@/src/lib/cron/helper";
+import { CRON_REQUEST_METHOD, CronJobPayload } from "@/lib/cron";
+import { dateTimeToCronJobSchedule } from "@/lib/cron/helper";
 import { addMinutes } from "date-fns";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 
 export const CalendarPicker = ({
   defaultValue,

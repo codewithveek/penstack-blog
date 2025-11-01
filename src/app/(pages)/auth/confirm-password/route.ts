@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { db } from "@/src/db";
+import { db } from "@/db";
 import bcrypt from "bcryptjs";
-import { getSession } from "@/src/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/next-auth";
 import { eq } from "drizzle-orm";
-import { users } from "@/src/db/schemas";
+import { users } from "@/db/schemas";
 
 export async function POST(req: Request) {
   try {
@@ -13,19 +13,22 @@ export async function POST(req: Request) {
     const { password } = body;
 
     if (!session?.user?.email) {
-      return NextResponse.json({message:"Unauthorized",data:null}, { status: 401 });
+      return NextResponse.json(
+        { message: "Unauthorized", data: null },
+        { status: 401 }
+      );
     }
 
     if (!password) {
       return NextResponse.json(
         { message: "Password is required", data: null },
-        
+
         { status: 400 }
       );
     }
 
     const user = await db.query.users.findFirst({
-      where: eq(users.email,session.user.email),
+      where: eq(users.email, session.user.email),
     });
 
     if (!user) {
@@ -44,9 +47,12 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({message:"Password verified", data:{isValid:true} });
+    return NextResponse.json({
+      message: "Password verified",
+      data: { isValid: true },
+    });
   } catch (error) {
     console.error("ERROR_CONFIRM_PASSWORD", error);
-    return NextResponse.json({message:"Internal Error"}, { status: 500 });
+    return NextResponse.json({ message: "Internal Error" }, { status: 500 });
   }
 }

@@ -1,8 +1,8 @@
 "use client";
 import React, { useCallback, useState, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import { LuLink, LuLoader2, LuUpload, LuX } from "react-icons/lu";
-import { MediaResponse } from "@/src/types";
+import { LuLink, LuLoaderCircle, LuUpload, LuX } from "react-icons/lu";
+import { MediaResponse } from "@/types";
 import axios from "axios";
 import {
   Box,
@@ -176,7 +176,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             {uploading ? (
               <VStack>
                 <Box
-                  as={LuLoader2}
+                  as={LuLoaderCircle}
                   h={8}
                   w={8}
                   color="brand.500"
@@ -355,7 +355,7 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
             type="submit"
             isDisabled={uploading || !url}
             w="full"
-            leftIcon={uploading ? <LuLoader2 /> : <LuLink />}
+            leftIcon={uploading ? <LuLoaderCircle /> : <LuLink />}
           >
             {uploading ? "Uploading..." : "Upload from URL"}
           </Button>

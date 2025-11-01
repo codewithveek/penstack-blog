@@ -1,4 +1,4 @@
-import { FilterParams, MediaResponse } from "@/src/types";
+import { FilterParams, MediaResponse } from "@/types";
 import Medias from "../../../Dashboard/Medias";
 import { type Editor } from "@tiptap/react";
 import { FC, PropsWithChildren } from "react";

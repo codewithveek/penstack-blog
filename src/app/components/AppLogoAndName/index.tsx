@@ -6,8 +6,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { AppLogo } from "./AppLogo";
-import { useSiteConfig } from "@/src/context/SiteConfig";
-import { cn } from "@/src/lib/utils";
+import { useSiteConfig } from "@/context/SiteConfig";
+import { cn } from "@/lib/utils";
 
 interface Props {
   logoSize?: string;

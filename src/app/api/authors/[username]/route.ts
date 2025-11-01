@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { users } from "@/src/db/schemas";
-import { getAuthorByUsername } from "@/src/lib/queries/author";
+import { db } from "@/db";
+import { users } from "@/db/schemas";
+import { getAuthorByUsername } from "@/lib/queries/author";
 import { eq } from "drizzle-orm";
 
 import { NextResponse, type NextRequest } from "next/server";

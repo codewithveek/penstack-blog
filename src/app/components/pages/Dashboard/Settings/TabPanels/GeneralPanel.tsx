@@ -12,7 +12,7 @@ import {
   Switch,
   Stack,
 } from "@chakra-ui/react";
-import { SiteSettings } from "@/src/types";
+import { SiteSettings } from "@/types";
 import { groupSettingsByFolder } from "../utils";
 import { SettingField } from "../components/SettingField";
 

@@ -1,4 +1,4 @@
-import { TaxonomyItem, TaxonomyItemsWithMeta } from "@/src/types";
+import { TaxonomyItem, TaxonomyItemsWithMeta } from "@/types";
 import {
   useColorModeValue,
   Flex,

@@ -10,8 +10,8 @@ import EditorHeader from "./Header";
 import ContentArea from "./ContentArea";
 import React from "react";
 import debounce from "lodash/debounce";
-import { usePenstackEditorStore } from "@/src/state/penstack-editor";
-import { extensions } from "@/src/lib/editor/extensions";
+import { usePenstackEditorStore } from "@/state/penstack-editor";
+import { extensions } from "@/lib/editor/extensions";
 
 function TipTapEditor({
   onUpdate,

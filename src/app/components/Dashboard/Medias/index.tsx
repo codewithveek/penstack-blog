@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { FileUpload, FileUrlUpload } from "../../FileUpload";
 import { MediaLibrary } from "./MediaLibrary";
-import { FilterParams, MediaResponse } from "@/src/types";
+import { FilterParams, MediaResponse } from "@/types";
 
 interface MediasComponentProps {
   multiple?: boolean;

@@ -10,7 +10,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { LuHeart, LuMessageCircle, LuFlag } from "react-icons/lu";
-import { formatDate } from "@/src/utils";
+import { formatDate } from "@/utils";
 
 interface CommentCardProps {
   comment: any; // Replace with proper comment type

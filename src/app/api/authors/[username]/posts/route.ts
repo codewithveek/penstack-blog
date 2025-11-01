@@ -1,8 +1,8 @@
-import { db } from "@/src/db";
-import { posts, users } from "@/src/db/schemas";
-import { getAuthorByUsername, getAuthorPosts } from "@/src/lib/queries/author";
-import { PostSelect } from "@/src/types";
-import { getServerSearchParams } from "@/src/utils";
+import { db } from "@/db";
+import { posts, users } from "@/db/schemas";
+import { getAuthorByUsername, getAuthorPosts } from "@/lib/queries/author";
+import { PostSelect } from "@/types";
+import { getServerSearchParams } from "@/utils";
 import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

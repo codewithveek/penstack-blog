@@ -12,7 +12,7 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { memo, useState } from "react";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { Link } from "@chakra-ui/next-js";
 import { LuExternalLink } from "react-icons/lu";
 

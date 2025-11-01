@@ -16,8 +16,8 @@ import {
   generatePostUrl,
   shortenText,
   stripHtml,
-} from "@/src/utils";
-import { getSiteUrl, resolveUrl } from "@/src/utils/url";
+} from "@/utils";
+import { getSiteUrl, resolveUrl } from "@/utils/url";
 
 interface BlogPostEmailProps {
   post: PostSelect;

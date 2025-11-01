@@ -1,4 +1,4 @@
-import { FilterParams, MediaResponse } from "@/src/types";
+import { FilterParams, MediaResponse } from "@/types";
 import {
   Modal,
   ModalOverlay,

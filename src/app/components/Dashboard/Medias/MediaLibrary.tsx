@@ -11,10 +11,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { LuTrash2 } from "react-icons/lu";
-import { FilterParams, MediaResponse, PaginatedResponse } from "@/src/types";
+import { FilterParams, MediaResponse, PaginatedResponse } from "@/types";
 import axios from "axios";
 import Loader from "../../Loader";
-import { objectToQueryParams } from "@/src/utils";
+import { objectToQueryParams } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "../../Pagination";
 

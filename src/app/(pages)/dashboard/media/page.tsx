@@ -1,5 +1,5 @@
-import DashboardMediaPage from "@/src/app/components/pages/Dashboard/Medias";
-import { PermissionGuard } from "@/src/app/components/PermissionGuard";
+import DashboardMediaPage from "@/components//pages/Dashboard/Medias";
+import { PermissionGuard } from "@/components//PermissionGuard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

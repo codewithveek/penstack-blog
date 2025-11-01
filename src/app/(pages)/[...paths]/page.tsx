@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import BlogPage from "@/src/app/components/blog";
+import BlogPage from "@/components/blog";
 
 import {
   shortenText,
@@ -8,11 +8,11 @@ import {
   decodeAndSanitizeHtml,
   objectToQueryParams,
   generatePostDescription,
-} from "@/src/utils";
+} from "@/utils";
 import { ResolvingMetadata, Metadata } from "next";
-import { getSiteUrl } from "@/src/utils/url";
-import { getData } from "@/src/utils/post";
-import { getSettings } from "@/src/lib/queries/settings";
+import { getSiteUrl } from "@/utils/url";
+import { getData } from "@/utils/post";
+import { getSettings } from "@/lib/queries/settings";
 import { format } from "date-fns";
 import isEmpty from "just-is-empty";
 interface PageProps {

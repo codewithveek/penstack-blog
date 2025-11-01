@@ -1,6 +1,6 @@
 import "server-only";
-import { db } from "@/src/db";
-import { categories, posts } from "@/src/db/schemas/posts.sql";
+import { db } from "@/db";
+import { categories, posts } from "@/db/schemas/posts.sql";
 import { and, eq, sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

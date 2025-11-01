@@ -17,12 +17,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { SiteSettings } from "@/src/types";
+import { SiteSettings } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import DashHeader from "../../../Dashboard/Header";
-import Loader from "@/src/app/components/Loader";
-import { MediaModal } from "@/src/app/components/Dashboard/Medias/MediaModal";
+import Loader from "@/components//Loader";
+import { MediaModal } from "@/components//Dashboard/Medias/MediaModal";
 import { GeneralPanel } from "./TabPanels/GeneralPanel";
 import { AnalyticsPanel } from "./TabPanels/AnalyticsPanel";
 import { MonitoringPanel } from "./TabPanels/MonitoringPanel";
@@ -30,7 +30,7 @@ import { MediaPanel } from "./TabPanels/MediaPanel";
 import { EmailPanel } from "./TabPanels/EmailPanel";
 import { AdvancedPanel } from "./TabPanels/AdvancedPanel";
 import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
-import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useSiteConfig } from "@/context/SiteConfig";
 import { parseAsString, useQueryState } from "nuqs";
 import { isEqual } from "lodash";
 import { MiscPanel } from "./TabPanels/MiscPanel";

@@ -1,8 +1,8 @@
-import { MediaAttrs } from "@/src/lib/editor/extensions/media-ext";
+import { MediaAttrs } from "@/lib/editor/extensions/media-ext";
 import {
   MediaComponentNew,
   type MediaNodeViewProps,
-} from "@/src/lib/editor/nodes/media/MediaComponents";
+} from "@/lib/editor/nodes/media/MediaComponents";
 
 export const MediaRenderer = ({
   isEditing = false,

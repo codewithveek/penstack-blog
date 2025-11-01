@@ -1,13 +1,13 @@
-import { db } from "@/src/db";
-import { verificationTokens, users } from "@/src/db/schemas";
+import { db } from "@/db";
+import { verificationTokens, users } from "@/db/schemas";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
-import { VerificationEmail } from "@/src/app/components/Emails/Verification";
+import { VerificationEmail } from "@/components//Emails/Verification";
 import { addMinutes } from "date-fns";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-import { sendEmail } from "@/src/lib/send-email";
-import { getSettings } from "@/src/lib/queries/settings";
+import { sendEmail } from "@/lib/send-email";
+import { getSettings } from "@/lib/queries/settings";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();

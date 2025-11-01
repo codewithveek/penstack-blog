@@ -33,8 +33,8 @@ import {
 import { SidebarContent } from "../Sidebar";
 import { memo } from "react";
 import React from "react";
-import { formatDate } from "@/src/utils";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { formatDate } from "@/utils";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { StatusItem } from "../Sidebar/components/StatusItem";
 
 function EditorHeader() {

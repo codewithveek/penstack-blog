@@ -1,5 +1,5 @@
-import EditPostPage from "@/src/app/components/pages/Dashboard/NewPostPage";
-import { getPostForEditing } from "@/src/lib/queries/post";
+import EditPostPage from "@/components//pages/Dashboard/NewPostPage";
+import { getPostForEditing } from "@/lib/queries/post";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

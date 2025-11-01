@@ -1,8 +1,8 @@
 import { unstable_cache } from "next/cache";
 import "server-only";
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
-import { PostInsert } from "@/src/types";
+import { db } from "@/db";
+import { posts } from "@/db/schemas";
+import { PostInsert } from "@/types";
 import { ilike, eq, sql, and, desc, asc } from "drizzle-orm";
 import { getSession } from "../auth/next-auth";
 

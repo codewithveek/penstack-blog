@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/src/lib/auth/next-auth";
-import { getUserPermissions } from "@/src/lib/auth/permissions";
-import { getPublicPermissions } from "@/src/lib/auth/public-permissions"; // Separate file
-import { TPermissions } from "@/src/types";
+import { getSession } from "@/lib/auth/next-auth";
+import { getUserPermissions } from "@/lib/auth/permissions";
+import { getPublicPermissions } from "@/lib/auth/public-permissions"; // Separate file
+import { TPermissions } from "@/types";
 
 export async function GET(req: NextRequest) {
   try {

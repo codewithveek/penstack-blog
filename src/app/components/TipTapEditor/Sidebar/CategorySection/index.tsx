@@ -13,12 +13,12 @@ import {
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import isEmpty from "just-is-empty";
 import { LuPlus } from "react-icons/lu";
-import { useCategories } from "@/src/hooks/useCategories";
+import { useCategories } from "@/hooks/useCategories";
 import axios from "axios";
 
 import { useState } from "react";
-import { generateSlug } from "@/src/utils";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { generateSlug } from "@/utils";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const CategorySection = () => {

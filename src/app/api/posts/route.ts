@@ -1,15 +1,15 @@
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
-import { checkPermission } from "@/src/lib/auth/check-permission";
-import { getSession } from "@/src/lib/auth/next-auth";
-import { getPosts } from "@/src/lib/queries/posts";
-import { parseHtmlHeadings } from "@/src/lib/toc-generator";
-import { PostInsert } from "@/src/types";
+import { db } from "@/db";
+import { posts } from "@/db/schemas";
+import { checkPermission } from "@/lib/auth/check-permission";
+import { getSession } from "@/lib/auth/next-auth";
+import { getPosts } from "@/lib/queries/posts";
+import { parseHtmlHeadings } from "@/lib/toc-generator";
+import { PostInsert } from "@/types";
 import {
   calculateReadingTime,
   decodeAndSanitizeHtml,
   stripHtml,
-} from "@/src/utils";
+} from "@/utils";
 import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

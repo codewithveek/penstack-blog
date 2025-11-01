@@ -2,7 +2,7 @@
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 
-import PageWrapper from "@/src/app/components/PageWrapper";
+import PageWrapper from "@/components//PageWrapper";
 import {
   Container,
   VStack,

@@ -2,9 +2,9 @@
 import { Box } from "@chakra-ui/react";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "../../../../themes/smooth-land/PostsCards";
-import { usePosts } from "@/src/hooks";
+import { usePosts } from "@/hooks";
 import { CategoryItemList } from "../../CategoryItemList";
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import { useEffect, useState } from "react";
 import { TelegramFab } from "../../Telegram/Fab";
 
@@ -29,7 +29,7 @@ export default function ArticlesPage({
   }, [categoryQuery, initialCategory, refetchPosts]);
   return (
     <PageWrapper>
-      <TelegramFab />
+      {/* <TelegramFab /> */}
 
       <Box py={8} px={{ base: 3, lg: 4 }} maxW={"container.xl"} mx="auto">
         <Box>

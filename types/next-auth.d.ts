@@ -1,4 +1,4 @@
-import { TPermissions, UserInsert } from "@/src/types";
+import { TPermissions, UserInsert } from "@/types";
 import { DefaultSession } from "next-auth";
 
 declare module "next-auth" {

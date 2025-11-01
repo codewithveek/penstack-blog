@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/src/db";
-import { categories, posts } from "@/src/db/schemas/posts.sql";
+import { db } from "@/db";
+import { categories, posts } from "@/db/schemas/posts.sql";
 import { and, eq, sql } from "drizzle-orm";
-import { checkPermission } from "@/src/lib/auth/check-permission";
+import { checkPermission } from "@/lib/auth/check-permission";
 import { revalidateTag } from "next/cache";
 
 export async function GET(req: NextRequest) {

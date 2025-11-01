@@ -1,6 +1,6 @@
 import "server-only";
-import { db } from "@/src/db";
-import { users } from "@/src/db/schemas";
+import { db } from "@/db";
+import { users } from "@/db/schemas";
 import { eq, or } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

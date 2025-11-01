@@ -1,4 +1,4 @@
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import {
   Button,
   HStack,
@@ -10,7 +10,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { LuEye, LuGlobe2, LuLock } from "react-icons/lu";
+import { LuEye, LuGlobe, LuLock } from "react-icons/lu";
 
 export const VisibilityItem = ({ visibility }: { visibility: string }) => {
   const updateField = useEditorPostManagerStore((state) => state.updateField);
@@ -35,7 +35,7 @@ export const VisibilityItem = ({ visibility }: { visibility: string }) => {
           </MenuButton>
           <MenuList>
             <MenuItem
-              icon={<LuGlobe2 />}
+              icon={<LuGlobe />}
               onClick={() => handleVisibilityChange("public")}
             >
               Public

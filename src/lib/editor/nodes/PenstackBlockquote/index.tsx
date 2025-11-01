@@ -1,4 +1,4 @@
-import PenstackBlockquoteRenderer from "@/src/app/components/Renderers/PenstackBlockquoteRenderer";
+import PenstackBlockquoteRenderer from "@/components//Renderers/PenstackBlockquoteRenderer";
 import { NodeViewProps } from "@tiptap/core";
 import { NodeViewWrapper } from "@tiptap/react";
 import { memo, useState } from "react";

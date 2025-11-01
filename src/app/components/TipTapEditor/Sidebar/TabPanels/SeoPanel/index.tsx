@@ -1,7 +1,7 @@
-import { SectionCard } from "@/src/app/components/Dashboard/SectionCard";
-import { PillInput } from "@/src/app/components/PillInput";
-import { usePostSeoMetaStore } from "@/src/state/post-seo-meta";
-import { MediaResponse } from "@/src/types";
+import { SectionCard } from "@/components//Dashboard/SectionCard";
+import { PillInput } from "@/components//PillInput";
+import { usePostSeoMetaStore } from "@/state/post-seo-meta";
+import { MediaResponse } from "@/types";
 import {
   FormControl,
   Input,

@@ -1,10 +1,10 @@
-import { getPostsForRss } from "@/src/lib/queries/posts";
-import { decodeAndSanitizeHtml, generatePostUrl } from "@/src/utils";
+import { getPostsForRss } from "@/lib/queries/posts";
+import { decodeAndSanitizeHtml, generatePostUrl } from "@/utils";
 import { NextResponse } from "next/server";
 import { Feed } from "feed";
-import { getSettings } from "@/src/lib/queries/settings";
-import { getSiteUrl } from "@/src/utils/url";
-import { generatePostDescription } from "@/src/utils";
+import { getSettings } from "@/lib/queries/settings";
+import { getSiteUrl } from "@/utils/url";
+import { generatePostDescription } from "@/utils";
 
 export async function GET() {
   const posts = await getPostsForRss();

@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { tags } from "@/src/db/schemas";
-import { checkPermission } from "@/src/lib/auth/check-permission";
+import { db } from "@/db";
+import { tags } from "@/db/schemas";
+import { checkPermission } from "@/lib/auth/check-permission";
 import { eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";

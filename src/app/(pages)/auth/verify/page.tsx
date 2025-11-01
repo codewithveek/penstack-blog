@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useQueryState } from "nuqs";
-import PageWrapper from "@/src/app/components/PageWrapper";
+import PageWrapper from "@/components//PageWrapper";
 
 export default function VerifyEmail() {
   const [email, setEmail] = useState("");

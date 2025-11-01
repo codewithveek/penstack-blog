@@ -2,9 +2,9 @@ import {
   DASH_NAV_PERMISSIONS,
   NavItemWithoutPermission,
   TPermissions,
-} from "@/src/types";
+} from "@/types";
 import {
-  LuHome,
+  LuHouse,
   LuFileSpreadsheet,
   LuFileImage,
   LuUsers,
@@ -15,7 +15,7 @@ import {
 } from "react-icons/lu";
 
 const iconMap = {
-  LuHome,
+  LuHouse,
   LuFileSpreadsheet,
   LuFileImage,
   LuUsers,

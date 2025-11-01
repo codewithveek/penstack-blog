@@ -1,10 +1,10 @@
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import {
   generatePostDescription,
   generatePostUrl,
   nativeFormatDate,
   objectToQueryParams,
-} from "@/src/utils";
+} from "@/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,

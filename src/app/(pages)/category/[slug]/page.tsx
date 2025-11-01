@@ -1,5 +1,5 @@
-import CategoryPage from "@/src/app/components/pages/CategoryPage";
-import { getPostsByCategory } from "@/src/lib/queries/category-posts";
+import CategoryPage from "@/components//pages/CategoryPage";
+import { getPostsByCategory } from "@/lib/queries/category-posts";
 import { type Metadata } from "next";
 
 export async function generateMetadata({

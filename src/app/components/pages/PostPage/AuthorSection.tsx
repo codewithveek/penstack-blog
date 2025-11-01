@@ -10,7 +10,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import { LuTwitter, LuGithub } from "react-icons/lu";
 
 interface AuthorSectionProps {

@@ -1,4 +1,4 @@
-import { NavItemWithoutPermission } from "@/src/types";
+import { NavItemWithoutPermission } from "@/types";
 import {
   useDisclosure,
   Popover,

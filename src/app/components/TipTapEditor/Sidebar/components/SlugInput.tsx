@@ -1,5 +1,5 @@
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
-import { generateSlug } from "@/src/utils";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
+import { generateSlug } from "@/utils";
 import {
   FormControl,
   FormLabel,

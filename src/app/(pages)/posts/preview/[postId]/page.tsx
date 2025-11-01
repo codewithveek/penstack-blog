@@ -1,8 +1,8 @@
-import BlogPage from "@/src/app/components/blog";
-import { PermissionGuard } from "@/src/app/components/PermissionGuard";
-import { getSession } from "@/src/lib/auth/next-auth";
-import { getPost } from "@/src/lib/queries/post";
-import { getSettings } from "@/src/lib/queries/settings";
+import BlogPage from "@/components//blog";
+import { PermissionGuard } from "@/components//PermissionGuard";
+import { getSession } from "@/lib/auth/next-auth";
+import { getPost } from "@/lib/queries/post";
+import { getSettings } from "@/lib/queries/settings";
 import { notFound } from "next/navigation";
 
 export default async function PostPreviewPage({

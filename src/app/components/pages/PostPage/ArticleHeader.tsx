@@ -10,9 +10,9 @@ import {
   Badge,
   Divider,
 } from "@chakra-ui/react";
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import { Link } from "@chakra-ui/next-js";
-import { formatDate } from "@/src/utils";
+import { formatDate } from "@/utils";
 import { SocialShareGroup } from "./ShareButtons";
 
 interface ArticleHeaderProps {

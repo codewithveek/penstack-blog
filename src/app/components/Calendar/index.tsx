@@ -12,7 +12,7 @@ import { TimePicker } from "./TimePicker";
 import {
   extractFullTimeString,
   mergeTimeStringWithDate,
-} from "@/src/lib/cron/helper";
+} from "@/lib/cron/helper";
 import {
   Box,
   Button,

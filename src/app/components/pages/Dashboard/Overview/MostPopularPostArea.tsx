@@ -1,4 +1,4 @@
-import { usePosts } from "@/src/hooks";
+import { usePosts } from "@/hooks";
 import {
   Avatar,
   Card,
@@ -15,9 +15,9 @@ import { LuEye } from "react-icons/lu";
 import Loader from "../../../Loader";
 import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
-import { generatePostUrl } from "@/src/utils";
+import { generatePostUrl } from "@/utils";
 import { memo } from "react";
-import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useSiteConfig } from "@/context/SiteConfig";
 
 export default memo(function MostPopularPosts() {
   const { posts = [], loading } = usePosts({ sortBy: "popular", limit: 5 });

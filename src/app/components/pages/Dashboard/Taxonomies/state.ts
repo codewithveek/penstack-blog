@@ -1,4 +1,4 @@
-import { TaxonomyItem } from "@/src/types";
+import { TaxonomyItem } from "@/types";
 import { create } from "zustand";
 
 type TaxonomiesState = {

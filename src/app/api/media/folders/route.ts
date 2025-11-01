@@ -1,7 +1,5 @@
-
 import { NextRequest, NextResponse } from "next/server";
-import { fetchMediaFolders } from "@/src/lib/queries/media";
-
+import { fetchMediaFolders } from "@/lib/queries/media";
 
 export async function GET(req: NextRequest) {
   try {

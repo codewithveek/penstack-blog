@@ -1,6 +1,6 @@
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
-import { sanitizeAndEncodeHtml } from "@/src/utils";
+import { sanitizeAndEncodeHtml } from "@/utils";
 
 import React, { ChangeEvent, memo, useCallback, useState } from "react";
 

@@ -17,7 +17,7 @@ import {
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
 import { Newsletter } from "../NewsLetter";
 import { AppLogoAndName } from "../AppLogoAndName";
-import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useSiteConfig } from "@/context/SiteConfig";
 
 const Footer = () => {
   const bgColor = useColorModeValue("charcoalBlack", "gray.900");

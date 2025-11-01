@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import {
   ScriptComponentProps,
   ScriptStrategy,
-} from "@/src/lib/third-party-scripts/types";
+} from "@/lib/third-party-scripts/types";
 
 export function ScriptComponent({ script }: ScriptComponentProps): JSX.Element {
   const getStrategy = (): ScriptStrategy => {

@@ -1,4 +1,4 @@
-import { DashboardNewsletterPage } from "@/src/app/components/pages/Dashboard/Newsletter";
+import { DashboardNewsletterPage } from "@/components//pages/Dashboard/Newsletter";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -1,11 +1,11 @@
-import { useFeaturedPost } from "@/src/hooks/useFeaturedPost";
+import { useFeaturedPost } from "@/hooks/useFeaturedPost";
 import {
   decodeAndSanitizeHtml,
   generatePostUrl,
   nativeFormatDate,
   objectToQueryParams,
   stripHtml,
-} from "@/src/utils";
+} from "@/utils";
 import {
   Avatar,
   Box,

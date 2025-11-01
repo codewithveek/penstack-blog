@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateCloudinaryUrl, uploadFromUrl } from "@/src/lib/cloudinary";
-import { db } from "@/src/db";
-import { medias } from "@/src/db/schemas";
+import { generateCloudinaryUrl, uploadFromUrl } from "@/lib/cloudinary";
+import { db } from "@/db";
+import { medias } from "@/db/schemas";
 import { eq } from "drizzle-orm";
-import { determineFileType } from "@/src/utils/upload";
+import { determineFileType } from "@/utils/upload";
 import { revalidateTag } from "next/cache";
 
 export async function POST(request: NextRequest) {

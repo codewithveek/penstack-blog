@@ -19,20 +19,20 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
-import { useSearchResults } from "@/src/hooks/usePostsSearch";
+import { useSearchResults } from "@/hooks/usePostsSearch";
 import PostCard from "../../../../themes/smooth-land/PostCard";
 import { useCallback } from "react";
 import debounce from "lodash/debounce";
-import { useCategories } from "@/src/hooks/useCategories";
+import { useCategories } from "@/hooks/useCategories";
 import NewPostCard from "../../../../themes/raised-land/NewPostCard";
-import { PostCardLoader } from "@/src/themes/smooth-land/PostCardLoader";
+import { PostCardLoader } from "@/themes/smooth-land/PostCardLoader";
 import {
   parseAsInteger,
   parseAsString,
   parseAsStringLiteral,
   useQueryStates,
 } from "nuqs";
-import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
+import { PostsCards } from "@/themes/smooth-land/PostsCards";
 
 const SearchResults = () => {
   const bgColor = useColorModeValue("white", "gray.800");

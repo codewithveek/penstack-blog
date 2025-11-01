@@ -29,7 +29,7 @@ import {
   CardBody,
 } from "@chakra-ui/react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import PageWrapper from "@/src/app/components/PageWrapper";
+import PageWrapper from "@/components//PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { Link } from "@chakra-ui/next-js";
 

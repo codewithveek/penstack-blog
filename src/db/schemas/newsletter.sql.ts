@@ -10,7 +10,7 @@ import {
   index,
 } from "drizzle-orm/mysql-core";
 import { id, created_at, updated_at, emailEventsEnum } from "../schema-helper";
-import { IdGenerator } from "@/src/utils";
+import { IdGenerator } from "@/utils";
 
 export const newsletterSubscribers = mysqlTable(
   "NewsLetterSubscribers",

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getUserPermissions } from "@/src/lib/auth/permissions";
-import { getSession } from "@/src/lib/auth/next-auth";
+import { getUserPermissions } from "@/lib/auth/permissions";
+import { getSession } from "@/lib/auth/next-auth";
 import { TPermissions } from "../../types";
 
 import { Session } from "next-auth";

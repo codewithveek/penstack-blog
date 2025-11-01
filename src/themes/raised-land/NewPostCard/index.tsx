@@ -1,11 +1,11 @@
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import {
   decodeAndSanitizeHtml,
   generatePostUrl,
   nativeFormatDate,
   objectToQueryParams,
   stripHtml,
-} from "@/src/utils";
+} from "@/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Avatar,

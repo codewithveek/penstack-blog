@@ -1,8 +1,5 @@
-import {
-  Divider,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { filterEditorActions } from "@/src/lib/editor/actions";
+import { Divider, useDisclosure } from "@chakra-ui/react";
+import { filterEditorActions } from "@/lib/editor/actions";
 import React, { useMemo } from "react";
 import { MediaInsert } from "../MediaInsert";
 import AccessibleDropdown from "../../../AccessibleDropdown";

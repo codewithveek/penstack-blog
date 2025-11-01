@@ -1,6 +1,6 @@
 // YouTubeExtension.ts
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
-import { PenstackYouTubeEmbed } from "@/src/app/components/Renderers/YoutubeEmbedRenderer";
+import { PenstackYouTubeEmbed } from "@/components//Renderers/YoutubeEmbedRenderer";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {

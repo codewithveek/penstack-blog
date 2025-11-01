@@ -18,11 +18,11 @@ import React, { FormEvent, memo, useRef, useState } from "react";
 
 import { LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
 import EditorActionsDropdown from "./EditorActionsDropdown";
-import { filterEditorActions } from "@/src/lib/editor/actions";
+import { filterEditorActions } from "@/lib/editor/actions";
 import { MediaInsert } from "./MediaInsert";
-import { extractContentAndLinkMark } from "@/src/utils";
-import { MiniPostCardButton } from "@/src/lib/editor/nodes/MiniPostCard/MiniPostCardButton";
-import { MediaButton } from "@/src/lib/editor/nodes/media/MediaButton";
+import { extractContentAndLinkMark } from "@/utils";
+import { MiniPostCardButton } from "@/lib/editor/nodes/MiniPostCard/MiniPostCardButton";
+import { MediaButton } from "@/lib/editor/nodes/media/MediaButton";
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);

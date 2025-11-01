@@ -4,8 +4,8 @@ import { Box, Container, Heading, Text } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { PostSelect } from "@/src/types";
-import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
+import { PostSelect } from "@/types";
+import { PostsCards } from "@/themes/smooth-land/PostsCards";
 import PageWrapper from "../../PageWrapper";
 
 export const CategoryPage = ({

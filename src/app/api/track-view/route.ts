@@ -1,10 +1,10 @@
 import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { parseUserAgent } from "@/src/utils/user-agent-parser";
-import { trackPostView } from "@/src/utils/views-tracking";
-import { getGeoLocation } from "@/src/utils/geo-ip";
-import { getSession } from "@/src/lib/auth/next-auth";
-import { getOrCreateSessionId } from "@/src/utils/views-tracking/session";
+import { parseUserAgent } from "@/utils/user-agent-parser";
+import { trackPostView } from "@/utils/views-tracking";
+import { getGeoLocation } from "@/utils/geo-ip";
+import { getSession } from "@/lib/auth/next-auth";
+import { getOrCreateSessionId } from "@/utils/views-tracking/session";
 
 export async function POST(req: NextRequest) {
   try {

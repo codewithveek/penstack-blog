@@ -13,7 +13,7 @@ import {
   Icon,
   Box,
 } from "@chakra-ui/react";
-import timezones from "@/src/lib/timezones.json";
+import timezones from "@/lib/timezones.json";
 import { memo, useEffect, useState, useMemo, useCallback } from "react";
 import { LuChevronDown, LuSearch } from "react-icons/lu";
 import { FixedSizeList } from "react-window";

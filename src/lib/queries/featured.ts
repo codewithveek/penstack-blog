@@ -11,7 +11,7 @@ import {
   postTags,
   reactionTypes,
 } from "../../db/schemas";
-import { db } from "@/src/db";
+import { db } from "@/db";
 
 // Helper function to get base published posts query
 export const getPublishedPostsQuery = () => {

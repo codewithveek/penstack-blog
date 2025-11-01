@@ -1,4 +1,4 @@
-import { EditorActionItem } from "@/src/types";
+import { EditorActionItem } from "@/types";
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
 import { Editor } from "@tiptap/react";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { IconType } from "react-icons";
-import {  LuChevronsUpDown } from "react-icons/lu";
+import { LuChevronsUpDown } from "react-icons/lu";
 
 interface Option {
   id: number | string;

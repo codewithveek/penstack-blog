@@ -8,11 +8,11 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import PageWrapper from "../../PageWrapper";
-import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
+import { PostsCards } from "@/themes/smooth-land/PostsCards";
 import { Link } from "@chakra-ui/next-js";
 import { LuArrowRight } from "react-icons/lu";
-import { FeaturedPost } from "@/src/themes/smooth-land/FeaturedPost";
-import { FeaturedPostType, PaginatedResponse, PostSelect } from "@/src/types";
+import { FeaturedPost } from "@/themes/smooth-land/FeaturedPost";
+import { FeaturedPostType, PaginatedResponse, PostSelect } from "@/types";
 import isEmpty from "just-is-empty";
 
 interface FrontPageProps {

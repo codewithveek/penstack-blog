@@ -16,8 +16,8 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import { LuSearch, LuPlus } from "react-icons/lu";
-import { PageTitleHeader } from "@/src/app/components/Dashboard/PageTitleCard";
-import DashHeader from "@/src/app/components/Dashboard/Header";
+import { PageTitleHeader } from "@/components//Dashboard/PageTitleCard";
+import DashHeader from "@/components//Dashboard/Header";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useTaxonomiesStore } from "./state";
 import { CategoriesPanel } from "./CategoriesPanel";

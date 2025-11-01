@@ -1,5 +1,5 @@
-import { db } from "@/src/db";
-import { tags } from "@/src/db/schemas/posts.sql";
+import { db } from "@/db";
+import { tags } from "@/db/schemas/posts.sql";
 import { eq, ilike } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

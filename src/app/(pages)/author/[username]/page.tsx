@@ -1,8 +1,8 @@
-import AuthorPage from "@/src/app/components/pages/AuthorPage";
-import { getAuthorByUsername, getAuthorPosts } from "@/src/lib/queries/author";
-import { getSettings } from "@/src/lib/queries/settings";
-import { PostSelect } from "@/src/types";
-import { getSiteUrl } from "@/src/utils/url";
+import AuthorPage from "@/components//pages/AuthorPage";
+import { getAuthorByUsername, getAuthorPosts } from "@/lib/queries/author";
+import { getSettings } from "@/lib/queries/settings";
+import { PostSelect } from "@/types";
+import { getSiteUrl } from "@/utils/url";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 

@@ -34,10 +34,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
-import { useCategories } from "@/src/hooks/useCategories";
+import { useCategories } from "@/hooks/useCategories";
 import { AppLogo } from "../AppLogoAndName/AppLogo";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useSiteConfig } from "@/context/SiteConfig";
 
 const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

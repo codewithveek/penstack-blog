@@ -1,7 +1,7 @@
-import { getSession } from "@/src/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/next-auth";
 import { redirect } from "next/navigation";
-import { getDashboardNavigation } from "@/src/lib/dashboard/nav-links";
-import { TPermissions } from "@/src/types";
+import { getDashboardNavigation } from "@/lib/dashboard/nav-links";
+import { TPermissions } from "@/types";
 
 export default async function Page() {
   const session = await getSession();

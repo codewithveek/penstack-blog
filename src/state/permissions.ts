@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { TPermissions } from "@/src/types";
+import { TPermissions } from "@/types";
 
 interface PermissionsState {
   permissions: TPermissions[];

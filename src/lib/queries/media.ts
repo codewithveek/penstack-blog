@@ -1,8 +1,8 @@
 import "server-only";
-import { db } from "@/src/db";
-import { medias } from "@/src/db/schemas";
+import { db } from "@/db";
+import { medias } from "@/db/schemas";
 import { and, desc, asc, eq, sql, ilike } from "drizzle-orm";
-import { MediaType } from "@/src/types";
+import { MediaType } from "@/types";
 import { unstable_cache } from "next/cache";
 
 export const fetchMediaWithFilters = unstable_cache(

@@ -1,12 +1,12 @@
-import { useCategories } from "@/src/hooks/useCategories";
+import { useCategories } from "@/hooks/useCategories";
 import { FilteredList } from "../FilteredList";
 import { Box, HStack, Text, useColorModeValue, VStack } from "@chakra-ui/react";
 import { FilterListSkeleton } from "../FilterListSkeleton";
-import Pagination from "@/src/app/components/Pagination";
+import Pagination from "@/components//Pagination";
 import { useState } from "react";
 import axios from "axios";
-import { PaginatedResponse, TaxonomyItem } from "@/src/types";
-import { objectToQueryParams } from "@/src/utils";
+import { PaginatedResponse, TaxonomyItem } from "@/types";
+import { objectToQueryParams } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 
 export const CategoriesPanel = () => {

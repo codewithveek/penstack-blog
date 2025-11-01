@@ -2,14 +2,10 @@ import { Webhook } from "svix";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { WebhookRequiredHeaders } from "svix";
-import { db } from "@/src/db";
-import {
-  emailEvents,
-  newsletterSubscribers,
-  newsletters,
-} from "@/src/db/schemas";
+import { db } from "@/db";
+import { emailEvents, newsletterSubscribers, newsletters } from "@/db/schemas";
 import { eq } from "drizzle-orm";
-import { ResendWebhookEvent } from "@/src/types";
+import { ResendWebhookEvent } from "@/types";
 import { IncomingMessage } from "http";
 
 export async function POST(req: NextRequest) {

@@ -1,4 +1,4 @@
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import {
   VStack,
   Text,
@@ -14,7 +14,7 @@ import { debounce } from "lodash";
 import { LuSearch } from "react-icons/lu";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { objectToQueryParams } from "@/src/utils";
+import { objectToQueryParams } from "@/utils";
 import { useState } from "react";
 
 interface SearchPostsComponentProps {

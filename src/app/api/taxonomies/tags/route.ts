@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { queryTagsWithFilters } from "@/src/lib/queries/tags";
-import { tags } from "@/src/db/schemas";
-import { db } from "@/src/db";
-import { checkPermission } from "@/src/lib/auth/check-permission";
+import { queryTagsWithFilters } from "@/lib/queries/tags";
+import { tags } from "@/db/schemas";
+import { db } from "@/db";
+import { checkPermission } from "@/lib/auth/check-permission";
 import { sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 

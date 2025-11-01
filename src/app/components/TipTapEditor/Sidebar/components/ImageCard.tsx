@@ -1,4 +1,4 @@
-import { MediaResponse } from "@/src/types";
+import { MediaResponse } from "@/types";
 import {
   Box,
   Flex,

@@ -1,7 +1,7 @@
-import NewPostPage from "@/src/app/components/pages/Dashboard/NewPostPage";
-import { PermissionGuard } from "@/src/app/components/PermissionGuard";
-import { getPostForEditing } from "@/src/lib/queries/post";
-import { usePostSeoMetaStore } from "@/src/state/post-seo-meta";
+import NewPostPage from "@/components//pages/Dashboard/NewPostPage";
+import { PermissionGuard } from "@/components//PermissionGuard";
+import { getPostForEditing } from "@/lib/queries/post";
+import { usePostSeoMetaStore } from "@/state/post-seo-meta";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

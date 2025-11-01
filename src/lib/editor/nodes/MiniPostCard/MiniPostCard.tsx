@@ -1,9 +1,9 @@
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import { Card, CardBody, useColorModeValue } from "@chakra-ui/react";
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import React, { useState } from "react";
 
-import { MiniPostCardRenderer } from "@/src/app/components/Renderers/MiniPostCardRenderer";
+import { MiniPostCardRenderer } from "@/components//Renderers/MiniPostCardRenderer";
 
 import { SearchPostsComponent } from "./SearchPostsComponent";
 

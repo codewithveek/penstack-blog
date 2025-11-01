@@ -1,4 +1,4 @@
-import { getPosts } from "@/src/lib/queries/posts";
+import { getPosts } from "@/lib/queries/posts";
 import ArticlesPage from "../../components/pages/ArticlesPage";
 
 interface PageProps {

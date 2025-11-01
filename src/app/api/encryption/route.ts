@@ -1,4 +1,4 @@
-import { decryptKey, encryptKey } from "@/src/lib/encryption";
+import { decryptKey, encryptKey } from "@/lib/encryption";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

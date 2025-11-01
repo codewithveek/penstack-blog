@@ -1,4 +1,4 @@
-import SignUp from "@/src/app/components/Auth/SignUp";
+import SignUp from "@/components//Auth/SignUp";
 import { getSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 

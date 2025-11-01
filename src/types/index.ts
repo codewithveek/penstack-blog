@@ -1,5 +1,5 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { posts } from "@/src/db/schemas/posts.sql";
+import { posts } from "@/db/schemas/posts.sql";
 import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
 import {

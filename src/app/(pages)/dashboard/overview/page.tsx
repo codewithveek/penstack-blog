@@ -1,5 +1,5 @@
-import Overview from "@/src/app/components/pages/Dashboard/Overview";
-import { PermissionGuard } from "@/src/app/components/PermissionGuard";
+import Overview from "@/components//pages/Dashboard/Overview";
+import { PermissionGuard } from "@/components//PermissionGuard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 export default function Page() {
   return (
-    <PermissionGuard requiredPermission={'analytics:view'} shouldRedirect>
+    <PermissionGuard requiredPermission={"analytics:view"} shouldRedirect>
       <Overview />
     </PermissionGuard>
   );

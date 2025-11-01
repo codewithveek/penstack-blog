@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/src/db"; // Your database connection
-import { medias } from "@/src/db/schemas"; // Your schema
-import { MediaType } from "@/src/types";
+import { db } from "@/db"; // Your database connection
+import { medias } from "@/db/schemas"; // Your schema
+import { MediaType } from "@/types";
 import { eq } from "drizzle-orm";
-import { determineFileType } from "@/src/utils/upload";
-import { checkPermission } from "@/src/lib/auth/check-permission";
+import { determineFileType } from "@/utils/upload";
+import { checkPermission } from "@/lib/auth/check-permission";
 import { revalidateTag } from "next/cache";
-import { generateCloudinaryUrl } from "@/src/lib/cloudinary";
+import { generateCloudinaryUrl } from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
   return await checkPermission(

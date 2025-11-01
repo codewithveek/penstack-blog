@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/src/db";
-import { tags } from "@/src/db/schemas/posts.sql";
+import { db } from "@/db";
+import { tags } from "@/db/schemas/posts.sql";
 import { eq, sql } from "drizzle-orm";
-import { checkPermission } from "@/src/lib/auth/check-permission";
+import { checkPermission } from "@/lib/auth/check-permission";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

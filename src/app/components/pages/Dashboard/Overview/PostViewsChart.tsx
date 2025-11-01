@@ -27,9 +27,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { AggregatedPostViews } from "@/src/types";
+import { AggregatedPostViews } from "@/types";
 import { LuChevronDown } from "react-icons/lu";
-import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useSiteConfig } from "@/context/SiteConfig";
 
 const PostViewsChart = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState({

@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { users } from "@/src/db/schemas";
-import { getSession } from "@/src/lib/auth/next-auth";
+import { db } from "@/db";
+import { users } from "@/db/schemas";
+import { getSession } from "@/lib/auth/next-auth";
 import { hash } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";

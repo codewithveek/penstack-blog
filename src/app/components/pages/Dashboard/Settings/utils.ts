@@ -1,4 +1,4 @@
-import { SiteSettings } from "@/src/types";
+import { SiteSettings } from "@/types";
 
 export const groupSettingsByFolder = (settings: SiteSettings) => {
   return Object.entries(settings).reduce(

@@ -1,5 +1,5 @@
 import { VStack, Box, Button } from "@chakra-ui/react";
-import { SiteSettings } from "@/src/types";
+import { SiteSettings } from "@/types";
 import { SettingField } from "../components/SettingField";
 import { groupSettingsByFolder } from "../utils";
 

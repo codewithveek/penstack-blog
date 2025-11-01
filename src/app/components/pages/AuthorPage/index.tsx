@@ -15,8 +15,8 @@ import {
 import React, { Suspense } from "react";
 import { Newsletter } from "../../NewsLetter";
 import PageWrapper from "../../PageWrapper";
-import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
-import { AuthorSelect, PostSelect } from "@/src/types";
+import { PostsCards } from "@/themes/smooth-land/PostsCards";
+import { AuthorSelect, PostSelect } from "@/types";
 
 const AuthorPage = ({
   username,

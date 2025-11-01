@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { NewsletterPage } from "../../components/pages/NewsletterPage";
 import PageWrapper from "../../components/PageWrapper";
-import { getSettings } from "@/src/lib/queries/settings";
+import { getSettings } from "@/lib/queries/settings";
 
 export async function generateMetadata() {
   const siteSettings = await getSettings();

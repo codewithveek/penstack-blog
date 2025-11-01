@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { posts, postTags, tags } from "@/src/db/schemas/posts.sql";
-import { getPlainPost } from "@/src/lib/queries/post";
+import { db } from "@/db";
+import { posts, postTags, tags } from "@/db/schemas/posts.sql";
+import { getPlainPost } from "@/lib/queries/post";
 import { and, eq, inArray, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

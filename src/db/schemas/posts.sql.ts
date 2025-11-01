@@ -1,4 +1,4 @@
-import { IdGenerator } from "@/src/utils";
+import { IdGenerator } from "@/utils";
 import { relations, sql } from "drizzle-orm";
 import {
   mysqlTable,
@@ -18,7 +18,7 @@ import { medias } from "./media.sql";
 import { postViews } from "./posts-analytics.sql";
 import { postReactions } from "./posts-reactions.sql";
 import { id, created_at, updated_at } from "../schema-helper";
-import { TocItem } from "@/src/lib/toc-generator";
+import { TocItem } from "@/lib/toc-generator";
 
 export const posts = mysqlTable(
   "Posts",

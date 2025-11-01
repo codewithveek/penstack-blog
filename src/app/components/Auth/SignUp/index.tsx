@@ -28,7 +28,7 @@ import {
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { signIn } from "next-auth/react";
 import axios from "axios";
-import PageWrapper from "@/src/app/components/PageWrapper";
+import PageWrapper from "@/components//PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { Link } from "@chakra-ui/next-js";
 

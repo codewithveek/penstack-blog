@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { MediaResponse } from "@/src/types";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { MediaResponse } from "@/types";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { ImageCard } from "../ImageCard";
 
 export const FeaturedImageCard = () => {

@@ -1,5 +1,5 @@
 "use client";
-import { usePosts } from "@/src/hooks";
+import { usePosts } from "@/hooks";
 import { Grid, useColorModeValue } from "@chakra-ui/react";
 import PostCard from "../../smooth-land/PostCard";
 import { NewPostCardLoader } from "../NewPostCardLoader";

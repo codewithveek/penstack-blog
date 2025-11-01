@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/src/lib/auth/next-auth";
-import { getUserPermissions } from "@/src/lib/auth/permissions";
-import { TPermissions } from "@/src/types";
+import { getSession } from "@/lib/auth/next-auth";
+import { getUserPermissions } from "@/lib/auth/permissions";
+import { TPermissions } from "@/types";
 
 export async function GET(req: NextRequest) {
   try {

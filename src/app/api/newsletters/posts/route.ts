@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/src/db";
-import { newsletterSubscribers } from "@/src/db/schemas";
-import { sendEmail } from "@/src/lib/send-email"; // You'll need to implement this
+import { db } from "@/db";
+import { newsletterSubscribers } from "@/db/schemas";
+import { sendEmail } from "@/lib/send-email"; // You'll need to implement this
 import { eq } from "drizzle-orm";
-import BlogPostNewsletter from "@/src/app/components/Emails/BlogPostNewsletter";
-import { getSettings } from "@/src/lib/queries/settings";
-import { getPost } from "@/src/lib/queries/post";
+import BlogPostNewsletter from "@/components//Emails/BlogPostNewsletter";
+import { getSettings } from "@/lib/queries/settings";
+import { getPost } from "@/lib/queries/post";
 
 export async function POST(request: NextRequest) {
   try {

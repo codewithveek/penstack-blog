@@ -1,5 +1,5 @@
-import { CronJobHandler, CronJobPayload } from "@/src/lib/cron";
-import { getSiteUrl, resolveUrl } from "@/src/utils/url";
+import { CronJobHandler, CronJobPayload } from "@/lib/cron";
+import { getSiteUrl, resolveUrl } from "@/utils/url";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

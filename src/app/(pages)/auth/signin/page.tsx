@@ -1,6 +1,6 @@
 export const metadata: Metadata = {};
-import SignIn from "@/src/app/components/Auth/SignIn";
-import { getSession } from "@/src/lib/auth/next-auth";
+import SignIn from "@/components//Auth/SignIn";
+import { getSession } from "@/lib/auth/next-auth";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 

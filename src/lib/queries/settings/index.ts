@@ -1,9 +1,9 @@
 import "server-only";
-import { db } from "@/src/db";
-import { siteSettings } from "@/src/db/schemas";
-import { SiteSettings } from "@/src/types";
+import { db } from "@/db";
+import { siteSettings } from "@/db/schemas";
+import { SiteSettings } from "@/types";
 import { DEFAULT_SETTINGS } from "./config";
-import { isSecretKey } from "@/src/utils";
+import { isSecretKey } from "@/utils";
 import { encryptKey } from "../../encryption";
 
 import { unstable_cache } from "next/cache";

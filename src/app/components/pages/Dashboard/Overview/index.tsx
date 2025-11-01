@@ -4,11 +4,11 @@ import {
   LuFileStack,
   LuMailPlus,
   LuMessageCircle,
-  LuUsers2,
+  LuUsersRound,
 } from "react-icons/lu";
 import PostViewsChart from "./PostViewsChart";
 import MostPopularPosts from "./MostPopularPostArea";
-import DashHeader from "../../../Dashboard/Header";
+import DashHeader from "@/components/Dashboard/Header";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { OverviewCard } from "./OverviewCard";
@@ -81,7 +81,7 @@ export default function Overview() {
             color="purple"
             link="/dashboard/users"
             label="Users"
-            icon={LuUsers2}
+            icon={LuUsersRound}
             value={usersOverview?.total || 0}
             isUp={usersOverview?.isUp}
             growthCount={usersOverview?.weeklyGrowth || 0}

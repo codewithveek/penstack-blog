@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, HStack, Tag, Text } from "@chakra-ui/react";
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 import { ContentRenderer } from "../../Renderers/ContentRenderer";
 
-import { decodeAndSanitizeHtml } from "@/src/utils";
+import { decodeAndSanitizeHtml } from "@/utils";
 import { LuTags } from "react-icons/lu";
 import { TOCRenderer } from "../../Renderers/TOCRenderer";
 

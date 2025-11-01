@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { PostInsert, PostSelect, UserSelect } from "@/src/types";
+import { PostInsert, PostSelect, UserSelect } from "@/types";
 import TurndownService from "turndown";
 import { useQuery } from "@tanstack/react-query";
 import { objectToQueryParams } from "../utils";

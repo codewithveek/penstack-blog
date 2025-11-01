@@ -1,4 +1,4 @@
-import DashboardSettingsPage from "@/src/app/components/pages/Dashboard/Settings";
+import DashboardSettingsPage from "@/components//pages/Dashboard/Settings";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

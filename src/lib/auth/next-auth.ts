@@ -7,8 +7,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
-import { db } from "@/src/db";
-import { roles, users } from "@/src/db/schemas";
+import { db } from "@/db";
+import { roles, users } from "@/db/schemas";
 import {
   JWT,
   encode,
@@ -16,7 +16,7 @@ import {
   JWTDecodeParams,
   JWTEncodeParams,
 } from "next-auth/jwt";
-import { TPermissions, UserInsert } from "@/src/types";
+import { TPermissions, UserInsert } from "@/types";
 import { getUser, getUserWithPermissions } from "../queries/get-user";
 
 interface CustomUser extends User {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAggregatedPostViews } from "@/src/lib/queries/aggregated-post-views";
-import { AggregatedPostViews } from "@/src/types";
+import { getAggregatedPostViews } from "@/lib/queries/aggregated-post-views";
+import { AggregatedPostViews } from "@/types";
 import { addDays, subDays, subYears } from "date-fns";
 
 export async function GET(request: NextRequest) {

@@ -1,8 +1,8 @@
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
-import { checkPermission } from "@/src/lib/auth/check-permission";
-import { PostSelect } from "@/src/types";
-import { IdGenerator } from "@/src/utils";
+import { db } from "@/db";
+import { posts } from "@/db/schemas";
+import { checkPermission } from "@/lib/auth/check-permission";
+import { PostSelect } from "@/types";
+import { IdGenerator } from "@/utils";
 import { eq, sql } from "drizzle-orm";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";

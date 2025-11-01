@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { posts, postSeoMeta } from "@/src/db/schemas";
-import { getPostForEditing } from "@/src/lib/queries/post";
+import { db } from "@/db";
+import { posts, postSeoMeta } from "@/db/schemas";
+import { getPostForEditing } from "@/lib/queries/post";
 import { eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";

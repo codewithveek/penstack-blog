@@ -1,6 +1,6 @@
-import { db } from "@/src/db";
-import { roles } from "@/src/db/schemas";
-import { TPermissions } from "@/src/types";
+import { db } from "@/db";
+import { roles } from "@/db/schemas";
+import { TPermissions } from "@/types";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

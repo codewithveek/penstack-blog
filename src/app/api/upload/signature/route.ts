@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateSignature } from "@/src/lib/cloudinary";
-import { getSettings } from "@/src/lib/queries/settings";
-import { decryptKey } from "@/src/lib/encryption";
+import { generateSignature } from "@/lib/cloudinary";
+import { getSettings } from "@/lib/queries/settings";
+import { decryptKey } from "@/lib/encryption";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

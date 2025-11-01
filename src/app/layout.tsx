@@ -26,16 +26,10 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 const MixPanelAnalytics = dynamic(
-  () => import("./components/Analytics/MixpanelAnalytics"),
-  {
-    ssr: false,
-  }
+  () => import("./components/Analytics/MixpanelAnalytics")
 );
 const GoogleTagManagerNoscript = dynamic(
-  () => import("./components/Analytics/GoogleTagManager/Noscript"),
-  {
-    ssr: false,
-  }
+  () => import("./components/Analytics/GoogleTagManager/Noscript")
 );
 
 export async function generateMetadata(

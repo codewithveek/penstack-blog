@@ -12,10 +12,10 @@ import {
   siteSettings,
 } from "../src/db/schemas";
 import { eq, sql } from "drizzle-orm";
-import { permissionsEnum, rolesEnum } from "@/src/db/schema-helper";
-import { IdGenerator, isSecretKey } from "@/src/utils";
-import { updateSettings } from "@/src/lib/queries/settings";
-import { DEFAULT_SETTINGS } from "@/src/lib/queries/settings/config";
+import { permissionsEnum, rolesEnum } from "@/db/schema-helper";
+import { IdGenerator, isSecretKey } from "@/utils";
+import { updateSettings } from "@/lib/queries/settings";
+import { DEFAULT_SETTINGS } from "@/lib/queries/settings/config";
 import crypto from "crypto";
 async function main() {
   try {

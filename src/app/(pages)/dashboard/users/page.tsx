@@ -1,5 +1,5 @@
-import UsersDashboard from "@/src/app/components/pages/Dashboard/Users";
-import { PermissionGuard } from "@/src/app/components/PermissionGuard";
+import UsersDashboard from "@/components//pages/Dashboard/Users";
+import { PermissionGuard } from "@/components//PermissionGuard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

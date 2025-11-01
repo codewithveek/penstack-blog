@@ -1,8 +1,8 @@
 import "server-only";
-import { db } from "@/src/db";
+import { db } from "@/db";
 import { and, between, eq, sql } from "drizzle-orm";
-import { postViews } from "@/src/db/schemas/posts-analytics.sql";
-import { AggregatedPostViews } from "@/src/types";
+import { postViews } from "@/db/schemas/posts-analytics.sql";
+import { AggregatedPostViews } from "@/types";
 
 export const getAggregatedPostViews = async (
   startDate?: Date,

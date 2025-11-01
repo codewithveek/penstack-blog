@@ -10,7 +10,7 @@ import {
 import { relations, sql } from "drizzle-orm";
 
 import { posts } from "./posts.sql";
-import { IdGenerator } from "@/src/utils";
+import { IdGenerator } from "@/utils";
 import {
   created_at,
   updated_at,

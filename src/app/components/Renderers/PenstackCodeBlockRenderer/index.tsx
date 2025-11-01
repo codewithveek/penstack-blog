@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
 import { all, common, createLowlight } from "lowlight";
-import { LuCheckCircle, LuClipboard } from "react-icons/lu";
+import { LuCheck, LuClipboard } from "react-icons/lu";
 
 const lowlight = createLowlight(common);
 interface PenstackCodeBlockRendererProps {
@@ -47,7 +47,7 @@ export const PenstackCodeBlockRenderer: React.FC<
                 {language}
               </Text>
               <Button
-                leftIcon={hasCopied ? <LuCheckCircle /> : <LuClipboard />}
+                leftIcon={hasCopied ? <LuCheck /> : <LuClipboard />}
                 colorScheme={"gray"}
                 variant={"ghost"}
                 size={"xs"}

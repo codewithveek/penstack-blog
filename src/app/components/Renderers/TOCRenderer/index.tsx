@@ -1,9 +1,9 @@
 "use client";
-import { TocItem } from "@/src/lib/toc-generator";
+import { TocItem } from "@/lib/toc-generator";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { LuChevronDown, LuChevronRight } from "react-icons/lu";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/lib/utils";
 
 const TOCItemComponent = ({
   item,

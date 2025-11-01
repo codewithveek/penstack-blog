@@ -20,8 +20,8 @@ import { memo, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { generateSlug } from "@/src/utils";
-import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { generateSlug } from "@/utils";
+import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { debounce } from "lodash";
 
 export const TagsSection = memo(() => {

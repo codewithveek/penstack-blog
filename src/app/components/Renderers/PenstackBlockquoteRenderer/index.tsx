@@ -14,16 +14,16 @@ import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import React, { PropsWithChildren } from "react";
 import { memo, useEffect, useMemo, useState } from "react";
 import {
-  LuCheckCircle2,
+  LuCheckCheck,
   LuChevronDown,
   LuQuote,
   LuTextQuote,
 } from "react-icons/lu";
 import {
   LuInfo,
-  LuAlertCircle,
-  LuCheckCircle,
-  LuAlertTriangle,
+  LuCircleAlert,
+  LuCircleCheck,
+  LuTriangleAlert,
 } from "react-icons/lu";
 
 interface PenstackBlockquoteRendererProps {
@@ -50,7 +50,7 @@ const PenstackBlockquoteRenderer: React.FC<
     },
     warning: {
       bg: useColorModeValue("orange.100", "orange.900"),
-      icon: LuAlertTriangle,
+      icon: LuTriangleAlert,
       iconColor: useColorModeValue("orange.500", "orange.200"),
     },
     info: {
@@ -60,12 +60,12 @@ const PenstackBlockquoteRenderer: React.FC<
     },
     success: {
       bg: useColorModeValue("green.50", "green.900"),
-      icon: LuCheckCircle2,
+      icon: LuCheckCheck,
       iconColor: useColorModeValue("green.500", "green.200"),
     },
     danger: {
       bg: useColorModeValue("red.100", "red.900"),
-      icon: LuAlertCircle,
+      icon: LuCircleAlert,
       iconColor: useColorModeValue("red.500", "red.200"),
     },
   };

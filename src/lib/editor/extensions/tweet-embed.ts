@@ -1,5 +1,5 @@
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
-import { PenstackTwitterEmbed } from "@/src/app/components/Renderers/TwitterEmbedRenderer";
+import { PenstackTwitterEmbed } from "@/components//Renderers/TwitterEmbedRenderer";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {

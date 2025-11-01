@@ -16,7 +16,7 @@ import { useTaxonomiesStore } from "../state";
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { generateSlug } from "@/src/utils";
+import { generateSlug } from "@/utils";
 
 export const AddEditForm: React.FC = () => {
   const activeTab = useTaxonomiesStore((state) => state.type);

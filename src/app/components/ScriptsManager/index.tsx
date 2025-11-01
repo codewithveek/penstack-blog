@@ -4,7 +4,7 @@ import {
   ConditionalScriptRendererProps,
   ScriptConfig,
   ScriptPosition,
-} from "@/src/lib/third-party-scripts/types";
+} from "@/lib/third-party-scripts/types";
 
 // Enhanced ScriptRenderer with global enable/disable support
 function ConditionalScriptRenderer({

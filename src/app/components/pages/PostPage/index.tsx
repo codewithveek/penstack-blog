@@ -16,14 +16,14 @@ import {
   Stack,
   Avatar,
 } from "@chakra-ui/react";
-import { PostSelect, SiteSettings } from "@/src/types";
+import { PostSelect, SiteSettings } from "@/types";
 import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
 import {
   generatePostDescription,
   nativeFormatDate,
   objectToQueryParams,
-} from "@/src/utils";
+} from "@/utils";
 import { ArticleHeader } from "./ArticleHeader";
 import { ArticleContent } from "./ArticleContent";
 import { Newsletter } from "../../NewsLetter";
@@ -94,7 +94,6 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
       {settings.localPostAnalytics?.enabled && (
         <ViewTracker postId={post?.id} />
       )}
-      <TelegramFab />
 
       {/* Post Content Section */}
       <Container maxW="1250px" py={8} px={{ base: 4, md: 5, lg: 8 }}>

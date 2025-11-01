@@ -1,13 +1,13 @@
-import { useTags } from "@/src/hooks/useTags";
+import { useTags } from "@/hooks/useTags";
 import { FilteredList } from "../FilteredList";
 import { HStack, Text, useColorModeValue, VStack } from "@chakra-ui/react";
 import { FilterListSkeleton } from "../FilterListSkeleton";
-import Pagination from "@/src/app/components/Pagination";
+import Pagination from "@/components//Pagination";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { PaginatedResponse, TaxonomyItem } from "@/src/types";
-import { objectToQueryParams } from "@/src/utils";
+import { PaginatedResponse, TaxonomyItem } from "@/types";
+import { objectToQueryParams } from "@/utils";
 
 export const TagsPanel = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);

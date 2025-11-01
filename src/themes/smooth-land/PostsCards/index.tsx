@@ -2,7 +2,7 @@
 import { Grid } from "@chakra-ui/react";
 import PostCard from "../PostCard";
 import { PostCardLoader } from "../PostCardLoader";
-import { PostSelect } from "@/src/types";
+import { PostSelect } from "@/types";
 export function PostsCards({
   maxW,
   posts,
