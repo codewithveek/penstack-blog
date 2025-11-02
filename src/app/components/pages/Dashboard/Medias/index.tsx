@@ -8,7 +8,7 @@ export default function DashboardMediaPage() {
     <Box>
       <DashHeader></DashHeader>
       <Box p={{ base: 4, md: 5 }}>
-        <Medias />
+        <Medias canSelect={false} />
       </Box>
     </Box>
   );

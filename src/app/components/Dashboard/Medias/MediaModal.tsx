@@ -56,6 +56,7 @@ export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
                   onSelect?.(media);
                   onClose();
                 }}
+                canSelect={true}
               />
             )}
           </ModalBody>

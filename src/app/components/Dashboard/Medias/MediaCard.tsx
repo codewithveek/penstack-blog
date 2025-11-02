@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useRef } from "react";
 import {
   LuFile,
   LuImage,
@@ -8,6 +8,8 @@ import {
   LuEye,
   LuSquareCheck,
   LuSquare,
+  LuPlay,
+  LuPause,
 } from "react-icons/lu";
 import {
   Box,
@@ -22,6 +24,8 @@ import {
   VStack,
   Flex,
   Text,
+  Progress,
+  Tooltip,
 } from "@chakra-ui/react";
 import { formatBytes } from "@/utils";
 import { Image } from "@chakra-ui/react";
@@ -32,186 +36,318 @@ interface MediaCardProps {
   media: MediaResponse;
   onSelect?: (media: MediaResponse) => void;
   selected?: boolean;
+  canSelect?: boolean;
 }
 
-export const MediaCard: React.FC<MediaCardProps> = memo(
-  ({ media, onSelect, selected }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [mediaToPreview, setMediaToPreview] = useState<MediaResponse | null>(
-      null
-    );
-    const cardBgColor = useColorModeValue("gray.200", "gray.800");
-    const flexBgColor = useColorModeValue("gray.100", "gray.800");
+export const MediaCard: React.FC<MediaCardProps> = ({
+  media,
+  onSelect,
+  selected,
+  canSelect,
+}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [mediaToPreview, setMediaToPreview] = useState<MediaResponse | null>(
+    null
+  );
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioProgress, setAudioProgress] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-    const getIcon = () => {
-      switch (media.type) {
-        case "image":
-          return <LuImage />;
-        case "video":
-          return <LuVideo />;
-        case "audio":
-          return <LuMusic />;
-        case "pdf":
-          return <LuFileText />;
-        default:
-          return <LuFile />;
+  const cardBgColor = useColorModeValue("white", "gray.800");
+  const hoverBgColor = useColorModeValue("gray.50", "gray.750");
+  const flexBgColor = useColorModeValue("gray.100", "gray.700");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const selectedBorderColor = useColorModeValue("brand.500", "brand.400");
+  const overlayBg = useColorModeValue(
+    "rgba(255, 255, 255, 0.95)",
+    "rgba(26, 32, 44, 0.95)"
+  );
+
+  const getIcon = (size = 24) => {
+    const iconProps = { size };
+    switch (media.type) {
+      case "image":
+        return <LuImage {...iconProps} />;
+      case "video":
+        return <LuVideo {...iconProps} />;
+      case "audio":
+        return <LuMusic {...iconProps} />;
+      case "pdf":
+        return <LuFileText {...iconProps} />;
+      default:
+        return <LuFile {...iconProps} />;
+    }
+  };
+
+  const handleSelectClick = () => {
+    if (!canSelect) return;
+    onSelect?.(media);
+  };
+  console.log({
+    canSelect,
+  });
+
+  const handlePreviewClick = (media: MediaResponse) => {
+    setMediaToPreview(media);
+    onOpen();
+  };
+
+  const handleAudioToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
       }
-    };
+      setIsPlaying(!isPlaying);
+    }
+  };
 
-    const handleSelectClick = () => {
-      onSelect?.(media);
-    };
+  const handleAudioTimeUpdate = () => {
+    if (audioRef.current) {
+      const progress =
+        (audioRef.current.currentTime / audioRef.current.duration) * 100;
+      setAudioProgress(progress);
+    }
+  };
 
-    const handlePreviewClick = (media: MediaResponse) => {
-      setMediaToPreview(media);
-      onOpen();
-    };
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+    setAudioProgress(0);
+  };
 
-    return (
-      <>
-        {mediaToPreview && (
-          <FilePreview
-            isOpen={isOpen}
-            onClose={onClose}
-            file={mediaToPreview}
-          />
-        )}
+  return (
+    <>
+      {mediaToPreview && (
+        <FilePreview isOpen={isOpen} onClose={onClose} file={mediaToPreview} />
+      )}
 
-        <Card
-          pos="relative"
-          w="full"
-          h={250}
-          overflow="hidden"
-          boxShadow={selected ? "outline" : "none"}
-          onClick={handleSelectClick}
-          sx={{
-            "&:hover": {
-              ".media-card-select": {
-                zIndex: 10,
-                transform: "translateX(0)",
-              },
-              ".media-card-overlay": {
-                zIndex: 10,
-                transform: "translateY(0)",
-              },
+      <Card
+        pos="relative"
+        w="full"
+        h={280}
+        overflow="hidden"
+        borderWidth="2px"
+        borderColor={selected ? selectedBorderColor : borderColor}
+        boxShadow={selected ? "lg" : "sm"}
+        onClick={handleSelectClick}
+        sx={{
+          "&:hover": {
+            ".media-card-select": canSelect
+              ? {
+                  opacity: 1,
+                  transform: "scale(1)",
+                }
+              : {},
+            ".media-card-overlay": {
+              opacity: 1,
+              transform: "translateY(0)",
             },
-          }}
-          _hover={
-            selected
-              ? {}
-              : {
-                  boxShadow: "lg",
-                  ring: "2",
-                }
-          }
-          bg={cardBgColor}
-          cursor="pointer"
-        >
-          <CardBody pos="relative" p={2} bg="transparent">
-            <Box
-              pos="absolute"
-              top={4}
-              right={4}
-              zIndex={!selected ? -1 : 10}
-              transform={!selected ? "translateX(150%)" : "none"}
-              className="media-card-select"
-              transition="all 0.2s"
+          },
+        }}
+        _hover={{
+          boxShadow: "md",
+          borderColor: selected ? selectedBorderColor : "gray.300",
+          bg: hoverBgColor,
+        }}
+        bg={cardBgColor}
+        cursor="pointer"
+        transition="all 0.2s ease"
+      >
+        <CardBody pos="relative" p={3} bg="transparent">
+          <Box
+            pos="absolute"
+            top={3}
+            right={3}
+            opacity={selected ? 1 : 0}
+            transform={selected ? "scale(1)" : "scale(0.8)"}
+            className="media-card-select"
+            transition="all 0.2s ease"
+            zIndex={10}
+          >
+            <IconButton
+              size="sm"
+              aria-label="Select"
+              colorScheme={selected ? "brand" : "gray"}
+              icon={
+                selected ? <LuSquareCheck size={18} /> : <LuSquare size={18} />
+              }
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect?.(media);
+              }}
+              boxShadow="md"
+            />
+          </Box>
+
+          <VStack
+            transition="all 0.2s ease"
+            opacity={0}
+            bottom={0}
+            right={0}
+            position="absolute"
+            left={0}
+            p={3}
+            className="media-card-overlay"
+            bg={overlayBg}
+            transform="translateY(10px)"
+            backdropFilter="blur(8px)"
+            zIndex={5}
+          >
+            <Button
+              size="sm"
+              variant="solid"
+              colorScheme="brand"
+              leftIcon={<LuEye />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePreviewClick(media);
+              }}
+              w="full"
             >
-              <IconButton
-                size="sm"
-                aria-label="Select"
-                icon={
-                  selected ? <LuSquareCheck /> : <LuSquare fontWeight={500} />
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelect?.(media);
-                }}
+              Preview
+            </Button>
+          </VStack>
+
+          {media.type === "image" && (
+            <Box rounded="lg" aspectRatio={16 / 9} overflow="hidden">
+              <Image
+                src={media.thumbnail || media.url}
+                alt={media.alt_text || media.name}
+                w="full"
+                h="full"
+                objectFit="cover"
+                transition="transform 0.2s"
+                _hover={{ transform: "scale(1.05)" }}
               />
             </Box>
+          )}
 
-            <VStack
-              transition="all 0.2s"
-              zIndex={-1}
-              bottom={0}
-              right={0}
-              position="absolute"
-              left={0}
-              p={3}
-              className="media-card-overlay"
-              borderTop="1px solid"
-              borderColor="gray.600"
-              bg={cardBgColor}
-              transform="translateY(100%)"
+          {media.type === "video" && (
+            <Box
+              rounded="lg"
+              position="relative"
+              aspectRatio={16 / 9}
+              overflow="hidden"
             >
-              <Button
-                size="sm"
-                variant="outline"
-                leftIcon={<LuEye />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePreviewClick(media);
-                }}
+              <Box
+                as="video"
+                src={media.url}
+                poster={media.thumbnail ?? ""}
+                w="full"
+                h="full"
+                objectFit="cover"
+              />
+              <Box
+                pos="absolute"
+                top="50%"
+                left="50%"
+                transform="translate(-50%, -50%)"
+                bg="blackAlpha.600"
+                rounded="full"
+                p={3}
               >
-                Preview
-              </Button>
+                <LuPlay size={24} color="white" />
+              </Box>
+            </Box>
+          )}
+
+          {media.type === "audio" && (
+            <VStack
+              rounded="lg"
+              bg={flexBgColor}
+              align="center"
+              justify="center"
+              h={200}
+              spacing={4}
+              position="relative"
+            >
+              <audio
+                ref={audioRef}
+                src={media.url}
+                onTimeUpdate={handleAudioTimeUpdate}
+                onEnded={handleAudioEnded}
+              />
+              <Box
+                as={LuMusic}
+                size={48}
+                color={useColorModeValue("brand.500", "brand.300")}
+              />
+              <IconButton
+                aria-label={isPlaying ? "Pause" : "Play"}
+                icon={isPlaying ? <LuPause /> : <LuPlay />}
+                colorScheme="brand"
+                rounded="full"
+                size="lg"
+                onClick={handleAudioToggle}
+              />
+              {isPlaying && (
+                <Box w="80%" px={4}>
+                  <Progress
+                    value={audioProgress}
+                    size="sm"
+                    colorScheme="brand"
+                    rounded="full"
+                  />
+                </Box>
+              )}
             </VStack>
+          )}
 
-            {media.type === "image" && (
-              <Box rounded="md" aspectRatio={16 / 9}>
-                <Image
-                  src={media.thumbnail || media.url}
-                  alt={media.alt_text || media.name}
-                  w="full"
-                  h="full"
-                  objectFit="contain"
-                />
-              </Box>
-            )}
-
-            {media.type === "video" && (
-              <Box rounded="md" position="relative" aspectRatio={16 / 9}>
-                <Box
-                  as="video"
-                  src={media.url}
-                  poster={media.thumbnail ?? ""}
-                  w="full"
-                  h="full"
-                  objectFit="contain"
-                />
-              </Box>
-            )}
-
-            {media.type !== "video" && media.type !== "image" && (
+          {media.type !== "video" &&
+            media.type !== "image" &&
+            media.type !== "audio" && (
               <Flex
-                rounded="md"
+                rounded="lg"
                 bg={flexBgColor}
                 align="center"
                 justify="center"
-                h={160}
+                h={200}
+                flexDirection="column"
+                gap={3}
               >
-                {getIcon()}
+                {getIcon(48)}
+                <Text fontSize="xs" color="gray.500" fontWeight="medium">
+                  {media.type.toUpperCase()}
+                </Text>
               </Flex>
             )}
-          </CardBody>
+        </CardBody>
 
-          <CardFooter p={2} fontSize="small">
-            <Box isTruncated w="full">
-              <Text isTruncated fontWeight="medium">
+        <CardFooter p={3} pt={2} borderTop="1px" borderColor={borderColor}>
+          <VStack spacing={1} w="full" align="start">
+            <Tooltip label={media.name} placement="top" hasArrow>
+              <Text
+                fontSize="sm"
+                fontWeight="semibold"
+                isTruncated
+                w="full"
+                color={useColorModeValue("gray.700", "gray.200")}
+              >
                 {media.name}
               </Text>
-              <Text
-                fontSize="x-small"
-                color={useColorModeValue("gray.500", "gray.400")}
-              >
-                {formatBytes(media.size)}
-              </Text>
-            </Box>
-          </CardFooter>
-        </Card>
-      </>
-    );
-  }
-);
+            </Tooltip>
+            <HStack
+              fontSize="xs"
+              color={useColorModeValue("gray.500", "gray.400")}
+              spacing={2}
+            >
+              <Text>{formatBytes(media.size)}</Text>
+              {media.width && media.height && (
+                <>
+                  <Text>•</Text>
+                  <Text>
+                    {media.width} × {media.height}
+                  </Text>
+                </>
+              )}
+            </HStack>
+          </VStack>
+        </CardFooter>
+      </Card>
+    </>
+  );
+};
 
 MediaCard.displayName = "MediaCard";

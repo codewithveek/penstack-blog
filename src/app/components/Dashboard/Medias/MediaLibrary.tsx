@@ -23,10 +23,17 @@ interface MediaLibraryProps {
   multiple?: boolean;
   defaultFilters?: Partial<FilterParams>;
   maxSelection?: number;
+  canSelect?: boolean;
 }
 
 export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
-  ({ onSelect, multiple = false, defaultFilters = {}, maxSelection }) => {
+  ({
+    onSelect,
+    multiple = false,
+    defaultFilters = {},
+    maxSelection,
+    canSelect = true,
+  }) => {
     const [filters, setFilters] = useState<FilterParams>({
       page: 1,
       limit: 12,
@@ -86,12 +93,14 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
     );
 
     const handleConfirmSelection = useCallback(() => {
-      if (multiple) {
-        onSelect?.(selectedMedia);
-      } else if (selectedMedia[0]) {
-        onSelect?.(selectedMedia[0]);
+      if (canSelect) {
+        if (multiple) {
+          onSelect?.(selectedMedia);
+        } else if (selectedMedia[0]) {
+          onSelect?.(selectedMedia[0]);
+        }
       }
-    }, [multiple, onSelect, selectedMedia]);
+    }, [multiple, onSelect, selectedMedia, canSelect]);
 
     useEffect(() => {
       setSelectedMedia([]);
@@ -133,6 +142,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
                 <MediaCard
                   key={item.id}
                   media={item}
+                  canSelect={canSelect}
                   onSelect={handleSelect}
                   selected={!!selectedMedia.find((m) => m.id === item.id)}
                 />

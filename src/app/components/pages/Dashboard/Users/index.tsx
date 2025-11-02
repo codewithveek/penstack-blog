@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Heading,
   Table,
   Thead,
   Tbody,
@@ -51,17 +50,17 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PaginatedResponse, RolesSelect, UserSelect } from "@/types";
 import axios from "axios";
-import Loader from "../../../Loader";
-import DashHeader from "../../../Dashboard/Header";
-import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
+import Loader from "@/components/Loader";
+import DashHeader from "@/components/Dashboard/Header";
+import { PageTitleHeader } from "@/components/Dashboard/PageTitleCard";
 import {
   LuChevronDown,
-  LuFileEdit,
+  LuPen,
   LuPlus,
   LuSearch,
   LuTrash2,
 } from "react-icons/lu";
-import { MediaModal } from "../../../Dashboard/Medias/MediaModal";
+import { MediaModal } from "@/components/Dashboard/Medias/MediaModal";
 
 const UsersDashboard = () => {
   const [users, setUsers] = useState<UserSelect[]>([]);
@@ -369,7 +368,7 @@ const UsersDashboard = () => {
                             <Td>
                               <HStack>
                                 <IconButton
-                                  icon={<LuFileEdit />}
+                                  icon={<LuPen />}
                                   size="sm"
                                   variant="ghost"
                                   aria-label="Edit"

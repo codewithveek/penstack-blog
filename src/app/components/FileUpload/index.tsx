@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   LuLink,
@@ -17,7 +17,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Stack,
+  Textarea,
   useToast,
   VStack,
   HStack,
@@ -30,6 +30,7 @@ import {
   AlertIcon,
   AlertDescription,
   Badge,
+  Collapse,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -48,6 +49,8 @@ interface FileWithStatus {
   progress: number;
   error?: string;
   previewUrl: string;
+  alt_text?: string;
+  caption?: string;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -69,6 +72,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
   const [filesWithStatus, setFilesWithStatus] = useState<FileWithStatus[]>([]);
+  const [expandedFileIndex, setExpandedFileIndex] = useState<number | null>(
+    null
+  );
   const toast = useToast({
     position: "top",
     status: "success",
@@ -118,8 +124,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     return response.data;
   };
 
-  const saveToDatabase = async (cloudinaryData: any) => {
-    const response = await axios.post("/api/upload", cloudinaryData);
+  const saveToDatabase = async (
+    cloudinaryData: any,
+    alt_text?: string,
+    caption?: string
+  ) => {
+    const response = await axios.post("/api/upload", {
+      ...cloudinaryData,
+      alt_text,
+      caption,
+    });
     return response.data;
   };
 
@@ -129,6 +143,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       URL.revokeObjectURL(removed.previewUrl);
       return prev.filter((_, i) => i !== index);
     });
+    if (expandedFileIndex === index) {
+      setExpandedFileIndex(null);
+    }
   };
 
   const updateFileStatus = (
@@ -137,6 +154,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   ) => {
     setFilesWithStatus((prev) =>
       prev.map((item, i) => (i === index ? { ...item, ...updates } : item))
+    );
+  };
+
+  const updateFileMetadata = (
+    index: number,
+    field: "alt_text" | "caption",
+    value: string
+  ) => {
+    setFilesWithStatus((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
     );
   };
 
@@ -162,7 +189,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             }
           );
 
-          const savedMedia = await saveToDatabase(cloudinaryData);
+          const savedMedia = await saveToDatabase(
+            cloudinaryData,
+            fileWithStatus.alt_text,
+            fileWithStatus.caption
+          );
 
           updateFileStatus(index, { status: "success", progress: 100 });
           onUploadComplete?.(savedMedia);
@@ -180,10 +211,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
     await Promise.allSettled(uploadPromises);
 
-    // Check results
-    const results = filesWithStatus.map((f, i) => filesWithStatus[i]);
-    const successCount = results.filter((f) => f.status === "success").length;
-    const errorCount = results.filter((f) => f.status === "error").length;
+    const successCount = filesWithStatus.filter(
+      (f) => f.status === "success"
+    ).length;
+    const errorCount = filesWithStatus.filter(
+      (f) => f.status === "error"
+    ).length;
 
     if (successCount > 0) {
       toast({
@@ -224,6 +257,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         status: "pending" as UploadStatus,
         progress: 0,
         previewUrl: URL.createObjectURL(file),
+        alt_text: "",
+        caption: "",
       }));
 
       setFilesWithStatus((prev) => [...prev, ...newFiles]);
@@ -275,6 +310,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       </Badge>
     );
   };
+
+  const isImage = (file: File) => file.type.startsWith("image/");
 
   return (
     <Box mx="auto" h="full" w="full">
@@ -421,6 +458,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                   </VStack>
                   <HStack spacing={2}>
                     {getStatusIcon(fileItem.status)}
+                    {fileItem.status === "pending" && (
+                      <Button
+                        size="xs"
+                        variant="ghost"
+                        onClick={() =>
+                          setExpandedFileIndex(
+                            expandedFileIndex === index ? null : index
+                          )
+                        }
+                      >
+                        {expandedFileIndex === index ? "Hide" : "Edit"}
+                      </Button>
+                    )}
                     <IconButton
                       aria-label="remove file"
                       colorScheme="red"
@@ -432,6 +482,44 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                     />
                   </HStack>
                 </HStack>
+
+                <Collapse in={expandedFileIndex === index} animateOpacity>
+                  <VStack spacing={3} w="full" pt={2}>
+                    {isImage(fileItem.file) && (
+                      <FormControl>
+                        <FormLabel fontSize="xs" mb={1}>
+                          Alt Text
+                        </FormLabel>
+                        <Input
+                          size="sm"
+                          placeholder="Describe this image for accessibility"
+                          value={fileItem.alt_text}
+                          onChange={(e) =>
+                            updateFileMetadata(
+                              index,
+                              "alt_text",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </FormControl>
+                    )}
+                    <FormControl>
+                      <FormLabel fontSize="xs" mb={1}>
+                        Caption
+                      </FormLabel>
+                      <Textarea
+                        size="sm"
+                        placeholder="Add a caption (optional)"
+                        rows={2}
+                        value={fileItem.caption}
+                        onChange={(e) =>
+                          updateFileMetadata(index, "caption", e.target.value)
+                        }
+                      />
+                    </FormControl>
+                  </VStack>
+                </Collapse>
 
                 {fileItem.status === "uploading" && (
                   <Progress
@@ -475,6 +563,8 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
   });
   const [url, setUrl] = useState("");
   const [filename, setFilename] = useState("");
+  const [alt_text, setAltText] = useState("");
+  const [caption, setCaption] = useState("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -495,6 +585,8 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
         url,
         folder,
         filename: filename || undefined,
+        alt_text: alt_text || undefined,
+        caption: caption || undefined,
       });
 
       if (status !== 200) throw new Error("Upload failed");
@@ -503,6 +595,8 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
       onUploadComplete?.(result);
       setUrl("");
       setFilename("");
+      setAltText("");
+      setCaption("");
       queryClient.invalidateQueries({
         queryKey: ["media"],
         refetchType: "all",
@@ -566,6 +660,36 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
               placeholder="custom-filename"
               isDisabled={uploading}
               size="lg"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel fontSize="sm" htmlFor="alt_text" fontWeight="medium">
+              Alt Text (optional)
+            </FormLabel>
+            <Input
+              id="alt_text"
+              type="text"
+              value={alt_text}
+              onChange={(e) => setAltText(e.target.value)}
+              placeholder="Describe the image for accessibility"
+              isDisabled={uploading}
+              size="lg"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel fontSize="sm" htmlFor="caption" fontWeight="medium">
+              Caption (optional)
+            </FormLabel>
+            <Textarea
+              id="caption"
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="Add a caption"
+              isDisabled={uploading}
+              size="lg"
+              rows={3}
             />
           </FormControl>
 

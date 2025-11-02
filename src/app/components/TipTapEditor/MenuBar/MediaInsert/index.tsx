@@ -1,8 +1,8 @@
 import { FilterParams, MediaResponse } from "@/types";
-import Medias from "../../../Dashboard/Medias";
+import Medias from "@/components/Dashboard/Medias";
 import { type Editor } from "@tiptap/react";
 import { FC, PropsWithChildren } from "react";
-import { MediaModal } from "../../../Dashboard/Medias/MediaModal";
+import { MediaModal } from "@/components/Dashboard/Medias/MediaModal";
 
 interface MediaInsertProps {
   editor: Editor;
@@ -26,6 +26,7 @@ export const MediaInsert: FC<PropsWithChildren<MediaInsertProps>> = ({
         <Medias
           maxSelection={maxSelection}
           defaultFilters={defaultFilters}
+          canSelect={true}
           onSelect={(media: MediaResponse | MediaResponse[]) => {
             if (Array.isArray(media)) {
               media.forEach((media) => {

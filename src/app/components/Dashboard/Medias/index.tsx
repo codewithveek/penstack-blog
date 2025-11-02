@@ -18,12 +18,14 @@ interface MediasComponentProps {
   maxSelection?: number;
   defaultFilters?: Partial<FilterParams>;
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
+  canSelect?: boolean;
 }
 export default function Medias({
   multiple = true,
   onSelect,
   maxSelection,
   defaultFilters = {},
+  canSelect = true,
 }: MediasComponentProps) {
   const dividerBgColor = useColorModeValue("white", "gray.900");
   return (
@@ -43,6 +45,7 @@ export default function Medias({
               onSelect={(selectedMedia) => {
                 onSelect?.(selectedMedia);
               }}
+              canSelect={canSelect}
             />
           </TabPanel>
           <TabPanel>
