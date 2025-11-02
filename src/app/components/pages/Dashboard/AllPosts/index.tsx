@@ -119,7 +119,7 @@ const PostsDashboard = () => {
                 icon={<LuExternalLink />}
                 as={Link}
                 isExternal
-                href={generatePostUrl(post)}
+                href={"/posts/preview/" + post?.post_id}
                 aria-label="Preview"
                 size="sm"
                 variant="ghost"

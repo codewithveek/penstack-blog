@@ -131,6 +131,8 @@ const ThemedSocialShareButton = memo<ThemedSocialShareButtonProps>(
   }) => {
     const styles = useThemeStyles(theme, variant, size, platform);
 
+    const encodedUrl = url ? encodeURIComponent(url) : "";
+    const encodedTitle = title ? encodeURIComponent(title) : "";
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (onClick) {
         onClick(e);
@@ -138,9 +140,6 @@ const ThemedSocialShareButton = memo<ThemedSocialShareButtonProps>(
       }
 
       e.preventDefault();
-
-      const encodedUrl = url ? encodeURIComponent(url) : "";
-      const encodedTitle = title ? encodeURIComponent(title) : "";
 
       if (shareUrl && url) {
         window.open(
@@ -160,15 +159,32 @@ const ThemedSocialShareButton = memo<ThemedSocialShareButtonProps>(
     }, [showLabel, label, styles, className]);
 
     return (
-      <button
-        onClick={handleClick}
-        className={buttonClasses}
-        aria-label={`Share on ${label}`}
-        {...props}
-      >
-        {Icon && <Icon size={styles.iconSize} />}
-        {showLabel && label && <span>{label}</span>}
-      </button>
+      <>
+        {platform === "copy" ? (
+          <button
+            onClick={handleClick}
+            className={buttonClasses}
+            aria-label={`Copy article link`}
+            {...props}
+          >
+            {Icon && <Icon size={styles.iconSize} />}
+            {showLabel && label && <span>{label}</span>}
+          </button>
+        ) : (
+          <>
+            <a
+              href={shareUrl?.(encodedUrl, encodedTitle) || ""}
+              className={buttonClasses}
+              aria-label={`Share on ${label}`}
+              {...(props as any)}
+              target={"_blank"}
+            >
+              {Icon && <Icon size={styles.iconSize} />}
+              {showLabel && label && <span>{label}</span>}
+            </a>
+          </>
+        )}
+      </>
     );
   }
 );

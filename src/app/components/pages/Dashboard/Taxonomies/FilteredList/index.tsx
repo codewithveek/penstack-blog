@@ -21,8 +21,8 @@ import {
   LuArrowUpDown,
   LuFolderTree,
   LuTag,
-  LuMoreVertical,
-  LuFileEdit,
+  LuEllipsisVertical as LuMoreVertical,
+  LuPen as LuFileEdit,
   LuTrash2,
 } from "react-icons/lu";
 import { useTaxonomiesStore } from "../state";

@@ -63,7 +63,7 @@ const Footer = () => {
   );
 
   return (
-    <Box as="footer" bg={bgColor}>
+    <Box as="footer" bg={bgColor} className="z-12 relative" zIndex={50}>
       <Container
         maxW="container.2xl"
         py={8}

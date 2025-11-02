@@ -69,23 +69,7 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
       setShareUrl(window.location.href || "");
     }
   }, []);
-  const featuredImage =
-    useBreakpointValue({
-      base:
-        (post?.featured_image?.preview as string) || post?.featured_image?.url,
-      md: post?.featured_image?.url,
-    }) ||
-    post?.featured_image?.preview ||
-    `/api/og?${objectToQueryParams({
-      title: post?.title,
-      date: post?.published_at || post?.created_at,
-      username: post?.author?.username,
-      avatar: post?.author?.avatar,
-      name: post?.author?.name,
-      category: post?.category?.name,
-      w: 1000,
-      h: 500,
-    })}`;
+
   if (!post) {
     return <Loader />;
   }
@@ -96,7 +80,11 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
       )}
 
       {/* Post Content Section */}
-      <Container maxW="1250px" py={8} px={{ base: 4, md: 5, lg: 8 }}>
+      <Container
+        maxW={1250}
+        pr={{ lg: 12 }}
+        className="py-8 relative px-4 md:px-5 lg:px-8"
+      >
         <Breadcrumb
           hideBelow={"lg"}
           spacing="8px"
@@ -135,106 +123,44 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
             <Text>{post?.title}</Text>
           </BreadcrumbItem>
         </Breadcrumb>
+        <HStack
+          gap={1}
+          align={"center"}
+          wrap={"wrap"}
+          // bg={newsletterBgColor}
+          px={{ base: 4, lg: 0 }}
+          py={{ base: 2, lg: 0 }}
+          hideBelow={"1024px"}
+          className="h-full top-1/2 hidden bottom-10 lg:fixed left-0 lg:left-0 xl:left-6 z-10 -translate-y-1/2 before:h-full before:w-1.5 before:bg-gray-200 before:absolute before:left-1/2 before:-translate-x-1/2"
 
-        <ArticleHeader post={post} />
-        <Box
-          maxW={"1250px"}
-          w={"full"}
-          className="border-b border-gray-200 pb-3 mb-5"
+          // zIndex={{ base: 4, lg: 0 }}
         >
-          <Box
-            mb={6}
-            w={"full"}
-            className="relative h-[220px] sm:h-[360px] md:h-[400px] lg:h-[500px] xl:h-[600px] border-2 border-gray-200 rounded-lg overflow-hidden"
-          >
-            <Image
-              src={featuredImage}
-              alt={post?.featured_image?.alt_text || post?.title || ""}
-              width="full"
-              height="full"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-              maxH={600}
-              // aspectRatio={"16/9"}
-              objectFit="cover"
+          <Box bg={bgColor} className="z-10 py-4">
+            <ThemedSocialShareGroup
+              showLabels={false}
+              url={shareUrl}
+              theme="plain"
+              variant="flat"
+              orientation="vertical"
+              // className="h-8"
+              // size="lg"
+              title={post?.title || ""}
+              platforms={["copy", "x", "facebook", "linkedin", "email"]}
+              hashtags={post?.tags?.map((tag) => tag.slug) || []}
+              summary={generatePostDescription(post)}
             />
           </Box>
-          <HStack
-            justify={"space-between"}
-            gap={4}
-            flexWrap={"wrap"}
-            mx={"auto"}
-            mt={2}
-          >
-            <Box>
-              <HStack align={"center"}>
-                <Avatar
-                  src={post?.author.avatar || ""}
-                  name={post?.author.name}
-                  boxSize={"38px"}
-                  width={"38px"}
-                  height={"38px"}
-                />
-                <Stack gap={0}>
-                  <Text as="span" className="sr-only">
-                    Written By
-                  </Text>
+        </HStack>
+        <ArticleHeader post={post} />
 
-                  <Link
-                    href={"/author/" + post?.author.username}
-                    fontWeight={600}
-                    lineHeight={"tighter"}
-                  >
-                    {post?.author.name}
-                  </Link>
-                  <HStack>
-                    <Text as={"span"} fontSize={"14px"}>
-                      {nativeFormatDate(
-                        new Date(
-                          (post?.published_at
-                            ? post?.published_at
-                            : post?.created_at) as Date
-                        )
-                      )}
-                    </Text>
-                    <Box w={1} h={1} rounded={"full"} bg={metaColor}></Box>
-                    <Text as={"span"} fontSize={"14px"}>
-                      {post?.reading_time || 1} min read
-                    </Text>
-                  </HStack>
-                </Stack>
-              </HStack>
-            </Box>
-            <HStack align={"center"} wrap={"wrap"} mt={4}>
-              <Text as={"span"} fontWeight={"semibold"}>
-                Share this:
-              </Text>
-              <HStack>
-                <ThemedSocialShareGroup
-                  showLabels={false}
-                  url={shareUrl}
-                  theme="brand"
-                  variant="default"
-                  className="h-10"
-                  title={post?.title || ""}
-                  platforms={["copy", "x", "facebook", "linkedin", "email"]}
-                  hashtags={post?.tags?.map((tag) => tag.slug) || []}
-                  summary={generatePostDescription(post)}
-                />
-              </HStack>
-            </HStack>
-          </HStack>
-        </Box>
         {/* Main Content Area */}
         <Flex
           gap={{ base: 4, md: 5, lg: 6, xl: 10 }}
           w="full"
           justify={"space-between"}
-          flexDirection={{ base: "column-reverse", lg: "row" }}
+          flexDirection={{ base: "column", lg: "row" }}
         >
+          <ArticleContent post={post} />
           <VStack
             w={sidebarWidth || "320px"}
             minW={{ base: "full", md: 320 }}
@@ -245,40 +171,9 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
             style={{ scrollPaddingTop: "10px" }}
             top={{ base: 0, lg: 55 }}
             alignItems={"stretch"}
-            zIndex={{ base: 40, lg: 0 }}
+            // zIndex={{ base: 40, lg: 0 }}
             pb={6}
           >
-            <HStack
-              gap={1}
-              align={"center"}
-              wrap={"wrap"}
-              bg={newsletterBgColor}
-              pos={{ base: "fixed", lg: "relative" }}
-              w={"full"}
-              px={{ base: 4, lg: 0 }}
-              py={{ base: 2, lg: 0 }}
-              bottom={0}
-              left={0}
-              zIndex={{ base: 4, lg: 0 }}
-            >
-              <Text as={"span"} fontWeight={"semibold"}>
-                Share:
-              </Text>
-              <Box>
-                <ThemedSocialShareGroup
-                  showLabels={false}
-                  url={shareUrl}
-                  theme="brand"
-                  variant="compact"
-                  // className="h-8"
-                  // size="lg"
-                  title={post?.title || ""}
-                  platforms={["copy", "x", "facebook", "linkedin", "email"]}
-                  hashtags={post?.tags?.map((tag) => tag.slug) || []}
-                  summary={generatePostDescription(post)}
-                />
-              </Box>
-            </HStack>
             {post?.toc && post?.toc.length > 0 && (
               <Box display={{ base: "none", lg: "block" }} pt={0}>
                 <TOCRenderer content={post?.toc || []} />
@@ -301,7 +196,6 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
               />
             </Box>
           </VStack>
-          <ArticleContent post={post} />
         </Flex>
 
         {post?.allow_comments && (
