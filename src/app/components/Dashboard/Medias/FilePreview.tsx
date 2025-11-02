@@ -14,6 +14,10 @@ import {
   Image,
   DrawerCloseButton,
   Text,
+  VStack,
+  HStack,
+  Box,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { MediaResponse } from "@/types";
 import { formatBytes } from "@/utils";
@@ -28,22 +32,28 @@ const FilePreview = memo(
     isOpen: boolean;
     onClose: () => void;
   }) => {
+    const bgColor = useColorModeValue("gray.50", "gray.700");
+    const labelColor = useColorModeValue("gray.600", "gray.400");
+
+    if (!file) return null;
+
     const formatDate = (date: string | Date) => {
       return date ? new Date(date).toLocaleString() : "--";
     };
 
     const getFileIcon = (type: MediaResponse["type"]) => {
+      const iconProps = { boxSize: 6 };
       switch (type) {
         case "image":
-          return <LuImage className="w-6 h-6 text-blue-500" />;
+          return <LuImage {...iconProps} color="blue.500" />;
         case "video":
-          return <LuVideo className="w-6 h-6 text-red-500" />;
+          return <LuVideo {...iconProps} color="red.500" />;
         case "pdf":
-          return <LuFileText className="w-6 h-6 text-orange-500" />;
+          return <LuFileText {...iconProps} color="orange.500" />;
         case "audio":
-          return <LuMusic className="w-6 h-6 text-purple-500" />;
+          return <LuMusic {...iconProps} color="purple.500" />;
         default:
-          return <LuFile className="w-6 h-6 text-gray-500" />;
+          return <LuFile {...iconProps} color="gray.500" />;
       }
     };
 
@@ -51,45 +61,60 @@ const FilePreview = memo(
       switch (file.type) {
         case "image":
           return (
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
+            <Box
+              position="relative"
+              aspectRatio={16 / 9}
+              rounded="lg"
+              overflow="hidden"
+              bg={bgColor}
+            >
               <Image
                 src={file.url}
                 alt={file.alt_text || file.name}
-                className="object-contain w-full h-full"
+                objectFit="contain"
+                w="full"
+                h="full"
               />
-            </div>
+            </Box>
           );
         case "video":
           return (
-            <video
-              className="w-full rounded-lg max-h-96"
+            <Box
+              as="video"
+              w="full"
+              rounded="lg"
+              maxH="96"
               controls
               preload="metadata"
               src={file.url}
             >
-              {/* <source src={file.url} type={file.mime_type || ""} /> */}
               Your browser does not support the video tag.
-            </video>
+            </Box>
           );
         case "pdf":
           return (
-            <object
+            <Box
+              as="object"
               data={file.url}
               type="application/pdf"
-              className="w-full h-96 rounded-lg border-2 border-gray-200"
-              aria-labelledby="PDF document"
+              w="full"
+              h="96"
+              rounded="lg"
+              borderWidth="2px"
+              borderColor="gray.200"
+              aria-label="PDF document"
               title={file.name}
             >
-              <Text textAlign={"center"} my={8}>
+              <Text textAlign="center" my={8}>
                 Cloudinary restricts PDFs on free accounts.
               </Text>
-            </object>
+            </Box>
           );
         default:
           return (
-            <div className="flex items-center justify-center h-48 bg-gray-100 rounded-lg">
+            <VStack h="48" bg={bgColor} rounded="lg" justify="center">
               {getFileIcon(file.type)}
-            </div>
+            </VStack>
           );
       }
     };
@@ -107,72 +132,87 @@ const FilePreview = memo(
           </DrawerHeader>
 
           <DrawerBody>
-            {file && (
-              <Card className="w-full max-w-2xl">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div className="flex items-center gap-2">
+            <Card w="full" maxW="2xl">
+              <CardHeader>
+                <HStack justify="space-between">
+                  <HStack spacing={2}>
                     {getFileIcon(file.type)}
-                    <Heading size="md" fontWeight={"medium"}>
+                    <Heading size="md" fontWeight="medium">
                       {file.name}
                     </Heading>
-                  </div>
+                  </HStack>
                   <Badge variant="secondary">{file.type.toUpperCase()}</Badge>
-                </CardHeader>
-                <CardBody className="space-y-4">
+                </HStack>
+              </CardHeader>
+
+              <CardBody>
+                <VStack spacing={4} align="stretch">
                   {renderPreview()}
 
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-gray-500">Size</p>
-                      <p className="font-medium">{formatBytes(file.size)}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Type</p>
-                      <p className="font-medium">{file.mime_type}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Dimensions</p>
-                      <p className="font-medium">
+                  <Box
+                    display="grid"
+                    gridTemplateColumns="repeat(2, 1fr)"
+                    gap={4}
+                    fontSize="sm"
+                  >
+                    <Box>
+                      <Text color={labelColor}>Size</Text>
+                      <Text fontWeight="medium">{formatBytes(file.size)}</Text>
+                    </Box>
+                    <Box>
+                      <Text color={labelColor}>Type</Text>
+                      <Text fontWeight="medium">{file.mime_type}</Text>
+                    </Box>
+                    <Box>
+                      <Text color={labelColor}>Dimensions</Text>
+                      <Text fontWeight="medium">
                         {file.width} × {file.height}
-                      </p>
-                    </div>
+                      </Text>
+                    </Box>
                     {file.type === "image" && (
-                      <>
-                        <div>
-                          <p className="text-gray-500">Alt Text</p>
-                          <p className="font-medium">
-                            {file.alt_text || "None"}
-                          </p>
-                        </div>
-                      </>
+                      <Box>
+                        <Text color={labelColor}>Alt Text</Text>
+                        <Text fontWeight="medium">
+                          {file.alt_text || "None"}
+                        </Text>
+                      </Box>
                     )}
-                    <div>
-                      <p className="text-gray-500">Created</p>
-                      <p className="font-medium">
+                    <Box>
+                      <Text color={labelColor}>Created</Text>
+                      <Text fontWeight="medium">
                         {formatDate(file.created_at as Date)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Last Modified</p>
-                      <p className="font-medium">
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text color={labelColor}>Last Modified</Text>
+                      <Text fontWeight="medium">
                         {formatDate(file.updated_at as Date)}
-                      </p>
-                    </div>
-                  </div>
+                      </Text>
+                    </Box>
+                  </Box>
 
                   {file.caption && (
-                    <div>
-                      <p className="text-gray-500">Caption</p>
-                      <p className="mt-1">{file.caption}</p>
-                    </div>
+                    <Box>
+                      <Text color={labelColor}>Caption</Text>
+                      <Text mt={1}>{file.caption}</Text>
+                    </Box>
                   )}
-                  <div className="flex flex-col gap-2">
-                    <p className="text-gray-500">URL</p>
-                    <p className="font-medium">{file.url}</p>
-                  </div>
-                </CardBody>
-              </Card>
-            )}
+
+                  <Box>
+                    <Text color={labelColor} mb={2}>
+                      URL
+                    </Text>
+                    <Text
+                      fontWeight="medium"
+                      fontSize="xs"
+                      wordBreak="break-all"
+                    >
+                      {file.url}
+                    </Text>
+                  </Box>
+                </VStack>
+              </CardBody>
+            </Card>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

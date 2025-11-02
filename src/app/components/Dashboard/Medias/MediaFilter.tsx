@@ -1,18 +1,17 @@
 import React, { memo } from "react";
-import { LuRefreshCw, LuRotate3D, LuSearch } from "react-icons/lu";
+import { LuRefreshCw, LuSearch } from "react-icons/lu";
 import {
   Button,
   HStack,
   Input,
   InputGroup,
   InputLeftAddon,
+  Select,
 } from "@chakra-ui/react";
-import { Select } from "@chakra-ui/react";
 import { FilterParams, MediaType } from "@/types";
 
 interface MediaFilterProps {
   onFilterChange: (filters: Partial<FilterParams>) => void;
-
   refetchMedia: () => void;
 }
 
@@ -23,40 +22,38 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
         py={4}
         gap={4}
         wrap={{ base: "wrap", xl: "nowrap" }}
-        justify={"space-between"}
+        justify="space-between"
       >
         <InputGroup maxW={500}>
-          <InputLeftAddon roundedLeft={"md"}>
+          <InputLeftAddon roundedLeft="md">
             <LuSearch />
           </InputLeftAddon>
           <Input
-            roundedRight={"md"}
+            roundedRight="md"
             placeholder="Search media..."
-            className="pl-10"
             onChange={(e) => onFilterChange({ search: e.target.value })}
           />
         </InputGroup>
+
         <HStack gap={4} wrap={{ base: "wrap", md: "nowrap" }}>
           <Select
-            rounded={"md"}
+            rounded="md"
             onChange={(e) =>
               onFilterChange({
                 type: e.target.value as MediaType,
               })
             }
           >
-            <>
-              <option value="">All types</option>
-              <option value="image">Images</option>
-              <option value="video">Videos</option>
-              <option value="audio">Audio</option>
-              <option value="pdf">PDF</option>
-              <option value="doc">Documents</option>
-            </>
+            <option value="">All types</option>
+            <option value="image">Images</option>
+            <option value="video">Videos</option>
+            <option value="audio">Audio</option>
+            <option value="pdf">PDF</option>
+            <option value="doc">Documents</option>
           </Select>
 
           <Select
-            rounded={"md"}
+            rounded="md"
             onChange={(e) => {
               const value = e.target.value;
               if (!value) return;
@@ -74,15 +71,14 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
             <option value="size-desc">Largest first</option>
             <option value="size-asc">Smallest first</option>
           </Select>
+
           <Button
             flexShrink={0}
             ml="auto"
-            size={"sm"}
-            rounded={"md"}
+            size="sm"
+            rounded="md"
             leftIcon={<LuRefreshCw />}
-            onClick={() => {
-              refetchMedia?.();
-            }}
+            onClick={refetchMedia}
           >
             Refresh
           </Button>

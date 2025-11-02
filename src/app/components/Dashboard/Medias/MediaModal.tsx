@@ -6,8 +6,8 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  Heading,
 } from "@chakra-ui/react";
-import { Heading } from "@react-email/components";
 import { FC, memo, PropsWithChildren } from "react";
 import Medias from ".";
 
@@ -19,6 +19,7 @@ interface MediaModalProps {
   multiple?: boolean;
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
 }
+
 export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
   ({
     isOpen,
@@ -40,24 +41,22 @@ export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <Heading>Select Media</Heading>
+            <Heading size="md">Select Media</Heading>
             <ModalCloseButton />
           </ModalHeader>
           <ModalBody px={{ base: 0, md: undefined }}>
             {children ? (
               children
             ) : (
-              <>
-                <Medias
-                  multiple={multiple}
-                  defaultFilters={defaultFilters}
-                  maxSelection={maxSelection}
-                  onSelect={(media: MediaResponse | MediaResponse[]) => {
-                    onSelect?.(media);
-                    onClose();
-                  }}
-                />
-              </>
+              <Medias
+                multiple={multiple}
+                defaultFilters={defaultFilters}
+                maxSelection={maxSelection}
+                onSelect={(media: MediaResponse | MediaResponse[]) => {
+                  onSelect?.(media);
+                  onClose();
+                }}
+              />
             )}
           </ModalBody>
         </ModalContent>

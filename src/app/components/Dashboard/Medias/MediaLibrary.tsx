@@ -32,24 +32,15 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
       limit: 12,
       ...defaultFilters,
     });
-    const [loading, setLoading] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState<MediaResponse[]>([]);
 
     const boxBgColor = useColorModeValue("white", "gray.700");
 
     const fetchMedia = useCallback(async () => {
-      setLoading(true);
-      try {
-        const { data: media } = await axios<PaginatedResponse<MediaResponse>>(
-          `/api/media?${objectToQueryParams(filters || {})}`
-        );
-
-        return media;
-      } catch (error) {
-        console.error("Failed to fetch media:", error);
-      } finally {
-        setLoading(false);
-      }
+      const { data: media } = await axios<PaginatedResponse<MediaResponse>>(
+        `/api/media?${objectToQueryParams(filters || {})}`
+      );
+      return media;
     }, [filters]);
 
     const handleFilterChange = useCallback(
@@ -60,10 +51,14 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
           page: 1,
         }));
       },
-      [setFilters]
+      []
     );
 
-    const { data: media, refetch } = useQuery({
+    const {
+      data: media,
+      refetch,
+      isLoading,
+    } = useQuery({
       queryKey: ["media", filters],
       queryFn: fetchMedia,
       refetchOnWindowFocus: false,
@@ -87,38 +82,46 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
           onSelect?.(media);
         }
       },
-      [multiple, maxSelection, onSelect, selectedMedia]
+      [multiple, maxSelection, onSelect]
     );
 
     const handleConfirmSelection = useCallback(() => {
       if (multiple) {
         onSelect?.(selectedMedia);
-      } else {
+      } else if (selectedMedia[0]) {
         onSelect?.(selectedMedia[0]);
       }
     }, [multiple, onSelect, selectedMedia]);
+
     useEffect(() => {
       setSelectedMedia([]);
     }, [filters]);
+
     return (
       <Box className="space-y-6" minH={400}>
-        {loading && (
-          <VStack justify={"center"} py={12}>
+        <MediaFilter
+          onFilterChange={handleFilterChange}
+          refetchMedia={refetch}
+        />
+
+        {isLoading && (
+          <VStack justify="center" py={12}>
             <Loader />
           </VStack>
         )}
 
-        {!loading && media && media?.data?.length === 0 && (
-          <VStack justify={"center"} py={12}>
-            <Text color={"gray.400"} fontWeight={500}>
-              No medias found
+        {!isLoading && media && media?.data?.length === 0 && (
+          <VStack justify="center" py={12}>
+            <Text color="gray.400" fontWeight={500}>
+              No media found
             </Text>
           </VStack>
         )}
-        {!loading && media && media?.data?.length > 0 && (
+
+        {!isLoading && media && media?.data?.length > 0 && (
           <>
             <Grid
-              rounded={"lg"}
+              rounded="lg"
               p={{ base: 3, md: 4 }}
               templateColumns={{
                 base: "repeat(auto-fill, minmax(250px, 1fr))",
@@ -126,15 +129,14 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
               }}
               gap={4}
             >
-              {media?.data.length > 0 &&
-                media?.data.map((item) => (
-                  <MediaCard
-                    key={item.id}
-                    media={item}
-                    onSelect={handleSelect}
-                    selected={!!selectedMedia.find((m) => m.id === item.id)}
-                  />
-                ))}
+              {media?.data.map((item) => (
+                <MediaCard
+                  key={item.id}
+                  media={item}
+                  onSelect={handleSelect}
+                  selected={!!selectedMedia.find((m) => m.id === item.id)}
+                />
+              ))}
             </Grid>
             <Pagination
               currentPage={media.meta.page}
@@ -145,27 +147,28 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
                   page,
                 }));
               }}
-              isLoading={loading}
+              isLoading={isLoading}
             />
           </>
         )}
+
         {selectedMedia.length > 0 && (
           <Box
-            bottom={"env(safe-area-inset-bottom,0px)"}
-            pos={"sticky"}
-            borderTop={"1"}
+            bottom="env(safe-area-inset-bottom,0px)"
+            pos="sticky"
+            borderTop="1"
             bg={boxBgColor}
             shadow="lg"
             left={0}
             right={0}
             p={4}
-            rounded={"md"}
+            rounded="md"
           >
             <HStack
               direction={{ base: "column", md: "row" }}
-              maxW={"7xl"}
-              mx={"auto"}
-              justify={"space-between"}
+              maxW="7xl"
+              mx="auto"
+              justify="space-between"
             >
               {multiple && (!maxSelection || maxSelection > 1) && (
                 <Text>{selectedMedia.length} items selected</Text>
@@ -173,12 +176,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
               <HStack
                 gap={4}
                 flex={1}
-                justify={"end"}
-                align={"stretch"}
-                wrap={"wrap"}
+                justify="end"
+                align="stretch"
+                wrap="wrap"
               >
                 <Button
-                  rounded={"md"}
+                  rounded="md"
                   onClick={() => setSelectedMedia([])}
                   colorScheme="red"
                   leftIcon={<LuTrash2 />}
@@ -186,7 +189,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
                 >
                   Clear
                 </Button>
-                <Button rounded={"md"} onClick={handleConfirmSelection}>
+                <Button rounded="md" onClick={handleConfirmSelection}>
                   Confirm Selection
                 </Button>
               </HStack>

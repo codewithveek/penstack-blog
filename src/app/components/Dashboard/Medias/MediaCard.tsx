@@ -3,7 +3,7 @@ import {
   LuFile,
   LuImage,
   LuVideo,
-  LuFileAudio,
+  LuMusic,
   LuFileText,
   LuEye,
   LuSquareCheck,
@@ -20,8 +20,6 @@ import {
   HStack,
   IconButton,
   VStack,
-  Center,
-  DarkMode,
   Flex,
   Text,
 } from "@chakra-ui/react";
@@ -43,6 +41,8 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
       null
     );
     const cardBgColor = useColorModeValue("gray.200", "gray.800");
+    const flexBgColor = useColorModeValue("gray.100", "gray.800");
+
     const getIcon = () => {
       switch (media.type) {
         case "image":
@@ -50,7 +50,7 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
         case "video":
           return <LuVideo />;
         case "audio":
-          return <LuFileAudio />;
+          return <LuMusic />;
         case "pdf":
           return <LuFileText />;
         default:
@@ -58,30 +58,32 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
       }
     };
 
-    const flexBgColor = useColorModeValue("gray.100", "gray.800");
-
     const handleSelectClick = () => {
       onSelect?.(media);
     };
+
     const handlePreviewClick = (media: MediaResponse) => {
       setMediaToPreview(media);
       onOpen();
     };
+
     return (
       <>
-        <FilePreview isOpen={isOpen} onClose={onClose} file={mediaToPreview!} />
+        {mediaToPreview && (
+          <FilePreview
+            isOpen={isOpen}
+            onClose={onClose}
+            file={mediaToPreview}
+          />
+        )}
 
         <Card
-          pos={"relative"}
-          w={"full"}
+          pos="relative"
+          w="full"
           h={250}
-          className="bg-gray-200"
-          // rounded={"lg"}
-          overflow={"hidden"}
+          overflow="hidden"
           boxShadow={selected ? "outline" : "none"}
-          onClick={() => {
-            handleSelectClick();
-          }}
+          onClick={handleSelectClick}
           sx={{
             "&:hover": {
               ".media-card-select": {
@@ -103,8 +105,9 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
                 }
           }
           bg={cardBgColor}
+          cursor="pointer"
         >
-          <CardBody pos={"relative"} p={2} bg={"transparent"}>
+          <CardBody pos="relative" p={2} bg="transparent">
             <Box
               pos="absolute"
               top={4}
@@ -112,7 +115,7 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
               zIndex={!selected ? -1 : 10}
               transform={!selected ? "translateX(150%)" : "none"}
               className="media-card-select"
-              transition={"all 0.2s"}
+              transition="all 0.2s"
             >
               <IconButton
                 size="sm"
@@ -124,21 +127,22 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
                   e.stopPropagation();
                   onSelect?.(media);
                 }}
-              ></IconButton>
+              />
             </Box>
+
             <VStack
-              transition={"all 0.2s"}
+              transition="all 0.2s"
               zIndex={-1}
               bottom={0}
               right={0}
-              position={"absolute"}
+              position="absolute"
               left={0}
               p={3}
               className="media-card-overlay"
-              borderTop={"1px solid"}
-              borderColor={"gray.600"}
+              borderTop="1px solid"
+              borderColor="gray.600"
               bg={cardBgColor}
-              transform={"translateY(100%)"}
+              transform="translateY(100%)"
             >
               <Button
                 size="sm"
@@ -152,48 +156,52 @@ export const MediaCard: React.FC<MediaCardProps> = memo(
                 Preview
               </Button>
             </VStack>
+
             {media.type === "image" && (
-              <Box rounded={"md"} aspectRatio={16 / 9}>
+              <Box rounded="md" aspectRatio={16 / 9}>
                 <Image
                   src={media.thumbnail || media.url}
                   alt={media.alt_text || media.name}
                   w="full"
                   h="full"
-                  objectFit={"contain"}
+                  objectFit="contain"
                 />
               </Box>
             )}
+
             {media.type === "video" && (
-              <Box rounded={"md"} position="relative" aspectRatio={16 / 9}>
+              <Box rounded="md" position="relative" aspectRatio={16 / 9}>
                 <Box
                   as="video"
-                  controls
-                  src={media.thumbnail || media.url}
+                  src={media.url}
+                  poster={media.thumbnail ?? ""}
                   w="full"
                   h="full"
-                  objectFit={"contain"}
+                  objectFit="contain"
                 />
               </Box>
             )}
+
             {media.type !== "video" && media.type !== "image" && (
               <Flex
-                rounded={"md"}
+                rounded="md"
                 bg={flexBgColor}
-                align={"center"}
-                justify={"center"}
-                h={200}
+                align="center"
+                justify="center"
+                h={160}
               >
                 {getIcon()}
               </Flex>
             )}
           </CardBody>
-          <CardFooter p={2} fontSize={"small"}>
-            <Box isTruncated w={"full"}>
-              <Text isTruncated fontWeight={"medium"}>
+
+          <CardFooter p={2} fontSize="small">
+            <Box isTruncated w="full">
+              <Text isTruncated fontWeight="medium">
                 {media.name}
               </Text>
               <Text
-                fontSize={"x-small"}
+                fontSize="x-small"
                 color={useColorModeValue("gray.500", "gray.400")}
               >
                 {formatBytes(media.size)}
