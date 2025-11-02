@@ -1,5 +1,7 @@
-import { PenstackHeadingsRenderer } from "@/components//Renderers/HeadingsRenderer";
+// import { PenstackHeadingsRenderer } from "@/components//Renderers/HeadingsRenderer";
+import { PenstackHeadingsRenderer } from "@/components/Renderers/HeadingsRenderer";
 import { generateSlug } from "@/utils";
+
 import Heading from "@tiptap/extension-heading";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { ReactNodeViewRenderer } from "@tiptap/react";

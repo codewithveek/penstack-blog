@@ -14,12 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { memo, Suspense } from "react";
 import { ReactNode } from "react";
-import { DashboardSidebar } from "../../../Dashboard/Sidebar";
+import { DashboardSidebar } from "@/components/Dashboard/Sidebar";
 import { LuMenu } from "react-icons/lu";
-import NetworkAvailabiltyCheck from "../../../NetworkAvailabiltyCheck";
+import NetworkAvailabiltyCheck from "@/components/NetworkAvailabiltyCheck";
 import { useSiteConfig } from "@/context/SiteConfig";
 import { useDashboardSidebarState } from "@/hooks/useDashboardSidebarState";
-import Loader from "../../../Loader";
+import Loader from "@/components/Loader";
 import { NavItemWithoutPermission } from "@/types";
 
 export default memo(function DashboardLayout({

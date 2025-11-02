@@ -1,14 +1,8 @@
 import { NodeViewProps } from "@tiptap/react";
 import { NodeViewWrapper } from "@tiptap/react";
-import { useState } from "react";
-import { MediaAspectRatios, MediaObjectFits } from "../../../types";
-import { Image } from "@chakra-ui/react";
 import { MediaError } from "./MediaError";
-import { ImageMedia } from "./ImageMedia";
-import { VideoMedia } from "./VideoMedia";
-import { AudioMedia } from "./AudioMedia";
+import { StandaloneMedia, StandaloneMediaProps } from "./StandaloneMedia";
 
-// TypeScript interfaces
 export interface MediaAttrs {
   src: string;
   alt?: string;
@@ -16,78 +10,71 @@ export interface MediaAttrs {
   caption?: string;
   width?: number;
   height?: number;
-  aspectRatio?: MediaAspectRatios;
-  objectFit?: MediaObjectFits;
+  aspectRatio?: string;
+  objectFit?: string;
 }
 
 export interface MediaNodeViewProps extends Partial<NodeViewProps> {
-  node: NodeViewProps["node"] & {
+  node?: NodeViewProps["node"] & {
     attrs: MediaAttrs;
   };
   attrs?: MediaAttrs;
   isEditing?: boolean;
 }
 
-// Main MediaComponent with proper typing
 export const MediaComponentNew = ({
   node,
   attrs,
   updateAttributes,
-  selected,
+  selected = false,
   isEditing = true,
 }: MediaNodeViewProps) => {
-  const { src, alt, type, caption, width, height, aspectRatio, objectFit } =
-    isEditing ? node.attrs : attrs || {};
+  const mediaAttrs = isEditing ? node?.attrs : attrs;
 
-  // Validate required attributes
-  if (!src) {
+  if (!mediaAttrs?.src) {
+    const errorContent = <MediaError type="media" />;
     return isEditing ? (
       <NodeViewWrapper as="div" className="p-4">
-        <MediaError type="media" />
+        {errorContent}
       </NodeViewWrapper>
     ) : (
-      <div className="p-4">
-        <MediaError type="media" />
-      </div>
+      <div className="p-4">{errorContent}</div>
     );
   }
 
-  const renderMedia = () => {
-    switch (type) {
-      case "image":
-        return (
-          <ImageMedia
-            initialAttrs={{
-              src,
-              alt,
-              caption,
-              width,
-              height,
-              aspectRatio,
-              objectFit,
-              type: "image",
-            }}
-            onAttrsChange={updateAttributes}
-            selected={selected}
-            isEditing={isEditing}
-          />
-        );
-      case "video":
-        return <VideoMedia src={src} />;
-      case "audio":
-        return <AudioMedia src={src} />;
-      default:
-        return <MediaError type="Unknown media type" />;
-    }
+  const { src, alt, type, caption, width, height, aspectRatio, objectFit } =
+    mediaAttrs;
+
+  const handleCaptionChange = (newCaption: string) => {
+    updateAttributes?.({ caption: newCaption });
   };
 
-  const containerClass = type === "image" ? "flex w-max space-x-4 p-4" : "p-4";
+  const handleAltChange = (newAlt: string) => {
+    updateAttributes?.({ alt: newAlt });
+  };
+
+  const mediaContent = (
+    <StandaloneMedia
+      src={src}
+      alt={alt}
+      type={type}
+      caption={caption}
+      width={width}
+      height={height}
+      aspectRatio={aspectRatio}
+      objectFit={objectFit}
+      showControls={isEditing && selected}
+      onCaptionChange={handleCaptionChange}
+      onAltChange={handleAltChange}
+      className={selected ? "ring-2 ring-blue-500 rounded-lg" : ""}
+    />
+  );
 
   return isEditing ? (
-    <NodeViewWrapper as="div" className={containerClass}>
-      {renderMedia()}
+    <NodeViewWrapper as="div" className="p-4">
+      {mediaContent}
     </NodeViewWrapper>
   ) : (
-    <div className={containerClass}>{renderMedia()}</div>
+    <div className="p-4">{mediaContent}</div>
   );
 };

@@ -30,7 +30,7 @@ interface AccessibleDropdownProps<T extends Option | EditorActionItem> {
 }
 
 function AccessibleDropdown<T extends Option | EditorActionItem>({
-  label = "Select an option",
+  label = "",
   options = [],
   onSelect,
   defaultValue,

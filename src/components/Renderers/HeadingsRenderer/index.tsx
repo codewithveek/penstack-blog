@@ -1,5 +1,5 @@
 import { Link } from "@chakra-ui/next-js";
-import { As, Heading } from "@chakra-ui/react";
+import { AsProps, Heading } from "@chakra-ui/react";
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import { memo, PropsWithChildren, ReactNode, useMemo } from "react";
 
@@ -67,7 +67,7 @@ export const PenstackHeadingsRenderer: React.FC<HeadingsRendererProps> = memo(
     const heading = (
       <Heading
         {...node?.attrs}
-        as={("h" + node?.attrs?.level) as As}
+        as={("h" + node?.attrs?.level) as AsProps["as"]}
         {...styles[("h" + node?.attrs?.level) as any]}
       >
         {isEditing ? node?.firstChild?.text : content}
@@ -80,7 +80,7 @@ export const PenstackHeadingsRenderer: React.FC<HeadingsRendererProps> = memo(
         ) : (
           <Heading
             {...node?.attrs}
-            as={("h" + node?.attrs?.level) as As}
+            as={("h" + node?.attrs?.level) as AsProps["as"]}
             {...styles[("h" + node?.attrs?.level) as any]}
           >
             <Link href={`#${node?.attrs?.id}`} color={"inherit"}>

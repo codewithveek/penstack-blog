@@ -1,9 +1,8 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
-import { MediaAspectRatios, MediaObjectFits } from "../../types";
-import { MediaComponentNew } from "../../nodes/media/MediaComponents";
+import { MediaAspectRatios, MediaObjectFits } from "@/lib/editor/types";
+import { MediaComponentNew } from "@/lib/editor/nodes/media/MediaComponents";
 
-// TypeScript interfaces
 interface MediaAttrs {
   src: string;
   alt?: string;
@@ -15,7 +14,6 @@ interface MediaAttrs {
   objectFit?: MediaObjectFits;
 }
 
-// The TipTap extension with improved validation
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     media: {
@@ -29,9 +27,23 @@ declare module "@tiptap/core" {
         alt?: string;
         caption?: string;
       }) => ReturnType;
+      // Add this new command for bulk insertion
+      insertMultipleMedia: (
+        mediaItems: Array<{
+          src: string;
+          type: "image" | "video" | "audio";
+          aspectRatio?: MediaAspectRatios;
+          objectFit?: MediaObjectFits;
+          width?: number;
+          height?: number;
+          alt?: string;
+          caption?: string;
+        }>
+      ) => ReturnType;
     };
   }
 }
+
 const PenstackMedia = Node.create({
   name: "penstackMedia",
   group: "block",
@@ -119,7 +131,6 @@ const PenstackMedia = Node.create({
       {
         tag: 'div[data-type="media"]',
         getAttrs: (element) => {
-          // Validate that we have at least a src attribute
           const src = element.getAttribute("src");
           return src ? {} : false;
         },
@@ -127,7 +138,7 @@ const PenstackMedia = Node.create({
     ];
   },
 
-  renderHTML({ HTMLAttributes, node }) {
+  renderHTML({ HTMLAttributes }) {
     return ["div", mergeAttributes(HTMLAttributes, { "data-type": "media" })];
   },
 
@@ -135,23 +146,55 @@ const PenstackMedia = Node.create({
     return ReactNodeViewRenderer(MediaComponentNew);
   },
 
-  // Add commands for programmatic insertion
   addCommands() {
     return {
       insertMedia:
         (attributes: Partial<MediaAttrs>) =>
-        ({ commands }) => {
+        ({ commands, state }) => {
           if (!attributes.src) {
-            console.log({ attributes });
-
             console.warn("Media insertion requires src attribute");
             return false;
           }
-          console.log({ attributes });
-          return commands.insertContent({
+
+          // Get current cursor position
+          const { from } = state.selection;
+
+          return commands.insertContentAt(from, {
             type: this.name,
             attrs: attributes,
           });
+        },
+
+      // New command for bulk insertion
+      insertMultipleMedia:
+        (mediaItems: Array<Partial<MediaAttrs>>) =>
+        ({ commands, chain, state }) => {
+          if (!mediaItems.length) {
+            console.warn("No media items to insert");
+            return false;
+          }
+
+          // Validate all items have src
+          const validItems = mediaItems.filter((item) => {
+            if (!item.src) {
+              console.warn("Skipping media item without src:", item);
+              return false;
+            }
+            return true;
+          });
+
+          if (!validItems.length) {
+            return false;
+          }
+
+          // Create content array with all media nodes
+          const content = validItems.map((attrs) => ({
+            type: this.name,
+            attrs,
+          }));
+
+          // Insert all at once in a single transaction
+          return chain().focus().insertContent(content).run();
         },
     };
   },

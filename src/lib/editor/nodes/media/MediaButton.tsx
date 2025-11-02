@@ -1,4 +1,4 @@
-import { MediaModal } from "@/components//Dashboard/Medias/MediaModal";
+import { MediaModal } from "@/components/Dashboard/Medias/MediaModal";
 import { MediaResponse } from "@/types";
 import { Button, useDisclosure } from "@chakra-ui/react";
 import { Editor } from "@tiptap/react";
@@ -10,15 +10,29 @@ export const MediaButton = ({ editor }: { editor: Editor }) => {
     onClose: onMediaModalClose,
     onOpen: onMediaModalOpen,
   } = useDisclosure();
+
   const handleMediasSelect = (medias: MediaResponse[]) => {
-    medias.forEach((media) => {
-      editor.commands.insertMedia({
+    // Option 1: Use the new bulk insertion command (recommended)
+    editor.commands.insertMultipleMedia(
+      medias.map((media) => ({
         src: media.url,
         alt: media?.alt_text || media?.name,
         type: media.type as "image" | "video",
         caption: media.caption as string,
-      });
-    });
+      }))
+    );
+
+    // Option 2: Manual insertion with proper content array
+    // const mediaNodes = medias.map((media) => ({
+    //   type: 'penstackMedia',
+    //   attrs: {
+    //     src: media.url,
+    //     alt: media?.alt_text || media?.name,
+    //     type: media.type as "image" | "video",
+    //     caption: media.caption as string,
+    //   },
+    // }));
+    // editor.chain().focus().insertContent(mediaNodes).run();
   };
 
   return (
@@ -27,9 +41,7 @@ export const MediaButton = ({ editor }: { editor: Editor }) => {
         size="sm"
         leftIcon={<LuImage />}
         variant={editor.isActive("penstackMedia") ? "solid" : "outline"}
-        onClick={() => {
-          onMediaModalOpen();
-        }}
+        onClick={onMediaModalOpen}
       >
         Insert Media
       </Button>

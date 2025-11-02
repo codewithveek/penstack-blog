@@ -8,8 +8,8 @@ import {
   useMediaAttrs,
   useMediaUI,
   useMediaActions,
-} from "../../../stores/mediaStore";
-import { MediaAttrs } from "../../../extensions/media-ext";
+} from "@/lib/editor/stores/mediaStore";
+import { MediaAttrs } from "@/lib/editor/extensions/media-ext";
 
 type ImageMediaProps = {
   // Initial props to set up the store

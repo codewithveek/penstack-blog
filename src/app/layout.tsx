@@ -1,24 +1,24 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import "./globals.css";
-import { fonts } from "../lib/fonts";
-import { ChakraProvider } from "../providers/chakra";
-import ReactQueryClient from "../providers/react-query";
-import AuthProvider from "../providers/auth";
-import { getSession } from "../lib/auth/next-auth";
-import { SiteConfigProvider } from "../context/SiteConfig";
-import { getSettings } from "../lib/queries/settings";
-import { NuqsProvider } from "../providers/nuqs";
-import { getSiteUrl } from "../utils/url";
-import { objectToQueryParams } from "../utils";
-import { groupSettingsByFolder } from "./components/pages/Dashboard/Settings/utils";
-import { TelegramFab } from "./components/Telegram/Fab";
+import { fonts } from "@/lib/fonts";
+import { ChakraProvider } from "@/providers/chakra";
+import ReactQueryClient from "@/providers/react-query";
+import AuthProvider from "@/providers/auth";
+import { getSession } from "@/lib/auth/next-auth";
+import { SiteConfigProvider } from "@/context/SiteConfig";
+import { getSettings } from "@/lib/queries/settings";
+import { NuqsProvider } from "@/providers/nuqs";
+import { getSiteUrl } from "@/utils/url";
+import { objectToQueryParams } from "@/utils";
+import { groupSettingsByFolder } from "@/components/pages/Dashboard/Settings/utils";
+import { TelegramFab } from "@/components/Telegram/Fab";
 import isEmpty from "just-is-empty";
 import {
   CanRender,
   ConditionalScriptRenderer,
-} from "./components/ScriptsManager";
-import { getThirdPartyScripts } from "../lib/third-party-scripts";
-import { SCRIPT_POSITIONS } from "../lib/third-party-scripts/types";
+} from "@/components/ScriptsManager";
+import { getThirdPartyScripts } from "@/lib/third-party-scripts";
+import { SCRIPT_POSITIONS } from "@/lib/third-party-scripts/types";
 import dynamic from "next/dynamic";
 
 type Props = {
@@ -26,10 +26,10 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 const MixPanelAnalytics = dynamic(
-  () => import("./components/Analytics/MixpanelAnalytics")
+  () => import("@/components/Analytics/MixpanelAnalytics")
 );
 const GoogleTagManagerNoscript = dynamic(
-  () => import("./components/Analytics/GoogleTagManager/Noscript")
+  () => import("@/components/Analytics/GoogleTagManager/Noscript")
 );
 
 export async function generateMetadata(
