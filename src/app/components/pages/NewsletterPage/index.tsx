@@ -125,7 +125,7 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
             py={1}
             rounded="full"
           >
-            Join 10,000+ Developers
+            Join 1,000+ Developers
           </Badge>
 
           <Heading size="lg" color={useColorModeValue("gray.900", "white")}>

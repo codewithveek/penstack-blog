@@ -1,20 +1,16 @@
 "use client";
 import {
-  AbsoluteCenter,
   Box,
-  Divider,
   Stack,
   Tab,
-  TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FileUpload, FileUrlUpload } from "../../FileUpload";
-import { MediaLibrary } from "./MediaLibrary";
+import { FileUpload, FileUrlUpload } from "@/components/FileUpload";
+import { MediaLibrary } from "@/components/Dashboard/Medias/MediaLibrary";
 import { FilterParams, MediaResponse } from "@/types";
 
 interface MediasComponentProps {

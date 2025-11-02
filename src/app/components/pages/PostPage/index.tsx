@@ -5,7 +5,6 @@ import {
   Container,
   VStack,
   Flex,
-  Image,
   useColorModeValue,
   useBreakpointValue,
   HStack,
@@ -13,26 +12,17 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Text,
-  Stack,
-  Avatar,
 } from "@chakra-ui/react";
 import { PostSelect, SiteSettings } from "@/types";
 import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
-import {
-  generatePostDescription,
-  nativeFormatDate,
-  objectToQueryParams,
-} from "@/utils";
+import { generatePostDescription } from "@/utils";
 import { ArticleHeader } from "./ArticleHeader";
 import { ArticleContent } from "./ArticleContent";
 import { Newsletter } from "../../NewsLetter";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { Link } from "@chakra-ui/next-js";
 import { ThemedSocialShareGroup } from "../../SocialShares";
 import dynamic from "next/dynamic";
-import { TelegramFab } from "../../Telegram/Fab";
-import { FaBoxes } from "react-icons/fa";
 
 const ViewTracker = dynamic(
   () => import("../../ViewTracker").then((mod) => mod.ViewTracker),
