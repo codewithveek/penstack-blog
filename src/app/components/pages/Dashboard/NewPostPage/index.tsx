@@ -11,17 +11,13 @@ import { usePostSeoMetaStore } from "@/state/post-seo-meta";
 
 export default function NewPostPage({ post }: { post: PostSelectForEditing }) {
   useEditorPostManagerStore.getState().setPost(post!);
-  return <PostEditor />;
+  return <PostEditor post={post} />;
 }
 
-export function PostEditor() {
+export function PostEditor({ post }: { post: PostSelectForEditing }) {
   const updateField = useEditorPostManagerStore((state) => state.updateField);
-  const activePost = useEditorPostManagerStore((state) => state.activePost);
-  const setEditorContent = usePenstackEditorStore(
-    (state) => state.setEditorContent
-  );
   const setPostIdOrSlug = usePostSeoMetaStore((state) => state.setPostIdOrSlug);
-  setPostIdOrSlug(activePost?.post_id || "");
+  setPostIdOrSlug(post?.post_id || "");
 
   const { user } = useAuth();
 
@@ -32,12 +28,12 @@ export function PostEditor() {
   return (
     <PermissionGuard
       requiredPermission={"posts:create"}
-      isOwner={activePost?.author_id === user?.id}
+      isOwner={post?.author_id === user?.id}
     >
       <Box h="full" overflowY="auto">
         <TipTapEditor
           onUpdate={onEditorUpdate}
-          initialContent={decodeAndSanitizeHtml(activePost?.content || "")}
+          initialContent={decodeAndSanitizeHtml(post?.content || "")}
         />
       </Box>
     </PermissionGuard>

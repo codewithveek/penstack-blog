@@ -11,6 +11,7 @@ import {
   FormHelperText,
   Box,
   Button,
+  Text,
 } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import { ImageCard } from "@/components/TipTapEditor/Sidebar/components/ImageCard";
@@ -35,7 +36,15 @@ export const SeoPanel = () => {
   }, [fetchSeoMeta]);
   return (
     <Stack gap={3} className="p-0">
-      <SectionCard title="SEO Metadata" roundedTop={"0"}>
+      <SectionCard
+        title="SEO Metadata"
+        header={
+          <Text color={hasChanges ? "red.500" : "gray.500"} fontSize="sm">
+            {hasChanges ? "Unsaved Changes" : ""}
+          </Text>
+        }
+        roundedTop={"0"}
+      >
         <Stack gap={3} px={4} py={3}>
           <FormControl>
             <FormLabel>Meta Title</FormLabel>

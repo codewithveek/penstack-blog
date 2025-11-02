@@ -74,7 +74,7 @@ export const usePostSeoMetaStore = create<
       const originalValue = initialValues?.[key as keyof PostSeoMeta];
 
       // Include value if it has changed from original (including null values for clearing fields)
-      if (!isEqual(currentValue, originalValue) && currentValue !== undefined) {
+      if (!isEqual(currentValue, originalValue) && !isEmpty(currentValue)) {
         (changedValues as any)[key as keyof PostSeoMeta] = currentValue;
       }
     });

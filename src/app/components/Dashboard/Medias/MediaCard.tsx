@@ -83,9 +83,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({
     if (!canSelect) return;
     onSelect?.(media);
   };
-  console.log({
-    canSelect,
-  });
 
   const handlePreviewClick = (media: MediaResponse) => {
     setMediaToPreview(media);
