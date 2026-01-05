@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { db } from "@/db";
 import { posts } from "@/db/schemas";
 import {
@@ -66,7 +67,7 @@ export async function GET(req: NextRequest) {
       message: "Featured Post retrieved successfully",
     });
   } catch (error) {
-    console.log(error);
+    logger.debug("Error", error as any);
 
     return NextResponse.json({
       data: null,

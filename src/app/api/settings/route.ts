@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { NextRequest, NextResponse } from "next/server";
 import { getSettings, updateSettings } from "@/lib/queries/settings";
 import { revalidatePath, revalidateTag } from "next/cache";
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     revalidateTag("getSettings");
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.log(error);
+    logger.debug("Error", error as any);
 
     return NextResponse.json(
       { error: "Failed to save settings" },

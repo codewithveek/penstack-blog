@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { Webhook } from "svix";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {
-    console.error("Webhook error:", error);
+    logger.error("Webhook error:", error);
     return new NextResponse("Internal error", { status: 400 });
   }
 }
@@ -66,7 +67,7 @@ async function verifyWebhookSignature(req: NextRequest) {
   const secret = process.env.RESEND_WEBHOOK_SECRET;
   if (!secret) throw new Error("RESEND_WEBHOOK_SECRET is not set");
 
-  console.log({
+  logger.debug("verifyWebhookSignature", {
     head: req.headers,
     secret,
     payload2: req.text(),
@@ -82,7 +83,7 @@ async function verifyWebhookSignature(req: NextRequest) {
     throw new Error("Invalid webhook payload");
   }
   const body = JSON.stringify(event) as unknown as ResendWebhookEvent;
-  console.log({ body, event });
+  logger.debug("verifyWebhookSignature", { body, event });
 
   return body;
 }

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { db } from "@/db";
 import { posts } from "@/db/schemas";
 import { checkPermission } from "@/lib/auth/check-permission";
@@ -85,14 +86,14 @@ export async function PUT(
               : null,
             toc:
               body?.generate_toc &&
-              body?.status === "published" &&
-              !isEmpty(body?.content)
+                body?.status === "published" &&
+                !isEmpty(body?.content)
                 ? generateToc(body?.content || "", body?.toc_depth ?? 2)
                 : oldPost?.toc,
             reading_time: body?.content
               ? calculateReadingTime(
-                  stripHtml(decodeAndSanitizeHtml(body?.content || ""))
-                )
+                stripHtml(decodeAndSanitizeHtml(body?.content || ""))
+              )
               : oldPost?.reading_time,
             updated_at: new Date(),
           })
@@ -114,7 +115,7 @@ export async function PUT(
           }
         );
       } catch (error) {
-        console.log("Error", error);
+        logger.debug("Error", error as any);
 
         return NextResponse.json(
           { data: null, error: "Internal Server Error" },
@@ -159,7 +160,7 @@ export async function DELETE(
           { status: 200 }
         );
       } catch (error) {
-        console.log("Error", error);
+        logger.debug("Error", error as any);
         return NextResponse.json(
           { data: null, error: "Internal Server Error" },
           { status: 500 }

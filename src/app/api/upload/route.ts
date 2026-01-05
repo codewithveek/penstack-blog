@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db"; // Your database connection
 import { medias } from "@/db/schemas"; // Your schema
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json(result);
       } catch (error) {
-        console.log(error);
+        logger.debug("Error", error as any);
 
         return NextResponse.json(
           { error: "Failed to save media data" },

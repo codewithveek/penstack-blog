@@ -28,7 +28,7 @@ export const postCreateSchema = z.object({
   is_sticky: z.boolean().default(false),
   generate_toc: z.boolean().default(true),
   toc_depth: z.number().int().min(1).max(6).default(2),
-  scheduled_at: z.string().datetime().optional(),
+  scheduled_at: z.iso.datetime().optional(),
 });
 
 export const postUpdateSchema = postCreateSchema.partial().extend({
@@ -47,13 +47,12 @@ export const tagSchema = z.object({
 
 export const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(120),
-  email: z.string().email("Invalid email address").max(255),
-  subject: z.string().min(1, "Subject is required").max(255),
+  email: z.email("Invalid email address").max(255),
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
 export const newsletterSubscribeSchema = z.object({
-  email: z.string().email("Invalid email address").max(255),
+  email: z.email("Invalid email address").max(255),
 });
 
 export const commentSchema = z.object({

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { CronJobHandler, CronJobPayload } from "@/lib/cron";
 import { getSiteUrl, resolveUrl } from "@/utils/url";
 import { NextRequest, NextResponse } from "next/server";
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
     );
   }
   const url = resolveUrl(baseUrl, body.job.url);
-  console.log({ url });
+  logger.debug("url", { url });
 
   try {
     const result = await CronJobHandler.addJob({
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    logger.debug("error", error as any);
 
     return NextResponse.json(
       {
