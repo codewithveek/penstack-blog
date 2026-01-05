@@ -5,6 +5,12 @@ import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { checkPermission } from "@/lib/auth/check-permission";
+import { newsletterSubscribeSchema } from "@/lib/validation/schemas";
+import { logger } from "@/lib/logger";
+import { rateLimit } from "@/lib/rate-limit";
+import { ZodError } from "zod";
+
+export const revalidate = 3600;
 
 export async function GET(req: NextRequest) {
   return await checkPermission(
@@ -78,6 +84,11 @@ export async function GET(req: NextRequest) {
           message: "Newsletter subscribers fetched successfully",
         });
       } catch (error: any) {
+        logger.error("Error fetching newsletter subscribers", error, {
+          page,
+          limit,
+          search,
+        });
         return NextResponse.json(
           {
             data: null,
@@ -94,33 +105,17 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const rateLimitResponse = rateLimit(req, 5, 60 * 1000);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
-    const { email, name, referrer } = await req.json();
-
-    const _referrer = referrer || (await headers().get("referer")) || null;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-      return NextResponse.json(
-        {
-          data: null,
-          error: "Invalid email format",
-          message: "Please provide a valid email address",
-        },
-        { status: 400 }
-      );
-    }
-
-    if (name && name.length > 50) {
-      return NextResponse.json(
-        {
-          data: null,
-          error: "Name too long",
-          message: "Name must be less than 50 characters",
-        },
-        { status: 400 }
-      );
-    }
-    // check if subscriber already exist
+    const body = await req.json();
+    const validated = newsletterSubscribeSchema.parse(body);
+    const { email } = validated;
+    const name = body.name;
+    const referrer = body.referrer || (await headers().get("referer")) || null;
 
     const existingEmail = await db.query.newsletterSubscribers.findFirst({
       where: eq(
@@ -130,15 +125,15 @@ export async function POST(req: NextRequest) {
     });
 
     if (existingEmail) {
-      // if the user previously unsubscribed
       if (existingEmail.status === "unsubscribed") {
-        // resubscribe them
         await db
           .update(newsletterSubscribers)
           .set({
             status: "subscribed",
           })
           .where(eq(newsletterSubscribers.id, existingEmail.id));
+
+        logger.info("Newsletter resubscription", { email });
 
         return NextResponse.json({
           data: {
@@ -162,7 +157,7 @@ export async function POST(req: NextRequest) {
         .values({
           email: email.toLowerCase(),
           name,
-          referrer: _referrer,
+          referrer,
         })
         .onDuplicateKeyUpdate({
           set: {
@@ -170,6 +165,8 @@ export async function POST(req: NextRequest) {
             status: "subscribed",
           },
         });
+
+      logger.info("Newsletter subscription created", { email });
 
       return NextResponse.json(
         {
@@ -180,6 +177,21 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      logger.warn("Newsletter subscription validation failed", {
+        errors: error.issues,
+      });
+      return NextResponse.json(
+        {
+          data: null,
+          error: "Validation failed",
+          errors: error.issues,
+        },
+        { status: 400 }
+      );
+    }
+
+    logger.error("Error creating newsletter subscription", error);
     return NextResponse.json(
       {
         data: null,

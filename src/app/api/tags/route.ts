@@ -3,11 +3,17 @@ import { db } from "@/db";
 import { tags } from "@/db/schemas/posts.sql";
 import { eq, sql } from "drizzle-orm";
 import { checkPermission } from "@/lib/auth/check-permission";
+import { tagSchema } from "@/lib/validation/schemas";
+import { logger } from "@/lib/logger";
+import { ZodError } from "zod";
+import { revalidatePath } from "next/cache";
+
+export const revalidate = 3600;
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 20;
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const limit = Math.min(100, Number(searchParams.get("limit")) || 20);
   const offset = (page - 1) * limit;
 
   try {
@@ -32,6 +38,7 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    logger.error("Error fetching tags", error, { page, limit });
     return NextResponse.json(
       { data: null, error: "Failed to retrieve tags" },
       { status: 500 }
@@ -44,25 +51,41 @@ export async function POST(request: NextRequest) {
     { requiredPermission: "posts:create" },
     async () => {
       try {
-        const { name, slug } = await request.json();
-
-        if (!name || !slug) {
-          return NextResponse.json(
-            { error: "Name and slug are required" },
-            { status: 400 }
-          );
-        }
+        const body = await request.json();
+        const validated = tagSchema.parse(body);
+        const { name, slug } = validated;
 
         const [response] = await db
           .insert(tags)
           .values({ name, slug })
           .onDuplicateKeyUpdate({ set: { name: sql`name`, slug: sql`slug` } })
           .$returningId();
+
+        logger.info("Tag created", { name, slug, id: response.id });
+
+        revalidatePath("/tags");
+        revalidatePath("/");
+
         return NextResponse.json(
           { data: response, message: "Tag created successfully" },
           { status: 201 }
         );
       } catch (error) {
+        if (error instanceof ZodError) {
+          logger.warn("Tag creation validation failed", {
+            errors: error.issues,
+          });
+          return NextResponse.json(
+            {
+              data: null,
+              error: "Validation failed",
+              errors: error.issues,
+            },
+            { status: 400 }
+          );
+        }
+
+        logger.error("Error creating tag", error);
         return NextResponse.json(
           { data: null, error: "Failed to create Tag" },
           { status: 500 }
