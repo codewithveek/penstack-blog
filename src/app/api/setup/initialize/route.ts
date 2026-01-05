@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
                     username: validated.admin.email.split("@")[0],
                     password: hashedPassword,
                     role_id: 1,
-                    auth_type: "credentials",
+                    auth_type: "local",
                 })
                 .$returningId();
 
