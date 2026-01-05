@@ -29,7 +29,7 @@ export const StandaloneMedia = ({
   showControls = false,
   onCaptionChange,
   onAltChange,
-  className = "",
+  className = "flex-1",
 }: StandaloneMediaProps) => {
   const [isEditingCaption, setIsEditingCaption] = useState(false);
   const [tempCaption, setTempCaption] = useState(caption);

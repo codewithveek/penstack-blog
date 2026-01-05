@@ -1,6 +1,6 @@
-import { getFeaturedPost } from "../lib/queries/featured";
-import { getPosts } from "../lib/queries/posts";
-import FrontPage from "./components/pages/FrontPage";
+import { getFeaturedPost } from "@/lib/queries/featured";
+import { getPosts } from "@/lib/queries/posts";
+import FrontPage from "@/components/pages/FrontPage";
 
 export default async function Home({
   searchParams,
