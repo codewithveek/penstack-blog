@@ -112,19 +112,26 @@ export default async function RootLayout({
       },
     },
     inLanguage: "en-US",
-    copyrightYear: "2025",
+    copyrightYear: new Date().getFullYear().toString(),
 
     copyrightHolder: {
       "@type": "Organization",
-      name: "GEL Tech NG",
+      name: siteSettings.siteName.value,
     },
   };
+
+  const organizationName = siteSettings.organizationName?.value || siteSettings.siteName.value;
+  const organizationUrl = siteSettings.organizationUrl?.value || getSiteUrl();
+  const organizationEmail = siteSettings.organizationEmail?.value || siteSettings.siteEmail?.value;
+  const organizationPhone = siteSettings.organizationPhone?.value;
+  const organizationAddress = siteSettings.organizationAddress?.value;
+
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": `https://geltechng.com`,
-    name: "GEL Tech NG",
-    url: "https://geltechng.com",
+    "@id": organizationUrl,
+    name: organizationName,
+    url: organizationUrl,
     logo: {
       "@type": "ImageObject",
       url: siteSettings.siteLogo.value,
@@ -132,27 +139,31 @@ export default async function RootLayout({
       height: "300",
     },
     description: siteSettings.siteDescription.value,
-    foundingDate: "2025-01-10",
-    founder: {
-      "@type": "Person",
-      name: "Victory Lucky",
-    },
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "13/15 Fadu Avenue",
-      addressLocality: "Ejigbo",
-      addressRegion: "Lagos",
-      postalCode: "100261",
-      addressCountry: "Nigeria",
-    },
-    email: "info@geltechng.com",
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "+234-8162872504",
-      contactType: "customer service",
-      email: "info@geltechng.com",
-      availableLanguage: "English",
-    },
+    ...(siteSettings.organizationFoundingDate?.value && {
+      foundingDate: siteSettings.organizationFoundingDate.value,
+    }),
+    ...(siteSettings.organizationFounder?.value && {
+      founder: {
+        "@type": "Person",
+        name: siteSettings.organizationFounder.value,
+      },
+    }),
+    ...(organizationAddress && {
+      address: {
+        "@type": "PostalAddress",
+        ...JSON.parse(organizationAddress),
+      },
+    }),
+    ...(organizationEmail && { email: organizationEmail }),
+    ...(organizationPhone && {
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: organizationPhone,
+        contactType: "customer service",
+        ...(organizationEmail && { email: organizationEmail }),
+        availableLanguage: "English",
+      },
+    }),
     sameAs: socialSettings
       .filter((setting) => !isEmpty(setting.value))
       .map((setting) => setting.value),

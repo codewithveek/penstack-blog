@@ -67,25 +67,18 @@ async function verifyWebhookSignature(req: NextRequest) {
   const secret = process.env.RESEND_WEBHOOK_SECRET;
   if (!secret) throw new Error("RESEND_WEBHOOK_SECRET is not set");
 
-  logger.debug("verifyWebhookSignature", {
-    head: req.headers,
-    secret,
-    payload2: req.text(),
-  });
-
-  const payload = await req.json();
+  const payload = await req.text();
   const reqHeaders = headers() as unknown as IncomingMessage["headers"] &
     WebhookRequiredHeaders;
 
   const webhook = new Webhook(secret);
   const event = webhook.verify(payload, reqHeaders) as ResendWebhookEvent;
+
   if (!event) {
     throw new Error("Invalid webhook payload");
   }
-  const body = JSON.stringify(event) as unknown as ResendWebhookEvent;
-  logger.debug("verifyWebhookSignature", { body, event });
 
-  return body;
+  logger.debug("Webhook verified", { type: event.type });
+
+  return event;
 }
-
-// TODO: fix this API
