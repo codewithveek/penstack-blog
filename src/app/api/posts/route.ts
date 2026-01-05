@@ -12,8 +12,12 @@ import {
 } from "@/utils";
 import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { postCreateSchema } from "@/lib/validation/schemas";
+import { logger } from "@/lib/logger";
+import { ZodError } from "zod";
+import { revalidatePath } from "next/cache";
 
-// export const revalidate = 3600; // revalidate every hour
+export const revalidate = 3600;
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -47,6 +51,7 @@ export async function GET(req: NextRequest) {
       message: "All posts fetched successfully",
     });
   } catch (error: any) {
+    logger.error("Error fetching posts", error, { page, limit, search });
     return NextResponse.json(
       {
         data: null,
@@ -62,17 +67,20 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   await checkPermission({ requiredPermission: "posts:create" }, async () => {
-    const { content, ...rest } = await req.json();
-
     try {
+      const body = await req.json();
+      const validated = postCreateSchema.parse(body);
+      const { content, scheduled_at, ...rest } = validated;
+
       const post = await db.transaction(async (tx) => {
         const [insertResponse] = await tx
           .insert(posts)
           .values({
             ...rest,
-
+            content,
+            scheduled_at: scheduled_at ? new Date(scheduled_at) : undefined,
             reading_time: calculateReadingTime(
-              stripHtml(decodeAndSanitizeHtml(content))
+              stripHtml(decodeAndSanitizeHtml(content || ""))
             ),
           })
           .$returningId();
@@ -81,16 +89,38 @@ export async function POST(req: NextRequest) {
         });
       });
 
+      logger.info("Post created successfully", {
+        postId: post?.id,
+        title: post?.title,
+        authorId: rest.author_id
+      });
+
+      revalidatePath("/");
+      revalidatePath("/posts");
+      if (post?.slug) {
+        revalidatePath(`/posts/${post.slug}`);
+      }
+
       return NextResponse.json({
         data: post,
         message: "Post created successfully",
       });
     } catch (error: any) {
+      if (error instanceof ZodError) {
+        logger.warn("Post creation validation failed", { errors: error.issues });
+        return NextResponse.json({
+          data: null,
+          message: "Validation failed",
+          errors: error.issues,
+        }, { status: 400 });
+      }
+
+      logger.error("Error creating post", error);
       return NextResponse.json({
         data: null,
         error: error?.message,
         message: "Error creating post",
-      });
+      }, { status: 500 });
     }
   });
 }
