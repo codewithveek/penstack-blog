@@ -139,7 +139,7 @@ export const NavItemWithChildren = ({
         w="full"
         p={0}
         roundedBottom={openItems.includes(item.href) ? "0" : "md"}
-        size={"md"}
+        size={"sm"}
         cursor="pointer"
         onClick={() => toggleOpen(item.href)}
         justifyContent={isMinimized ? "center" : "space-between"}
@@ -149,24 +149,24 @@ export const NavItemWithChildren = ({
           align={"center"}
           justify={isMinimized ? "center" : "space-between"}
           gap={4}
-          py={"8px"}
+          py={"6px"}
           px={isMinimized ? 2 : 4}
-          fontSize={"medium"}
+          fontSize={"small"}
           w="full"
           bg={
             item.children?.some((child) => pathname.startsWith(child.href)) ||
-            openItems.includes(item.href)
+              openItems.includes(item.href)
               ? navBtnBg
               : "transparent"
           }
           color={
             item.children?.some((child) => pathname.startsWith(child.href)) ||
-            openItems.includes(item.href)
+              openItems.includes(item.href)
               ? navBtnActiveColor
               : textColor
           }
           _hover={{
-            bg: openItems.includes(item.href) ? navBtnBgHover : "transparent",
+            bg: openItems.includes(item.href) ? navBtnBgHover : "gray.100",
             color: hoverTextColor,
           }}
         >

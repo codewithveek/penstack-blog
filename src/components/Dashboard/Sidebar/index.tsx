@@ -91,7 +91,7 @@ export const DashboardSidebar = ({
                 alignSelf={"start"}
                 colorScheme="gray"
                 color={siteNameColor}
-                // display={{ base: "none", md: "flex" }}
+              // display={{ base: "none", md: "flex" }}
               >
                 {isMinimized ? <LuChevronsRight /> : <LuChevronsLeft />}
               </IconButton>
@@ -100,7 +100,7 @@ export const DashboardSidebar = ({
         </Box>
 
         <Stack
-          spacing={3}
+          spacing={2}
           flexGrow={1}
           px={isMinimized ? 3 : 4}
           justifyContent={"space-between"}
@@ -142,7 +142,7 @@ export const DashboardSidebar = ({
             justify={"flex-end"}
             mt={"auto"}
             pl={isMinimized ? 0 : 3}
-            // pb={5}
+          // pb={5}
           >
             <LightDarkModeSwitch showLabel={!isMinimized} />
           </Stack>

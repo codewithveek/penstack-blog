@@ -12,6 +12,7 @@ import {
   LuMessageSquare,
   LuMail,
   LuSettings,
+  LuUnplug
 } from "react-icons/lu";
 
 const iconMap = {
@@ -22,7 +23,7 @@ const iconMap = {
   LuCombine,
   LuMessageSquare,
   LuMail,
-  LuSettings,
+  LuSettings, LuUnplug
 };
 export const processedNavLinksWithIcons = (
   navLinks: NavItemWithoutPermission[]
@@ -32,11 +33,11 @@ export const processedNavLinksWithIcons = (
     icon: iconMap[link.iconName as keyof typeof iconMap], // Convert string to component
     children: link.children
       ? link.children.map((child) => ({
-          ...child,
-          icon: child.iconName
-            ? iconMap[child.iconName as keyof typeof iconMap]
-            : undefined,
-        }))
+        ...child,
+        icon: child.iconName
+          ? iconMap[child.iconName as keyof typeof iconMap]
+          : undefined,
+      }))
       : undefined,
   }));
 const routePermissions = {
@@ -49,13 +50,14 @@ const routePermissions = {
   "/dashboard/comments": DASH_NAV_PERMISSIONS.VIEW_COMMENTS,
   "/dashboard/newletters": DASH_NAV_PERMISSIONS.VIEW_NEWSLETTERS,
   "/dashboard/taxonomies": DASH_NAV_PERMISSIONS.VIEW_DASHBOARD,
+  "/dashboard/integrations": DASH_NAV_PERMISSIONS.VIEW_SETTINGS,
 } as const;
 
 // Navigation structure without embedded permissions
 
 export const dashboardNavLinks2: NavItemWithoutPermission[] = [
   {
-    iconName: "LuHome",
+    iconName: "LuHouse",
     label: "Overview",
     href: "/dashboard/overview",
   },
@@ -103,6 +105,11 @@ export const dashboardNavLinks2: NavItemWithoutPermission[] = [
     iconName: "LuSettings",
     label: "Settings",
     href: "/dashboard/settings",
+  },
+  {
+    iconName: "LuUnplug",
+    label: "Integrations",
+    href: "/dashboard/integrations",
   },
 ];
 export const getRoutePermission = (route: string) => {
