@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "08b1d910-9e5b-4c8f-9481-e55d2d32bb01",
+  "id": "ae7c788e-6b08-4b75-be07-27e0341c9af5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "ContactMessages": {
@@ -44,7 +44,29 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "email_idx": {
+          "name": "email_idx",
+          "columns": [
+            "email"
+          ],
+          "isUnique": false
+        },
+        "name_idx": {
+          "name": "name_idx",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        },
+        "created_at_idx": {
+          "name": "created_at_idx",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "ContactMessages_id": {
@@ -54,7 +76,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "Medias": {
       "name": "Medias",
@@ -78,6 +101,20 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "thumbnail": {
+          "name": "thumbnail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "preview": {
+          "name": "preview",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "type": {
@@ -150,10 +187,40 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_media_name": {
+          "name": "idx_media_name",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        },
+        "idx_media_type": {
+          "name": "idx_media_type",
+          "columns": [
+            "type"
+          ],
+          "isUnique": false
+        },
+        "idx_media_folder": {
+          "name": "idx_media_folder",
+          "columns": [
+            "folder"
+          ],
+          "isUnique": false
+        },
+        "idx_media_created_at": {
+          "name": "idx_media_created_at",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "Medias_id": {
@@ -163,7 +230,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "EmailEvents": {
       "name": "EmailEvents",
@@ -198,7 +266,7 @@
         },
         "event_type": {
           "name": "event_type",
-          "type": "varchar(50)",
+          "type": "enum('sent','delivered','delivery_delayed','bounced','complained','opened','clicked')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -219,7 +287,43 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "email_id_index": {
+          "name": "email_id_index",
+          "columns": [
+            "email_id"
+          ],
+          "isUnique": false
+        },
+        "newsletter_id_index": {
+          "name": "newsletter_id_index",
+          "columns": [
+            "newsletter_id"
+          ],
+          "isUnique": false
+        },
+        "subscriber_id_index": {
+          "name": "subscriber_id_index",
+          "columns": [
+            "subscriber_id"
+          ],
+          "isUnique": false
+        },
+        "event_type_index": {
+          "name": "event_type_index",
+          "columns": [
+            "event_type"
+          ],
+          "isUnique": false
+        },
+        "created_at_index": {
+          "name": "created_at_index",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "EmailEvents_id": {
@@ -229,7 +333,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "NewsLetterRecipients": {
       "name": "NewsLetterRecipients",
@@ -271,7 +376,29 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "newsletter_id_index": {
+          "name": "newsletter_id_index",
+          "columns": [
+            "newsletter_id"
+          ],
+          "isUnique": false
+        },
+        "subscriber_id_index": {
+          "name": "subscriber_id_index",
+          "columns": [
+            "subscriber_id"
+          ],
+          "isUnique": false
+        },
+        "sent_at_index": {
+          "name": "sent_at_index",
+          "columns": [
+            "sent_at"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "NewsLetterRecipients_id": {
@@ -281,7 +408,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "NewsLetterSubscribers": {
       "name": "NewsLetterSubscribers",
@@ -309,7 +437,7 @@
         },
         "status": {
           "name": "status",
-          "type": "varchar(255)",
+          "type": "enum('subscribed','unsubscribed')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -317,7 +445,7 @@
         },
         "verification_status": {
           "name": "verification_status",
-          "type": "varchar(255)",
+          "type": "enum('verified','unverified')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -365,7 +493,8 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {
@@ -388,14 +517,21 @@
           "columns": [
             "status"
           ],
-          "isUnique": true
+          "isUnique": false
         },
         "verification_status_index": {
           "name": "verification_status_index",
           "columns": [
             "verification_status"
           ],
-          "isUnique": true
+          "isUnique": false
+        },
+        "created_at_index": {
+          "name": "created_at_index",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},
@@ -414,7 +550,8 @@
             "email"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
     },
     "NewsLetters": {
       "name": "NewsLetters",
@@ -504,10 +641,40 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "content_id_index": {
+          "name": "content_id_index",
+          "columns": [
+            "content_id"
+          ],
+          "isUnique": true
+        },
+        "status_index": {
+          "name": "status_index",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        },
+        "scheduled_for_index": {
+          "name": "scheduled_for_index",
+          "columns": [
+            "scheduled_for"
+          ],
+          "isUnique": false
+        },
+        "sent_at_index": {
+          "name": "sent_at_index",
+          "columns": [
+            "sent_at"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "NewsLetters_id": {
@@ -517,7 +684,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "ActivePostViewers": {
       "name": "ActivePostViewers",
@@ -567,7 +735,36 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_active_viewers_post_id": {
+          "name": "idx_active_viewers_post_id",
+          "columns": [
+            "post_id"
+          ],
+          "isUnique": false
+        },
+        "idx_active_viewers_user_id": {
+          "name": "idx_active_viewers_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "idx_active_viewers_session_id": {
+          "name": "idx_active_viewers_session_id",
+          "columns": [
+            "session_id"
+          ],
+          "isUnique": false
+        },
+        "idx_active_viewers_last_active": {
+          "name": "idx_active_viewers_last_active",
+          "columns": [
+            "last_active"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "ActivePostViewers_id": {
@@ -577,7 +774,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "PostViewAnalytics": {
       "name": "PostViewAnalytics",
@@ -607,7 +805,7 @@
           "name": "session_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "device_type": {
@@ -698,6 +896,34 @@
             "session_id"
           ],
           "isUnique": false
+        },
+        "idx_analytics_post_id": {
+          "name": "idx_analytics_post_id",
+          "columns": [
+            "post_id"
+          ],
+          "isUnique": false
+        },
+        "idx_analytics_user_id": {
+          "name": "idx_analytics_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "idx_analytics_created_at": {
+          "name": "idx_analytics_created_at",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        },
+        "idx_analytics_country": {
+          "name": "idx_analytics_country",
+          "columns": [
+            "country"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},
@@ -709,7 +935,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "PostViews": {
       "name": "PostViews",
@@ -774,6 +1001,27 @@
             "viewed_at"
           ],
           "isUnique": false
+        },
+        "idx_post_views_post_id": {
+          "name": "idx_post_views_post_id",
+          "columns": [
+            "post_id"
+          ],
+          "isUnique": false
+        },
+        "idx_post_views_user_id": {
+          "name": "idx_post_views_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "idx_post_views_viewed_at": {
+          "name": "idx_post_views_viewed_at",
+          "columns": [
+            "viewed_at"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},
@@ -785,7 +1033,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "PostReactions": {
       "name": "PostReactions",
@@ -832,10 +1081,33 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_post_reactions_post_id": {
+          "name": "idx_post_reactions_post_id",
+          "columns": [
+            "post_id"
+          ],
+          "isUnique": false
+        },
+        "idx_post_reactions_user_id": {
+          "name": "idx_post_reactions_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "idx_post_reactions_reaction_type_id": {
+          "name": "idx_post_reactions_reaction_type_id",
+          "columns": [
+            "reaction_type_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "PostReactions_id": {
@@ -854,7 +1126,8 @@
             "reaction_type_id"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
     },
     "PostShares": {
       "name": "PostShares",
@@ -903,7 +1176,29 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_post_shares_post_id": {
+          "name": "idx_post_shares_post_id",
+          "columns": [
+            "post_id"
+          ],
+          "isUnique": false
+        },
+        "idx_post_shares_user_id": {
+          "name": "idx_post_shares_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "idx_post_shares_share_type": {
+          "name": "idx_post_shares_share_type",
+          "columns": [
+            "share_type"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "PostShares_id": {
@@ -913,7 +1208,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "ReactionTypes": {
       "name": "ReactionTypes",
@@ -979,7 +1275,22 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_reaction_type_name": {
+          "name": "idx_reaction_type_name",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        },
+        "idx_reaction_type_order": {
+          "name": "idx_reaction_type_order",
+          "columns": [
+            "order"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "ReactionTypes_id": {
@@ -996,7 +1307,8 @@
             "name"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
     },
     "Categories": {
       "name": "Categories",
@@ -1036,19 +1348,20 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {
-        "name_index": {
-          "name": "name_index",
+        "idx_name": {
+          "name": "idx_name",
           "columns": [
             "name"
           ],
           "isUnique": false
         },
-        "slug_unique_index": {
-          "name": "slug_unique_index",
+        "idx_slug": {
+          "name": "idx_slug",
           "columns": [
             "slug"
           ],
@@ -1071,7 +1384,8 @@
             "slug"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
     },
     "Comments": {
       "name": "Comments",
@@ -1126,7 +1440,8 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {
@@ -1134,6 +1449,27 @@
           "name": "idx_status",
           "columns": [
             "status"
+          ],
+          "isUnique": false
+        },
+        "idx_post_id": {
+          "name": "idx_post_id",
+          "columns": [
+            "post_id"
+          ],
+          "isUnique": false
+        },
+        "idx_author_id": {
+          "name": "idx_author_id",
+          "columns": [
+            "author_id"
+          ],
+          "isUnique": false
+        },
+        "idx_created_at": {
+          "name": "idx_created_at",
+          "columns": [
+            "created_at"
           ],
           "isUnique": false
         }
@@ -1147,7 +1483,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "PostSeoMeta": {
       "name": "PostSeoMeta",
@@ -1186,6 +1523,37 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "image": {
+          "name": "image",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "keywords": {
+          "name": "keywords",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {
@@ -1202,6 +1570,13 @@
             "canonical_url"
           ],
           "isUnique": false
+        },
+        "idx_post_id": {
+          "name": "idx_post_id",
+          "columns": [
+            "post_id"
+          ],
+          "isUnique": true
         }
       },
       "foreignKeys": {},
@@ -1213,7 +1588,15 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "PostSeoMeta_post_id_unique": {
+          "name": "PostSeoMeta_post_id_unique",
+          "columns": [
+            "post_id"
+          ]
+        }
+      },
+      "checkConstraint": {}
     },
     "PostTags": {
       "name": "PostTags",
@@ -1233,10 +1616,20 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_post_tag": {
+          "name": "idx_post_tag",
+          "columns": [
+            "post_id",
+            "tag_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "Posts": {
       "name": "Posts",
@@ -1252,7 +1645,7 @@
           "name": "title",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "content": {
@@ -1276,12 +1669,36 @@
           "notNull": false,
           "autoincrement": false
         },
+        "generate_toc": {
+          "name": "generate_toc",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "toc_depth": {
+          "name": "toc_depth",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 2
+        },
+        "toc": {
+          "name": "toc",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "post_id": {
           "name": "post_id",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(UUID())"
         },
         "slug": {
           "name": "slug",
@@ -1392,11 +1809,7 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
-          "generated": {
-            "as": "(\n        CASE \n            WHEN status = 'published' THEN updated_at\n            ELSE NULL\n        END\n    )",
-            "type": "stored"
-          }
+          "autoincrement": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -1431,12 +1844,40 @@
           ],
           "isUnique": false
         },
-        "slug_unique_index": {
-          "name": "slug_unique_index",
+        "idx_slug": {
+          "name": "idx_slug",
           "columns": [
             "slug"
           ],
           "isUnique": true
+        },
+        "idx_author": {
+          "name": "idx_author",
+          "columns": [
+            "author_id"
+          ],
+          "isUnique": false
+        },
+        "idx_category": {
+          "name": "idx_category",
+          "columns": [
+            "category_id"
+          ],
+          "isUnique": false
+        },
+        "idx_created_at": {
+          "name": "idx_created_at",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        },
+        "idx_published_at": {
+          "name": "idx_published_at",
+          "columns": [
+            "published_at"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},
@@ -1461,7 +1902,8 @@
             "slug"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
     },
     "Replies": {
       "name": "Replies",
@@ -1516,7 +1958,8 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {
@@ -1524,6 +1967,27 @@
           "name": "idx_status",
           "columns": [
             "status"
+          ],
+          "isUnique": false
+        },
+        "idx_comment_id": {
+          "name": "idx_comment_id",
+          "columns": [
+            "comment_id"
+          ],
+          "isUnique": false
+        },
+        "idx_author_id": {
+          "name": "idx_author_id",
+          "columns": [
+            "author_id"
+          ],
+          "isUnique": false
+        },
+        "idx_created_at": {
+          "name": "idx_created_at",
+          "columns": [
+            "created_at"
           ],
           "isUnique": false
         }
@@ -1537,7 +2001,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "Tags": {
       "name": "Tags",
@@ -1577,19 +2042,20 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {
-        "name_index": {
-          "name": "name_index",
+        "idx_name": {
+          "name": "idx_name",
           "columns": [
             "name"
           ],
           "isUnique": false
         },
-        "slug_unique_index": {
-          "name": "slug_unique_index",
+        "idx_slug": {
+          "name": "idx_slug",
           "columns": [
             "slug"
           ],
@@ -1612,7 +2078,8 @@
             "slug"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
     },
     "SiteSettings": {
       "name": "SiteSettings",
@@ -1638,6 +2105,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "encrypted": {
           "name": "encrypted",
           "type": "boolean",
@@ -1654,6 +2128,29 @@
           "autoincrement": false,
           "default": false
         },
+        "can_encrypt": {
+          "name": "can_encrypt",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "folder": {
+          "name": "folder",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'misc'"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1668,7 +2165,8 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {
@@ -1678,6 +2176,41 @@
             "key"
           ],
           "isUnique": true
+        },
+        "idx_encrypted": {
+          "name": "idx_encrypted",
+          "columns": [
+            "encrypted"
+          ],
+          "isUnique": false
+        },
+        "idx_enabled": {
+          "name": "idx_enabled",
+          "columns": [
+            "enabled"
+          ],
+          "isUnique": false
+        },
+        "idx_can_encrypt": {
+          "name": "idx_can_encrypt",
+          "columns": [
+            "can_encrypt"
+          ],
+          "isUnique": false
+        },
+        "idx_created_at": {
+          "name": "idx_created_at",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        },
+        "idx_updated_at": {
+          "name": "idx_updated_at",
+          "columns": [
+            "updated_at"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},
@@ -1689,7 +2222,370 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "EmailServiceConfig": {
+      "name": "EmailServiceConfig",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "service_type": {
+          "name": "service_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "api_key": {
+          "name": "api_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "smtp_host": {
+          "name": "smtp_host",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "smtp_port": {
+          "name": "smtp_port",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "smtp_user": {
+          "name": "smtp_user",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "smtp_password": {
+          "name": "smtp_password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "smtp_secure": {
+          "name": "smtp_secure",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "from_email": {
+          "name": "from_email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "from_name": {
+          "name": "from_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "additional_config": {
+          "name": "additional_config",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "EmailServiceConfig_id": {
+          "name": "EmailServiceConfig_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "OAuthProviderAuditLog": {
+      "name": "OAuthProviderAuditLog",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "changed_by": {
+          "name": "changed_by",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "changes": {
+          "name": "changes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "OAuthProviderAuditLog_id": {
+          "name": "OAuthProviderAuditLog_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "OAuthProviders": {
+      "name": "OAuthProviders",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "provider_name": {
+          "name": "provider_name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "client_id": {
+          "name": "client_id",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "client_secret": {
+          "name": "client_secret",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_enabled": {
+          "name": "is_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "redirect_uri": {
+          "name": "redirect_uri",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "scopes": {
+          "name": "scopes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "additional_config": {
+          "name": "additional_config",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "OAuthProviders_id": {
+          "name": "OAuthProviders_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "OAuthProviders_provider_name_unique": {
+          "name": "OAuthProviders_provider_name_unique",
+          "columns": [
+            "provider_name"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "SetupStatus": {
+      "name": "SetupStatus",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "is_completed": {
+          "name": "is_completed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "setup_version": {
+          "name": "setup_version",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "SetupStatus_id": {
+          "name": "SetupStatus_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "UserBookmarks": {
       "name": "UserBookmarks",
@@ -1728,7 +2624,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "Permissions": {
       "name": "Permissions",
@@ -1742,7 +2639,7 @@
         },
         "name": {
           "name": "name",
-          "type": "enum('dashboard:access','posts:create','posts:edit','posts:delete','posts:publish','posts:read','posts:schedule','posts:review','posts:view','users:read','users:write','users:edit','users:delete','roles:read','roles:write','roles:delete','media:upload','media:read','media:delete','media:edit','settings:read','settings:write','comments:create','comments:moderate','comments:read','comments:delete','comments:reply','newsletters:read','newsletters:write','newsletters:delete','auth:register','auth:login','categories:create','categories:read','tags:read','tags:create','pages:read','pages:edit','pages:write','seo:edit','seo:view','analytics:view','analytics:export')",
+          "type": "enum('dashboard:access','posts:create','posts:edit','posts:delete','posts:publish','posts:read','posts:schedule','posts:review','posts:view','users:read','users:write','users:edit','users:delete','roles:read','roles:write','roles:delete','media:upload','media:read','media:delete','media:edit','settings:read','settings:write','comments:create','comments:moderate','comments:read','comments:delete','comments:reply','newsletters:read','newsletters:write','newsletters:delete','auth:register','auth:login','categories:create','categories:read','tags:read','tags:create','pages:read','pages:edit','pages:delete','pages:write','seo:edit','seo:view','analytics:view','analytics:export')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1780,7 +2677,8 @@
             "name"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
     },
     "RolePermissions": {
       "name": "RolePermissions",
@@ -1807,7 +2705,16 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "role_permission_idx": {
+          "name": "role_permission_idx",
+          "columns": [
+            "role_id",
+            "permission_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "RolePermissions_id": {
@@ -1817,7 +2724,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "Roles": {
       "name": "Roles",
@@ -1869,7 +2777,101 @@
             "name"
           ]
         }
-      }
+      },
+      "checkConstraint": {}
+    },
+    "UserMeta": {
+      "name": "UserMeta",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_pro_member": {
+          "name": "is_pro_member",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "last_login": {
+          "name": "last_login",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "last_login_ip": {
+          "name": "last_login_ip",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "last_login_location": {
+          "name": "last_login_location",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "last_login_device": {
+          "name": "last_login_device",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "user_meta_user_id_idx": {
+          "name": "user_meta_user_id_idx",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "UserMeta_id": {
+          "name": "UserMeta_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "UserRoles": {
       "name": "UserRoles",
@@ -1896,7 +2898,16 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "user_role_idx": {
+          "name": "user_role_idx",
+          "columns": [
+            "user_id",
+            "role_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "UserRoles_id": {
@@ -1906,7 +2917,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "UserSocials": {
       "name": "UserSocials",
@@ -1995,10 +3007,19 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "user_socials_user_id_idx": {
+          "name": "user_socials_user_id_idx",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "UserSocials_id": {
@@ -2008,7 +3029,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "Users": {
       "name": "Users",
@@ -2135,10 +3157,40 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "onUpdate": true
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "email_idx": {
+          "name": "email_idx",
+          "columns": [
+            "email"
+          ],
+          "isUnique": false
+        },
+        "username_idx": {
+          "name": "username_idx",
+          "columns": [
+            "username"
+          ],
+          "isUnique": false
+        },
+        "auth_id_idx": {
+          "name": "auth_id_idx",
+          "columns": [
+            "auth_id"
+          ],
+          "isUnique": false
+        },
+        "role_id_idx": {
+          "name": "role_id_idx",
+          "columns": [
+            "role_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "Users_id": {
@@ -2148,7 +3200,8 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     },
     "VerificationTokens": {
       "name": "VerificationTokens",
@@ -2192,9 +3245,11 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraint": {}
     }
   },
+  "views": {},
   "_meta": {
     "schemas": {},
     "tables": {},

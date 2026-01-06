@@ -1,1 +1,0 @@
-ALTER TABLE `Posts` MODIFY COLUMN `published_at` timestamp;

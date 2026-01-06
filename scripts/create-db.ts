@@ -24,6 +24,8 @@ export async function createDatabaseIfNotExists() {
     } else {
       console.log(`Database '${dbName}' already exists.`);
     }
+  } catch (err) {
+    throw err
   } finally {
     await connection.end();
   }

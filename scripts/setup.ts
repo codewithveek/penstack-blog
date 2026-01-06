@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 const commands = [
   "npm run db:create",
   "npm run db:gen",
-  "npm run db:push",
+  "npm run db:migrate",
   "npm run db:seeds",
 ];
 
