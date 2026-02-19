@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/themes/smooth-land/PostsCards";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { LuArrowRight } from "react-icons/lu";
 import { FeaturedPost } from "@/themes/smooth-land/FeaturedPost";
 import { FeaturedPostType, PaginatedResponse, PostSelect } from "@/types";

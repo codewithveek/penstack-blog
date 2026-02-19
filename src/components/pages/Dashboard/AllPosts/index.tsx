@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 
 import { format } from "date-fns";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/hooks/useAuth";
 import { PaginatedResponse, PostInsert, PostSelect } from "@/types";

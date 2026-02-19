@@ -14,7 +14,7 @@ import {
   StackDivider,
 } from "@chakra-ui/react";
 import { PostSelect } from "@/types";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { ThemedSocialShareGroup } from "../../SocialShares";
 import {
   generatePostDescription,

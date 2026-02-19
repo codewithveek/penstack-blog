@@ -14,7 +14,7 @@ import {
 import { LuEye } from "react-icons/lu";
 import Loader from "../../../Loader";
 import { format } from "date-fns";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { generatePostUrl } from "@/utils";
 import { memo } from "react";
 import { useSiteConfig } from "@/context/SiteConfig";

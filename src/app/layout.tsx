@@ -1,7 +1,7 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import "./globals.css";
 import { fonts } from "@/lib/fonts";
-import { ChakraProvider } from "@/providers/chakra";
+import { ChakraUIProvider } from "@/providers/chakra";
 import ReactQueryClient from "@/providers/react-query";
 import AuthProvider from "@/providers/auth";
 
@@ -209,7 +209,7 @@ export default async function RootLayout({
             <ReactQueryClient>
               <AuthProvider>
                 <NuqsProvider>
-                  <ChakraProvider>{children}</ChakraProvider>
+                  <ChakraUIProvider>{children}</ChakraUIProvider>
                 </NuqsProvider>
               </AuthProvider>
             </ReactQueryClient>

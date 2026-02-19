@@ -1,4 +1,4 @@
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { Button, useColorModeValue } from "@chakra-ui/react";
 
 export const SignUp = () => {

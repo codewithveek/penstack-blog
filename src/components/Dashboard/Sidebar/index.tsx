@@ -14,7 +14,7 @@ import { SidebarNavItem } from "./NavItem";
 import { NavItemWithChildren } from "./NavItemWithDropdown";
 import { AppLogoAndName } from "../../AppLogoAndName";
 import { useSiteConfig } from "@/context/SiteConfig";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { processedNavLinksWithIcons } from "@/lib/dashboard/nav-links";
 import { NavItemWithoutPermission } from "@/types";
 

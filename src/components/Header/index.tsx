@@ -31,7 +31,7 @@ import {
 } from "@chakra-ui/react";
 import { LuMenu, LuChevronDown, LuSearch } from "react-icons/lu";
 import { usePathname, useRouter } from "next/navigation";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
 import { useCategories } from "@/hooks/useCategories";

@@ -1,4 +1,4 @@
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { AsProps, Heading } from "@chakra-ui/react";
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import { memo, PropsWithChildren, ReactNode, useMemo } from "react";

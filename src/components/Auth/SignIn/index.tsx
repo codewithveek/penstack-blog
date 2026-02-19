@@ -31,7 +31,7 @@ import {
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import PageWrapper from "@/components//PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 
 export default function SignIn() {
   return (

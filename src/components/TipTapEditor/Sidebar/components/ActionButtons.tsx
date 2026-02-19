@@ -13,7 +13,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { memo, useState } from "react";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 import { LuExternalLink } from "react-icons/lu";
 
 export const ActionButtons = memo(() => {

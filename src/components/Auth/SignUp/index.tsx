@@ -30,7 +30,7 @@ import { signIn } from "@/lib/auth/auth-client";
 import axios from "axios";
 import PageWrapper from "@/components//PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
-import { Link } from "@chakra-ui/next-js";
+import Link from "next/link";
 
 export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
