@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { parseUserAgent } from "@/utils/user-agent-parser";
 import { trackPostView } from "@/utils/views-tracking";
 import { getGeoLocation } from "@/utils/geo-ip";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import { getOrCreateSessionId } from "@/utils/views-tracking/session";
 
 export async function POST(req: NextRequest) {

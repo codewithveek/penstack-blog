@@ -6,7 +6,7 @@ import { oauthProviderSchema } from "@/lib/validation/oauth-schemas";
 import { logger } from "@/lib/logger";
 import { ZodError } from "zod";
 import { encryptKey, decryptKey } from "@/lib/encryption";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 
 export const revalidate = 0;
 

@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { users } from "@/db/schemas";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import { hash } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -67,7 +67,7 @@ export async function PATCH(
     }
 
     // Check if user is owner or has permission
-    if (user.auth_id !== currentUser?.id && currentUser?.role_id !== 1) {
+    if (user.auth_id !== currentUser?.id && (currentUser as any)?.role_id !== 1) {
       return NextResponse.json(
         {
           data: null,

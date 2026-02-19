@@ -4,7 +4,7 @@ import { fonts } from "@/lib/fonts";
 import { ChakraProvider } from "@/providers/chakra";
 import ReactQueryClient from "@/providers/react-query";
 import AuthProvider from "@/providers/auth";
-import { getSession } from "@/lib/auth/next-auth";
+
 import { SiteConfigProvider } from "@/context/SiteConfig";
 import { getSettings } from "@/lib/queries/settings";
 import { NuqsProvider } from "@/providers/nuqs";
@@ -87,7 +87,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
+
   const siteSettings = await getSettings();
   const groupedSettings = groupSettingsByFolder(siteSettings);
   const socialSettings = groupedSettings["social"] || [];
@@ -207,7 +207,7 @@ export default async function RootLayout({
 
           <SiteConfigProvider initialConfig={siteSettings}>
             <ReactQueryClient>
-              <AuthProvider session={session}>
+              <AuthProvider>
                 <NuqsProvider>
                   <ChakraProvider>{children}</ChakraProvider>
                 </NuqsProvider>

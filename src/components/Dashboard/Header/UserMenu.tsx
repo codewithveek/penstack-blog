@@ -9,7 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-import { signOut } from "next-auth/react";
+import { signOut } from "@/lib/auth/auth-client";
 import { LuChevronDown, LuLogOut } from "react-icons/lu";
 
 export const UserMenu = () => {
@@ -25,7 +25,7 @@ export const UserMenu = () => {
             <Avatar
               size={"xs"}
               name={user?.name}
-              src={user?.avatar || user?.image}
+              src={(user as any)?.avatar || user?.image}
             />
           }
           rightIcon={<LuChevronDown />}

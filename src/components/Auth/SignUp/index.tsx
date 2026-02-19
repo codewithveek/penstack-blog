@@ -26,7 +26,7 @@ import {
   CardBody,
 } from "@chakra-ui/react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import { signIn } from "next-auth/react";
+import { signIn } from "@/lib/auth/auth-client";
 import axios from "axios";
 import PageWrapper from "@/components//PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
@@ -181,7 +181,7 @@ export default function SignUp() {
                   GitHub
                 </Button> */}
                 <Button
-                  onClick={() => signIn("google")}
+                  onClick={() => signIn.social({ provider: "google" })}
                   leftIcon={<FaGoogle />}
                   width="full"
                   size="lg"

@@ -1,17 +1,23 @@
 import { NextResponse } from "next/server";
 import { getUserPermissions } from "@/lib/auth/permissions";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import { TPermissions } from "../../types";
-
-import { Session } from "next-auth";
 import { getPublicPermissions } from "./public-permissions";
+
+type SessionUser = {
+  id: string;
+  email: string;
+  name: string;
+  image?: string | null;
+  [key: string]: any;
+};
 
 export async function checkPermission<T = NextResponse>(
   {
     isOwner,
     requiredPermission,
   }: { requiredPermission: TPermissions; isOwner?: boolean },
-  handler: (user?: Session["user"]) => Promise<T>,
+  handler: (user?: SessionUser) => Promise<T>,
   isServerComp: boolean = false
 ) {
   // First check if this is a public permission
@@ -34,5 +40,5 @@ export async function checkPermission<T = NextResponse>(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  return handler(session?.user);
+  return handler(session?.user as SessionUser);
 }

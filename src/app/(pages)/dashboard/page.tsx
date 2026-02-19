@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import { getDashboardNavigation } from "@/lib/dashboard/nav-links";
 import { TPermissions } from "@/types";

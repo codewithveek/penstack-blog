@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { posts } from "@/db/schemas";
 import { checkPermission } from "@/lib/auth/check-permission";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import { getPosts } from "@/lib/queries/posts";
 import { parseHtmlHeadings } from "@/lib/toc-generator";
 import { PostInsert } from "@/types";

@@ -11,7 +11,7 @@ import {
   MenuList,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { signOut } from "next-auth/react";
+import { signOut } from "@/lib/auth/auth-client";
 import { ReactNode } from "react";
 import { LuChevronDown, LuLogOut } from "react-icons/lu";
 import { UserMenu } from "./UserMenu";

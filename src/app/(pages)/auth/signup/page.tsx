@@ -1,5 +1,5 @@
 import SignUp from "@/components//Auth/SignUp";
-import { getSession } from "next-auth/react";
+import { getSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 
 export default async function Page() {

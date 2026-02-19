@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { posts } from "@/db/schemas";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import { PostInsert } from "@/types";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
   } else if (query && titleOnly) {
     whereConditions.push(ilike(posts.title, `%${query}%`));
   }
-  if (access === "dashboard" && session?.user?.role_id !== 1) {
+  if (access === "dashboard" && (session?.user as any)?.role_id !== 1) {
     whereConditions.push(eq(posts.author_id, session?.user?.id as string));
   }
   if (status && status !== "all") {
@@ -68,11 +68,11 @@ export async function GET(req: NextRequest) {
         orderBy = [
           sortOrder === "desc"
             ? desc(
-                sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
-              )
+              sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
+            )
             : asc(
-                sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
-              ),
+              sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
+            ),
           desc(posts.is_sticky),
         ];
         break;

@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn } from "@/lib/auth/auth-client";
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
@@ -62,22 +62,23 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
       .get("emailOrUsername")
       ?.toString()
       .toLowerCase();
-    const result = await signIn("credentials", {
-      emailOrUsername: emailOrUsername,
-      password: formData.get("password"),
-      redirect: false,
-      callbackUrl,
+    const password = formData.get("password")?.toString() || "";
+
+    const result = await signIn.email({
+      email: emailOrUsername || "",
+      password,
     });
 
     if (result?.error) {
-      if (result.error === "Please verify your email before signing in") {
+      const errorMsg = result.error.message || "Invalid credentials";
+      if (errorMsg === "Please verify your email before signing in") {
         router.push(`/auth/verify?email=${emailOrUsername}`);
         return;
       }
-      setError(result.error);
-    } else if (result?.url) {
+      setError(errorMsg);
+    } else {
       setIsRedirecting(true);
-      router.push(result.url);
+      router.push(callbackUrl);
     }
 
     setIsLoading(false);
@@ -189,7 +190,7 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
                 GitHub
               </Button> */}
               <Button
-                onClick={() => signIn("google", { callbackUrl })}
+                onClick={() => signIn.social({ provider: "google", callbackURL: callbackUrl })}
                 leftIcon={<FaGoogle />}
                 width="full"
                 size="lg"

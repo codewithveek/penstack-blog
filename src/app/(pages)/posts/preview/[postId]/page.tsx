@@ -1,6 +1,6 @@
 import BlogPage from "@/components//blog";
 import { PermissionGuard } from "@/components//PermissionGuard";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import { getPost } from "@/lib/queries/post";
 import { getSettings } from "@/lib/queries/settings";
 import { notFound } from "next/navigation";

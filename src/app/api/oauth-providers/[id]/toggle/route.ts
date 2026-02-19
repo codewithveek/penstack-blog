@@ -4,7 +4,7 @@ import { oauthProviders, oauthProviderAuditLog } from "@/db/schemas";
 import { checkPermission } from "@/lib/auth/check-permission";
 import { logger } from "@/lib/logger";
 import { eq } from "drizzle-orm";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 
 export async function POST(
     req: NextRequest,

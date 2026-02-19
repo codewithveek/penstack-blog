@@ -1,24 +1,23 @@
 "use client";
 
-import type { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import { useSession } from "@/lib/auth/auth-client";
 import { usePermissionsStore } from "../state/permissions";
 import { useEffect } from "react";
 
-export default function Providers({
-  session,
+export default function AuthProvider({
   children,
 }: {
-  session: Session | null;
   children: React.ReactNode;
 }) {
+  const { data: session } = useSession();
   const setPermissions = usePermissionsStore((state) => state.setPermissions);
   const setisLoading = usePermissionsStore((state) => state.setIsLoading);
 
   useEffect(() => {
     setisLoading(true);
-    setPermissions(session?.user?.permissions || []);
+    setPermissions((session?.user as any)?.permissions || []);
     setisLoading(false);
-  }, [session?.user?.permissions, setPermissions, setisLoading]);
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  }, [(session?.user as any)?.permissions, setPermissions, setisLoading]);
+
+  return <>{children}</>;
 }

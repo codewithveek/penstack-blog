@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import DashboardLayout from "@/components/pages/Dashboard/Layout";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
+import { getUserPermissions } from "@/lib/auth/permissions";
 import { getDashboardNavigation } from "@/lib/dashboard/nav-links";
 import { Metadata } from "next";
 
@@ -26,8 +27,10 @@ export default async function DashLayout({
   children: ReactNode;
 }) {
   const session = await getSession();
-  const permissions = session?.user?.permissions!;
+  const userPermissions = session?.user?.email
+    ? await getUserPermissions(session.user.email)
+    : [];
 
-  const navLinks = getDashboardNavigation(permissions);
+  const navLinks = getDashboardNavigation(userPermissions as any);
   return <DashboardLayout navLinks={navLinks}>{children}</DashboardLayout>;
 }

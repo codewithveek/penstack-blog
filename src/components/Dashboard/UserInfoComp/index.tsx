@@ -12,7 +12,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "@/lib/auth/auth-client";
 import { LuLogOut } from "react-icons/lu";
 
 export const UserInfoComp = ({ showLabel = true }: { showLabel?: boolean }) => {
@@ -36,7 +36,7 @@ export const UserInfoComp = ({ showLabel = true }: { showLabel?: boolean }) => {
           <Avatar
             size={"sm"}
             name={user?.name}
-            src={user?.image || user?.avatar}
+            src={user?.image || (user as any)?.avatar}
           />
           {showLabel && (
             <Stack gap={0} pr={4} align={"baseline"}>
@@ -60,7 +60,7 @@ export const UserInfoComp = ({ showLabel = true }: { showLabel?: boolean }) => {
           icon={<LuLogOut />}
           color={"red.400"}
           rounded={"full"}
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() => signOut().then(() => window.location.href = "/")}
         >
           Logout
         </MenuItem>

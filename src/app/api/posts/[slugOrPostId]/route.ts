@@ -2,7 +2,7 @@ import { logger } from "@/lib/logger";
 import { db } from "@/db";
 import { posts } from "@/db/schemas";
 import { checkPermission } from "@/lib/auth/check-permission";
-import { getSession } from "@/lib/auth/next-auth";
+import { getSession } from "@/lib/auth/session";
 import {
   getPlainPost,
   getPlainPostWithCache,

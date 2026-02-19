@@ -16,8 +16,6 @@
     "db:init": "node -r dotenv/config scripts/init-db.mjs"
   },
   "dependencies": {
-    "@auth/core": "^0.37.2",
-    "@auth/drizzle-adapter": "^1.7.2",
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.8.2",
@@ -68,7 +66,6 @@
     "mixpanel-browser": "^2.71.1",
     "mysql2": "^3.10.3",
     "next": "14.2.5",
-    "next-auth": "^4.24.10",
     "nodemailer": "^7.0.12",
     "nuqs": "^2.7.2",
     "react": "^18",
@@ -118,5 +115,8 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=21.x"
   }
 }

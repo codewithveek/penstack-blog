@@ -1,6 +1,6 @@
-import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { betterAuth } from "better-auth";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -29,17 +29,17 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/dashboard")) {
-    return (withAuth as any)(request, {
-      callbacks: {
-        authorized: ({ token }: any) => {
-          if (!token) return false;
-          return token.permissions.includes("dashboard:access");
-        },
-      },
-      pages: {
-        signIn: "/auth/signin",
-      },
-    });
+    // Check for better-auth session cookie
+    const sessionCookie =
+      request.cookies.get("better-auth.session_token") ||
+      request.cookies.get("__Secure-better-auth.session_token");
+
+    if (!sessionCookie) {
+      return NextResponse.redirect(new URL("/auth/signin", request.url));
+    }
+
+    // Session validation happens server-side in the dashboard layout
+    // The middleware just checks for cookie presence for a fast redirect
   }
 
   return NextResponse.next();

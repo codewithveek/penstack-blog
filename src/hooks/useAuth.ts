@@ -1,20 +1,24 @@
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth/auth-client";
 import { useMemo } from "react";
 
 export const useAuth = () => {
-  const { data: session, status } = useSession();
+  const { data: session, isPending } = useSession();
 
   const authState = useMemo(() => {
-    const isAuthenticated = status === "authenticated";
-    const isLoading = status === "loading";
+    const isAuthenticated = !!session?.user;
+    const isLoading = isPending;
 
     return {
       user: session?.user,
-      status,
+      status: isAuthenticated
+        ? "authenticated"
+        : isLoading
+          ? "loading"
+          : "unauthenticated",
       isAuthenticated,
       isLoading,
     };
-  }, [session, status]);
+  }, [session, isPending]);
 
   return authState;
 };

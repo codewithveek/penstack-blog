@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { posts } from "@/db/schemas";
 import { PostInsert } from "@/types";
 import { ilike, eq, sql, and, desc, asc } from "drizzle-orm";
-import { getSession } from "../auth/next-auth";
+import { getSession } from "../auth/session";
 
 export async function getPosts({
   page = 1,
