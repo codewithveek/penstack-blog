@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUser } from "@/lib/queries/get-user";
+import { db } from "@/db";
+import { users } from "@/db/schemas";
+import { eq } from "drizzle-orm";
 import { signupSchema } from "@/lib/validation/schemas";
 import { logger } from "@/lib/logger";
 import { ZodError } from "zod";
@@ -18,7 +20,10 @@ export async function POST(req: NextRequest) {
     const validatedData = signupSchema.parse(body);
     const { name, email, password } = validatedData;
 
-    const existingUser = await getUser(email);
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.email, email.toLowerCase().trim()),
+      columns: { id: true, email: true },
+    });
 
     if (existingUser) {
       logger.warn("Signup attempt with existing email", { email });

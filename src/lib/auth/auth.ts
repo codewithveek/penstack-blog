@@ -23,10 +23,10 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "mysql",
     schema: {
-      user: users,
-      session: session,
-      account: account,
-      verification: verification,
+      Users: users,
+      Session: session,
+      Account: account,
+      Verification: verification,
     },
   }),
   secret: process.env.BETTER_AUTH_SECRET,
@@ -75,7 +75,7 @@ export const auth = betterAuth({
     additionalFields: {
       role_id: {
         type: "number",
-        required: true,
+        required: false,
         input: false,
       },
       auth_type: {
