@@ -1,4 +1,17 @@
-import { useBreakpointValue, Button, Heading, Box, Card, Textarea, VStack, Separator, Text, Dialog, HStack } from "@chakra-ui/react";
+import {
+  useBreakpointValue,
+  Button,
+  Heading,
+  Box,
+  Card,
+  Textarea,
+  VStack,
+  Separator,
+  Text,
+  Dialog,
+  HStack,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -16,7 +29,7 @@ import { toaster } from "@/components/ui/toaster";
 export const CommentsSection = ({ post }: { post: PostSelect }) => {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const { user } = useAuth();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const highlightColor = useColorModeValue("brand.50", "brand.900");
@@ -150,11 +163,13 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       )}
 
       <Dialog.Root open={isOpen} onOpenChange={onClose}>
-        <Dialog.Positioner><Dialog.Content>
-          <Dialog.Body>
-            <SignInComponent cbUrl={currentUrl} />
-          </Dialog.Body>
-        </Dialog.Content></Dialog.Positioner>
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Body>
+              <SignInComponent cbUrl={currentUrl} />
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Positioner>
       </Dialog.Root>
     </Box>
   );

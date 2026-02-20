@@ -1,5 +1,20 @@
 import React from "react";
-import { Card as ChakraCard, Flex, GridItem, HStack, Heading, Image, Text, VStack, Grid, Card, Icon, Skeleton, Button } from "@chakra-ui/react";
+import {
+  Card as ChakraCard,
+  Flex,
+  GridItem,
+  HStack,
+  Heading,
+  Image,
+  Text,
+  VStack,
+  Grid,
+  Card,
+  Icon,
+  Skeleton,
+  Button,
+} from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
 import Link from "next/link";
 
 import { IconType } from "react-icons";
@@ -48,7 +63,9 @@ export const OverviewCard = ({
                 border={"1px"}
                 borderColor={borderColor}
               >
-                <Icon size={'md'} color={color + ".500"}>{React.createElement(icon)}</Icon>
+                <Icon size={"md"} color={color + ".500"}>
+                  {React.createElement(icon)}
+                </Icon>
               </Flex>
               {loading ? (
                 <Skeleton height={"30px"} width={"60px"} rounded="full" />
@@ -117,9 +134,7 @@ export const OverviewCard = ({
                 </Text>
               </HStack>
               <Button asChild size={"sm"} variant={"ghost"}>
-                <Link href={link!}>
-                  See all
-                </Link>
+                <Link href={link!}>See all</Link>
               </Button>
             </HStack>
           </VStack>

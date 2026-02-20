@@ -14,10 +14,10 @@ export default function AuthProvider({
   const setisLoading = usePermissionsStore((state) => state.setIsLoading);
 
   useEffect(() => {
-    setloading(true);
+    setisLoading(true);
     setPermissions((session?.user as any)?.permissions || []);
-    setloading(false);
-  }, [(session?.user as any)?.permissions, setPermissions, setloading]);
+    setisLoading(false);
+  }, [(session?.user as any)?.permissions, setPermissions, setisLoading]);
 
   return <>{children}</>;
 }

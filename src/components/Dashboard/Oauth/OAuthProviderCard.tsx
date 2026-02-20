@@ -1,7 +1,17 @@
 "use client";
 
-import { Box, Card, Heading, Text, HStack, IconButton, Badge, Switch, VStack, Tooltip } from "@chakra-ui/react";
-
+import {
+  Box,
+  Card,
+  Heading,
+  Text,
+  HStack,
+  IconButton,
+  Badge,
+  Switch,
+  VStack,
+} from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 
@@ -87,23 +97,27 @@ export function OAuthProviderCard({
             borderColor="gray.200"
           >
             <HStack gap={2}>
-              <Tooltip.Root content="Edit provider">
+              <Tooltip content="Edit provider">
                 <IconButton
                   aria-label="Edit"
                   size="sm"
                   variant="ghost"
                   onClick={onEdit}
-                ><LuPencil /></IconButton>
-              </Tooltip.Root>
-              <Tooltip.Root content="Delete provider">
+                >
+                  <LuPencil />
+                </IconButton>
+              </Tooltip>
+              <Tooltip content="Delete provider">
                 <IconButton
                   aria-label="Delete"
                   size="sm"
                   variant="ghost"
                   colorPalette="red"
                   onClick={onDelete}
-                ><LuTrash2 /></IconButton>
-              </Tooltip.Root>
+                >
+                  <LuTrash2 />
+                </IconButton>
+              </Tooltip>
             </HStack>
 
             <HStack gap={2}>

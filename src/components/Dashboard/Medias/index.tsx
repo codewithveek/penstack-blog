@@ -24,14 +24,14 @@ export default function Medias({
   const dividerBgColor = useColorModeValue("white", "gray.900");
   return (
     <Box py={6} px={{ base: 0, md: 5 }} bg={dividerBgColor} rounded={"lg"}>
-      <Tabs.Root h={"full"}>
+      <Tabs.Root h={"full"} defaultValue="library">
         <Tabs.List>
-          <Tabs.Trigger>Media Library</Tabs.Trigger>
-          <Tabs.Trigger>Upload Media</Tabs.Trigger>
-          <Tabs.Trigger>Upload from URL</Tabs.Trigger>
+          <Tabs.Trigger value="library">Media Library</Tabs.Trigger>
+          <Tabs.Trigger value="upload">Upload Media</Tabs.Trigger>
+          <Tabs.Trigger value="url">Upload from URL</Tabs.Trigger>
         </Tabs.List>
         <Tabs.ContentGroup>
-          <Tabs.Content>
+          <Tabs.Content value="library">
             <MediaLibrary
               multiple={multiple}
               defaultFilters={defaultFilters}
@@ -42,12 +42,12 @@ export default function Medias({
               canSelect={canSelect}
             />
           </Tabs.Content>
-          <Tabs.Content>
+          <Tabs.Content value="upload">
             <Stack gap={4}>
               <FileUpload />
             </Stack>
           </Tabs.Content>
-          <Tabs.Content>
+          <Tabs.Content value="url">
             <Box py={4}>
               <FileUrlUpload />
             </Box>

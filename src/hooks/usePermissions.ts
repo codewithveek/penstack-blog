@@ -5,5 +5,5 @@ export const usePermissions = (requiredPermission: TPermissions) => {
   const permissions = usePermissionsStore((state) => state.permissions);
   const isLoading = usePermissionsStore((state) => state.loading);
   const hasPermission = permissions.includes(requiredPermission);
-  return { hasPermission, loading: loading };
+  return { hasPermission, loading: isLoading };
 };

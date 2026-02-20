@@ -1,4 +1,11 @@
-import { Button, Field, HStack, Input, Dialog } from "@chakra-ui/react";
+import {
+  Button,
+  Field,
+  HStack,
+  Input,
+  Dialog,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -32,25 +39,27 @@ export const ShowTokenVerification = ({ isOpen }: { isOpen: boolean }) => {
   }
   return (
     <Dialog.Root size={"sm"} open={isOpen} onOpenChange={handleClose}>
-      <Dialog.Positioner><Dialog.Content>
-        <Dialog.Body>
-          <Field.Root>
-            <Field.Label>Verify Password</Field.Label>
-            <Input type="password" placeholder="Enter password" />
-          </Field.Root>
-          <HStack gap={3}>
-            <Button
-              onClick={handleClose}
-              colorPalette="gray"
-              loading={isPending}
-              loadingText={"verifying..."}
-            >
-              Cancel
-            </Button>
-            <Button onClick={verifyPassword}>Verify</Button>
-          </HStack>
-        </Dialog.Body>
-      </Dialog.Content></Dialog.Positioner>
+      <Dialog.Positioner>
+        <Dialog.Content>
+          <Dialog.Body>
+            <Field.Root>
+              <Field.Label>Verify Password</Field.Label>
+              <Input type="password" placeholder="Enter password" />
+            </Field.Root>
+            <HStack gap={3}>
+              <Button
+                onClick={handleClose}
+                colorPalette="gray"
+                loading={isPending}
+                loadingText={"verifying..."}
+              >
+                Cancel
+              </Button>
+              <Button onClick={verifyPassword}>Verify</Button>
+            </HStack>
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Positioner>
     </Dialog.Root>
   );
 };

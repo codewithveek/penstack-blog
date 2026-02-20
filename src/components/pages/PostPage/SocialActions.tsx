@@ -1,4 +1,14 @@
-import { VStack, IconButton, Tooltip, Popover, List, Text, Box, Flex, useBreakpointValue } from "@chakra-ui/react";
+import {
+  VStack,
+  IconButton,
+  Popover,
+  List,
+  Text,
+  Box,
+  Flex,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 import React from "react";
 
 import { LuBookmark, LuHeart, LuShare } from "react-icons/lu";
@@ -16,34 +26,40 @@ export const SocialActions: React.FC<SocialActionsProps> = ({ post }) => {
   return (
     <>
       <VStack gap={4}>
-        <Tooltip.Root content="Save">
+        <Tooltip content="Save">
           <IconButton
             variant="outline"
             rounded="full"
             aria-label="bookmark this post"
-          ><LuBookmark /></IconButton>
-        </Tooltip.Root>
+          >
+            <LuBookmark />
+          </IconButton>
+        </Tooltip>
 
-        <Tooltip.Root content="Share post">
+        <Tooltip content="Share post">
           <IconButton
             variant="outline"
             rounded="full"
             aria-label="share this post"
-          ><LuShare /></IconButton>
-        </Tooltip.Root>
+          >
+            <LuShare />
+          </IconButton>
+        </Tooltip>
         <Popover.Root trigger={popoverTrigger} placement="right">
           <Popover.Trigger>
             <IconButton
               variant="outline"
               rounded="full"
               aria-label="Add reaction"
-            ><LuHeart /></IconButton>
+            >
+              <LuHeart />
+            </IconButton>
           </Popover.Trigger>
           <Popover.Content rounded="xl" w="auto">
             <Popover.Body>
               <List.Root display="flex" gap={4} alignItems="center">
                 <List.Item>
-                  <Tooltip.Root content="Like">
+                  <Tooltip content="Like">
                     <IconButton
                       variant="ghost"
                       rounded="full"
@@ -53,10 +69,10 @@ export const SocialActions: React.FC<SocialActionsProps> = ({ post }) => {
                         💖
                       </Text>
                     </IconButton>
-                  </Tooltip.Root>
+                  </Tooltip>
                 </List.Item>
                 <List.Item>
-                  <Tooltip.Root content="Grateful">
+                  <Tooltip content="Grateful">
                     <IconButton
                       variant="ghost"
                       rounded="full"
@@ -66,10 +82,10 @@ export const SocialActions: React.FC<SocialActionsProps> = ({ post }) => {
                         🙌
                       </Text>
                     </IconButton>
-                  </Tooltip.Root>
+                  </Tooltip>
                 </List.Item>
                 <List.Item>
-                  <Tooltip.Root content="Celebrate">
+                  <Tooltip content="Celebrate">
                     <IconButton
                       variant="ghost"
                       rounded="full"
@@ -79,7 +95,7 @@ export const SocialActions: React.FC<SocialActionsProps> = ({ post }) => {
                         🥳
                       </Text>
                     </IconButton>
-                  </Tooltip.Root>
+                  </Tooltip>
                 </List.Item>
               </List.Root>
             </Popover.Body>

@@ -1,4 +1,18 @@
-import { Box, Breadcrumb, BreadcrumbSeparator, Button, Drawer, Flex, HStack, Icon, IconButton, Show, Stack, Separator, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Breadcrumb,
+  BreadcrumbSeparator,
+  Button,
+  Drawer,
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
+  Show,
+  Stack,
+  Separator,
+  Text,
+} from "@chakra-ui/react";
 
 import DashHeader from "../../Dashboard/Header";
 import {
@@ -77,7 +91,9 @@ function EditorHeader() {
             {!hasError && (
               <Flex align="center" gap={1}>
                 <HStack align={"center"} gap={1} className="text-gray-500">
-                  <Icon><LuClock /></Icon>
+                  <Icon>
+                    <LuClock />
+                  </Icon>
                   <Text as="span">Last saved: </Text>
                 </HStack>
 
@@ -101,7 +117,7 @@ function EditorHeader() {
             )}
           </HStack>
         </Stack>
-        <Box display={{ base: 'none' }} below="md">
+        <Box display={{ base: "none" }} below="md">
           <Button
             variant="outline"
             gap={2}
@@ -125,7 +141,12 @@ function EditorHeader() {
           </IconButton>
         </Show>
       </DashHeader>
-      <Drawer.Root open={isOpen} placement="right" onOpenChange={onClose} size="sm">
+      <Drawer.Root
+        open={isOpen}
+        placement="right"
+        onOpenChange={onClose}
+        size="sm"
+      >
         <Drawer.Backdrop />
         <Drawer.Content>
           <Drawer.CloseTrigger />

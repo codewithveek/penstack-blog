@@ -11,12 +11,7 @@ export const UserMenu = () => {
     <HStack ml={"auto"}>
       <Menu.Root>
         <Menu.Trigger asChild>
-          <Button
-            pl={1}
-            variant={"outline"}
-            rounded={"full"}
-            size={"sm"}
-          >
+          <Button pl={1} variant={"outline"} rounded={"full"} size={"sm"}>
             <Avatar.Root
               size={"xs"}
               name={user?.name}
@@ -28,6 +23,7 @@ export const UserMenu = () => {
         </Menu.Trigger>
         <Menu.Content px={2} minW={"200px"} rounded={"lg"}>
           <Menu.Item
+            value="logout"
             color="red.500"
             _hover={{ bg: "red.100" }}
             fontWeight={"semibold"}

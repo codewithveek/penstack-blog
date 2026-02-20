@@ -109,13 +109,17 @@ export const StandaloneMedia = ({
                   onClick={handleSaveCaption}
                   size="sm"
                   colorPalette="green"
-                ><LuCheck /></IconButton>
+                >
+                  <LuCheck />
+                </IconButton>
                 <IconButton
                   aria-label="Cancel"
                   onClick={handleCancelEdit}
                   size="sm"
                   variant="ghost"
-                ><LuX /></IconButton>
+                >
+                  <LuX />
+                </IconButton>
               </HStack>
             </VStack>
           ) : (

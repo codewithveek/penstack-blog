@@ -7,7 +7,20 @@ import {
   stripHtml,
 } from "@/utils";
 import Link from "next/link";
-import { Avatar, Box, Heading, HStack, IconButton, Image, LinkBox, LinkOverlay, Stack, Tag, Text, VStack } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Heading,
+  HStack,
+  IconButton,
+  Image,
+  LinkBox,
+  LinkOverlay,
+  Stack,
+  Tag,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { LuBookmark } from "react-icons/lu";
 
@@ -125,11 +138,7 @@ export default function NewPostCard({
               </HStack>
             )}
             {showBookmark && (
-              <IconButton
-                variant="ghost"
-                aria-label="Bookmark"
-                size="sm"
-              >
+              <IconButton variant="ghost" aria-label="Bookmark" size="sm">
                 <LuBookmark size={18} />
               </IconButton>
             )}

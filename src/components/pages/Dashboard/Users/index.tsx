@@ -1,6 +1,30 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Box, Table, IconButton, Badge, Menu, Button, Flex, Input, Select, Stack, Text, Dialog, InputGroup, InputLeftAddon, Field, Checkbox, VStack, HStack, Card, Avatar, Center, Switch, Textarea } from "@chakra-ui/react";
+import {
+  Box,
+  Table,
+  IconButton,
+  Badge,
+  Menu,
+  Button,
+  Flex,
+  Input,
+  Select,
+  Stack,
+  Text,
+  Dialog,
+  InputGroup,
+  InputLeftAddon,
+  Field,
+  Checkbox,
+  VStack,
+  HStack,
+  Card,
+  Avatar,
+  Center,
+  Switch,
+  Textarea,
+} from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { toaster } from "@/components/ui/toaster";
 
@@ -188,10 +212,7 @@ const UsersDashboard = () => {
 
           <Card.Body>
             <Stack direction={{ base: "column", md: "row" }} gap={4} mb={6}>
-              <InputGroup>
-                <InputElement>
-                  <LuSearch />
-                </InputElement>
+              <InputGroup startElement={<LuSearch />}>
                 <Input
                   maxW={{ md: "320px" }}
                   autoComplete="off"
@@ -219,21 +240,28 @@ const UsersDashboard = () => {
                 <Text>{selectedUsers.length} users selected</Text>
                 <Menu.Root>
                   <Menu.Trigger asChild>
-                    <Button
-                      size="sm"
-                    >
+                    <Button size="sm">
                       Bulk Actions
                       <LuChevronDown />
                     </Button>
                   </Menu.Trigger>
                   <Menu.Content>
-                    <Menu.Item onClick={() => performBulkAction("delete")}>
+                    <Menu.Item
+                      value="delete"
+                      onClick={() => performBulkAction("delete")}
+                    >
                       Delete Selected
                     </Menu.Item>
-                    <Menu.Item onClick={() => performBulkAction("activate")}>
+                    <Menu.Item
+                      value="activate"
+                      onClick={() => performBulkAction("activate")}
+                    >
                       Activate
                     </Menu.Item>
-                    <Menu.Item onClick={() => performBulkAction("deactivate")}>
+                    <Menu.Item
+                      value="deactivate"
+                      onClick={() => performBulkAction("deactivate")}
+                    >
                       Deactivate
                     </Menu.Item>
                   </Menu.Content>
@@ -458,6 +486,7 @@ const UsersDashboard = () => {
                         roles?.map((role) => (
                           <Menu.Item
                             key={role.id}
+                            value={String(role.id)}
                             textTransform={"capitalize"}
                             onClick={() => {
                               setSelectedRole(role);

@@ -1,6 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Box, Card, Stack, Text, Button, HStack, Badge, InputGroup, Input, Select, Dialog, Table, IconButton, Tooltip, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  Stack,
+  Text,
+  Button,
+  HStack,
+  Badge,
+  InputGroup,
+  Input,
+  Select,
+  Dialog,
+  Table,
+  IconButton,
+  VStack,
+} from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 import { toaster } from "@/components/ui/toaster";
 
 import { format } from "date-fns";
@@ -39,12 +55,7 @@ const PostsDashboard = () => {
   const [limit] = useState(20);
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
   const [open, setOpen] = useState(false);
-  const toast = useToast({
-    status: "success",
-    duration: 3000,
-    isClosable: true,
-    position: "top",
-  });
+  const onOpenChange = () => setOpen(!open);
   const { user } = useAuth();
 
   const columnHelper = createColumnHelper<PostSelect>();
@@ -84,7 +95,7 @@ const PostsDashboard = () => {
         const post = row.original;
         return (
           <HStack gap={2}>
-            <Tooltip.Root content="Preview">
+            <Tooltip content="Preview">
               <IconButton
                 asChild
                 aria-label="Preview"
@@ -95,26 +106,24 @@ const PostsDashboard = () => {
                   <LuExternalLink />
                 </Link>
               </IconButton>
-            </Tooltip.Root>
+            </Tooltip>
             <PermissionGuard
               requiredPermission="posts:edit"
               isOwner={post?.author?.auth_id === user?.id}
             >
-              <Tooltip.Root content="Edit">
-                <IconButton
-                  asChild
-                  aria-label="Edit"
-                  size="sm"
-                  variant="ghost"
-                >
-                  <Link href={`/dashboard/posts/edit/${post?.post_id}`} target="_blank">
+              <Tooltip content="Edit">
+                <IconButton asChild aria-label="Edit" size="sm" variant="ghost">
+                  <Link
+                    href={`/dashboard/posts/edit/${post?.post_id}`}
+                    target="_blank"
+                  >
                     <LuFilePen />
                   </Link>
                 </IconButton>
-              </Tooltip.Root>
+              </Tooltip>
             </PermissionGuard>
             <PermissionGuard requiredPermission="posts:delete">
-              <Tooltip.Root content="Delete">
+              <Tooltip content="Delete">
                 <IconButton
                   aria-label="Delete"
                   size="sm"
@@ -124,7 +133,7 @@ const PostsDashboard = () => {
                 >
                   <LuTrash2 />
                 </IconButton>
-              </Tooltip.Root>
+              </Tooltip>
             </PermissionGuard>
           </HStack>
         );
@@ -248,10 +257,11 @@ const PostsDashboard = () => {
           </PageTitleHeader>
           <Card.Body px={{ base: 3, lg: 4 }}>
             <Stack direction={{ base: "column", md: "row" }} gap={4} mb={6}>
-              <InputGroup maxW={{ md: "320px" }} rounded={"md"}>
-                <InputElement>
-                  <LuSearch />
-                </InputElement>
+              <InputGroup
+                maxW={{ md: "320px" }}
+                rounded={"md"}
+                startElement={<LuSearch />}
+              >
                 <Input
                   rounded="md"
                   placeholder="Search posts..."
@@ -357,7 +367,7 @@ const PostsDashboard = () => {
           </Card.Body>
         </Card.Root>
 
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog.Root open={open} onOpenChange={onOpenChange}>
           <Dialog.Backdrop />
           <Dialog.Content>
             <Dialog.Header>Delete Post</Dialog.Header>
@@ -374,7 +384,7 @@ const PostsDashboard = () => {
               </Button>
             </Dialog.Footer>
           </Dialog.Content>
-        </Dialog>
+        </Dialog.Root>
       </Box>
     </Box>
   );

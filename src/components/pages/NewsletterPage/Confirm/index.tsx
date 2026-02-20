@@ -1,6 +1,14 @@
 "use client";
 
-import { Box, Container, Heading, Text, VStack, Spinner, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  VStack,
+  Spinner,
+  Icon,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -11,7 +19,7 @@ import { toaster } from "@/components/ui/toaster";
 
 export default function NewsletterConfirm() {
   const searchParams = useSearchParams();
-  
+
   const [status, setStatus] = useState<"success" | "error" | null>(null);
   const token = searchParams.get("token");
 
@@ -71,7 +79,9 @@ export default function NewsletterConfirm() {
 
         {status === "success" && (
           <Box textAlign="center">
-            <Icon w={16} h={16} color="green.500" mb={4}><LuCircleCheck /></Icon>
+            <Icon w={16} h={16} color="green.500" mb={4}>
+              <LuCircleCheck />
+            </Icon>
             <Heading size="lg" mb={4}>
               Subscription Confirmed!
             </Heading>
@@ -86,7 +96,9 @@ export default function NewsletterConfirm() {
 
         {status === "error" && (
           <Box textAlign="center">
-            <Icon w={16} h={16} color="red.500" mb={4}><LuMailWarning /></Icon>
+            <Icon w={16} h={16} color="red.500" mb={4}>
+              <LuMailWarning />
+            </Icon>
             <Heading size="lg" mb={4}>
               Confirmation Failed
             </Heading>

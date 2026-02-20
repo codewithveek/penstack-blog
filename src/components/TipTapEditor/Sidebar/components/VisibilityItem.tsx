@@ -1,5 +1,5 @@
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
-import { Button, HStack, Icon, Menu, Text } from "@chakra-ui/react";
+import { Button, HStack, Icon, List, Menu, Text } from "@chakra-ui/react";
 import { LuEye, LuGlobe, LuLock } from "react-icons/lu";
 
 export const VisibilityItem = ({ visibility }: { visibility: string }) => {
@@ -12,7 +12,9 @@ export const VisibilityItem = ({ visibility }: { visibility: string }) => {
       <HStack justify="space-between">
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon mr={1}><LuEye /></Icon>
+            <Icon mr={1}>
+              <LuEye />
+            </Icon>
             Visibility:
           </Text>
           <Text as="span" fontWeight="semibold" textTransform="capitalize">
@@ -27,11 +29,13 @@ export const VisibilityItem = ({ visibility }: { visibility: string }) => {
           </Menu.Trigger>
           <Menu.Content>
             <Menu.Item
+              value="public"
               onClick={() => handleVisibilityChange("public")}
             >
               <LuGlobe /> Public
             </Menu.Item>
             <Menu.Item
+              value="private"
               onClick={() => handleVisibilityChange("private")}
             >
               <LuLock /> Private

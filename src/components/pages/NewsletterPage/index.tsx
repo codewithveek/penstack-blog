@@ -1,6 +1,22 @@
 "use client";
 
-import { Box, VStack, Heading, Text, Flex, Field, Input, Button, Stack, Icon, Container, Badge, Avatar, HStack, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  VStack,
+  Heading,
+  Text,
+  Flex,
+  Field,
+  Input,
+  Button,
+  Stack,
+  Icon,
+  Container,
+  Badge,
+  Avatar,
+  HStack,
+  SimpleGrid,
+} from "@chakra-ui/react";
 
 import React, { useState } from "react";
 import { LuSend, LuCode, LuZap, LuBookOpen, LuQuote } from "react-icons/lu";
@@ -42,7 +58,9 @@ const Feature = ({
   title: string;
 }) => (
   <Stack direction="row" align="center" gap={2}>
-    <Icon color="brand.500" boxSize={5}>{React.createElement(icon)}</Icon>
+    <Icon color="brand.500" boxSize={5}>
+      {React.createElement(icon)}
+    </Icon>
     <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.300")}>
       {title}
     </Text>
@@ -70,7 +88,9 @@ const Testimonial = ({
     _hover={{ transform: "translateY(-4px)", shadow: "lg" }}
     transition="all 0.3s"
   >
-    <Icon color="brand.500" boxSize={6}><LuQuote /></Icon>
+    <Icon color="brand.500" boxSize={6}>
+      <LuQuote />
+    </Icon>
     <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.300")}>
       &apos;{content}&apos;
     </Text>

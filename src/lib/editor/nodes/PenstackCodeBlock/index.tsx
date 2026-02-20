@@ -1,4 +1,12 @@
-import { Box, Button, HStack, Icon, Menu, NativeSelect, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  HStack,
+  Icon,
+  Menu,
+  NativeSelect,
+  Stack,
+} from "@chakra-ui/react";
 
 import { NodeViewProps } from "@tiptap/core";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
@@ -67,11 +75,7 @@ export const PenstackCodeblockComponent: React.FC<
             <>
               <DarkMode>
                 <Menu.Trigger asChild>
-                  <Button
-                    variant={"ghost"}
-                    colorPalette="gray"
-                    size={"xs"}
-                  >
+                  <Button variant={"ghost"} colorPalette="gray" size={"xs"}>
                     {defaultLanguage || "auto"}
                     <LuChevronDown
                       style={{

@@ -1,7 +1,22 @@
 "use client";
 
-import { Box, Card, Table, Badge, Text, Input, Group, Stack, Center, Tooltip, ResponsiveValue, InputElement, HStack, Tag } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  Table,
+  Badge,
+  Text,
+  Input,
+  Group,
+  Stack,
+  Center,
+  ResponsiveValue,
+  InputElement,
+  HStack,
+  Tag,
+} from "@chakra-ui/react";
 
+import { Tooltip } from "@/components/ui/tooltip";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { LuSearch } from "react-icons/lu";
 import { useQuery } from "@tanstack/react-query";
@@ -67,11 +82,7 @@ export const DashboardNewsletterPage = () => {
             <PageTitleHeader title="Newsletter" />
 
             <Card.Body>
-              <Stack
-                direction={{ base: "column", md: "row" }}
-                gap={4}
-                mb={6}
-              >
+              <Stack direction={{ base: "column", md: "row" }} gap={4} mb={6}>
                 <Group>
                   <InputElement placement="start">
                     <LuSearch />
@@ -107,20 +118,36 @@ export const DashboardNewsletterPage = () => {
                         style={{ textTransform: "none" }}
                       >
                         <Table.Row>
-                          <Table.ColumnHeader {...thStyles}>Id</Table.ColumnHeader>
-                          <Table.ColumnHeader {...thStyles}>Email</Table.ColumnHeader>
-                          <Table.ColumnHeader {...thStyles}>Name</Table.ColumnHeader>
-                          <Table.ColumnHeader {...thStyles}>Status</Table.ColumnHeader>
-                          <Table.ColumnHeader {...thStyles}>Verification</Table.ColumnHeader>
-                          <Table.ColumnHeader {...thStyles}>Referrer</Table.ColumnHeader>
-                          <Table.ColumnHeader {...thStyles}>Created At</Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>
+                            Id
+                          </Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>
+                            Email
+                          </Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>
+                            Name
+                          </Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>
+                            Status
+                          </Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>
+                            Verification
+                          </Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>
+                            Referrer
+                          </Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>
+                            Created At
+                          </Table.ColumnHeader>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body borderColor={headerColor}>
                         {filteredNewsletters &&
                           filteredNewsletters.map((subscriber) => (
                             <Table.Row key={subscriber.id}>
-                              <Table.Cell color={cellTextColor}>{subscriber.id}</Table.Cell>
+                              <Table.Cell color={cellTextColor}>
+                                {subscriber.id}
+                              </Table.Cell>
                               <Table.Cell>{subscriber.email}</Table.Cell>
                               <Table.Cell>{subscriber.name || "-"}</Table.Cell>
                               <Table.Cell>
@@ -153,7 +180,7 @@ export const DashboardNewsletterPage = () => {
                                 </Tag.Root>
                               </Table.Cell>
                               <Table.Cell>
-                                <Tooltip.Root
+                                <Tooltip
                                   hasArrow
                                   label={subscriber.referrer}
                                   rounded={"lg"}
@@ -164,7 +191,7 @@ export const DashboardNewsletterPage = () => {
                                       20
                                     )}
                                   </Text>
-                                </Tooltip.Root>
+                                </Tooltip>
                               </Table.Cell>
                               <Table.Cell>
                                 <Text

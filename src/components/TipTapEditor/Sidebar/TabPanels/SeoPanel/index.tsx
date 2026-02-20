@@ -1,4 +1,12 @@
-import { Field, Input, Textarea, Stack, Box, Button, Text } from "@chakra-ui/react";
+import {
+  Field,
+  Input,
+  Textarea,
+  Stack,
+  Box,
+  Button,
+  Text,
+} from "@chakra-ui/react";
 import { SectionCard } from "@/components//Dashboard/SectionCard";
 import { PillInput } from "@/components//PillInput";
 import { usePostSeoMetaStore } from "@/state/post-seo-meta";
@@ -93,7 +101,7 @@ export const SeoPanel = () => {
           <Box mt={4}>
             <Button
               loading={isSaving}
-              disabled={loading || isSaving || !hasChanges}
+              disabled={isLoading || isSaving || !hasChanges}
               loadingText={"Saving changes.."}
               onClick={() => {
                 saveSeoMeta();

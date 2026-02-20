@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button, useDisclosure } from "@chakra-ui/react";
 import React from "react";
 import { MediaModal } from "@/components/Dashboard/Medias/MediaModal";
 import { MediaResponse } from "@/types";
@@ -43,7 +43,9 @@ export const MediaButton = ({ editor }: { editor: Editor }) => {
         size="sm"
         variant={editor.isActive("penstackMedia") ? "solid" : "outline"}
         onClick={onMediaModalOpen}
-      ><LuImage /> Insert Media</Button>
+      >
+        <LuImage /> Insert Media
+      </Button>
       <MediaModal
         open={isMediaModalOpen}
         onOpenChange={onMediaModalClose}

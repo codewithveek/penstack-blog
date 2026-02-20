@@ -11,7 +11,18 @@ import {
   LuPlay,
   LuPause,
 } from "react-icons/lu";
-import { Box, Button, Card, HStack, IconButton, VStack, Flex, Text, Progress, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Card,
+  HStack,
+  IconButton,
+  VStack,
+  Flex,
+  Text,
+  Progress,
+} from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { formatBytes } from "@/utils";
 import { Image } from "@chakra-ui/react";
@@ -103,7 +114,11 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   return (
     <>
       {mediaToPreview && (
-        <FilePreview open={open} onOpenChange={onOpenChange} file={mediaToPreview} />
+        <FilePreview
+          open={open}
+          onOpenChange={() => setOpen(false)}
+          file={mediaToPreview}
+        />
       )}
 
       <Card.Root
@@ -299,7 +314,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
 
         <Card.Footer p={3} pt={2} borderTop="1px" borderColor={borderColor}>
           <VStack gap={1} w="full" align="start">
-            <Tooltip.Root content={media.name} placement="top" hasArrow>
+            <Tooltip content={media.name} placement="top" hasArrow>
               <Text
                 fontSize="sm"
                 fontWeight="semibold"
@@ -309,7 +324,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               >
                 {media.name}
               </Text>
-            </Tooltip.Root>
+            </Tooltip>
             <HStack
               fontSize="xs"
               color={useColorModeValue("gray.500", "gray.400")}

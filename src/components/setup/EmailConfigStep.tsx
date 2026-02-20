@@ -1,6 +1,19 @@
 "use client";
 
-import { VStack, Field, Input, Button, Text, HStack, NativeSelect, Checkbox, Box, Group, InputElement, IconButton } from "@chakra-ui/react";
+import {
+  VStack,
+  Field,
+  Input,
+  Button,
+  Text,
+  HStack,
+  NativeSelect,
+  Checkbox,
+  Box,
+  Group,
+  InputElement,
+  IconButton,
+} from "@chakra-ui/react";
 
 import { useState } from "react";
 

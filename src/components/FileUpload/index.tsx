@@ -1,6 +1,21 @@
 "use client";
 
-import { Box, Button, Field, Input, Textarea, VStack, HStack, Image, Text, IconButton, Progress, Alert, Badge, Collapsible } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Field,
+  Input,
+  Textarea,
+  VStack,
+  HStack,
+  Image,
+  Text,
+  IconButton,
+  Progress,
+  Alert,
+  Badge,
+  Collapsible,
+} from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
@@ -59,7 +74,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [expandedFileIndex, setExpandedFileIndex] = useState<number | null>(
     null
   );
-  
 
   const borderColor = useColorModeValue("gray.300", "gray.600");
   const activeBorderColor = useColorModeValue("brand.500", "brand.400");
@@ -250,7 +264,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         });
       }
     },
-    [toast]
+    [toaster]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -371,9 +385,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 loadingText="Uploading..."
                 colorPalette="brand"
                 size="sm"
-                disabled={filesWithStatus.every(
-                  (f) => f.status !== "pending"
-                )}
+                disabled={filesWithStatus.every((f) => f.status !== "pending")}
               >
                 Upload All
               </Button>
@@ -488,7 +500,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                       <Field.Label fontSize="xs" mb={1}>
                         Caption
                       </Field.Label>
-                      <Textarea fontSize="sm"
+                      <Textarea
+                        fontSize="sm"
                         placeholder="Add a caption (optional)"
                         rows={2}
                         value={fileItem.caption}
@@ -534,7 +547,6 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
   folder = "uploads",
   onUploadComplete,
 }) => {
-  
   const [url, setUrl] = useState("");
   const [filename, setFilename] = useState("");
   const [alt_text, setAltText] = useState("");
@@ -681,12 +693,11 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
             size="lg"
             colorPalette="brand"
           >
-              uploading ? (
-                <LuLoaderCircle className="animate-spin" />
-              ) : (
-                <LuLink />
-              )
-             {uploading ? "Uploading..." : "Upload from URL"}</Button>
+            uploading ? (
+            <LuLoaderCircle className="animate-spin" />
+            ) : (
+            <LuLink />){uploading ? "Uploading..." : "Upload from URL"}
+          </Button>
         </VStack>
       </form>
     </Box>

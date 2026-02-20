@@ -1,7 +1,14 @@
 "use client";
 
-import { Box, Container, Tabs, Button, Card, Alert } from "@chakra-ui/react";
-
+import {
+  Box,
+  Container,
+  Tabs,
+  Button,
+  Card,
+  Alert,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { useState, useEffect } from "react";
 import { SiteSettings } from "@/types";
@@ -25,7 +32,6 @@ import { SocialPanel } from "./TabPanels/SocialPanel";
 import { toaster } from "@/components/ui/toaster";
 
 export default function DashboardSettingsPage() {
-  
   const [loading, setIsLoading] = useState(false);
   const settingsContext = useSiteConfig();
   const [settings, setSettings] = useState<SiteSettings>(settingsContext);
@@ -174,22 +180,33 @@ export default function DashboardSettingsPage() {
 
           <Card.Body>
             {hasChanges && (
-              <Alert.Root status="info" colorPalette="brand" mb={4} rounded="md">
+              <Alert.Root
+                status="info"
+                colorPalette="brand"
+                mb={4}
+                rounded="md"
+              >
                 <Alert.Indicator />
                 You have unsaved changes
               </Alert.Root>
             )}
 
             <Tabs.Root
-              defaultIndex={tabs.findIndex((tab) => tab.folder === activeTab)}
-              onChange={(index) => {
-                setActiveTab(tabs[index].folder);
+              defaultValue={activeTab}
+              onValueChange={(details) => {
+                setActiveTab(details.value);
               }}
             >
-              <Tabs.List overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
+              <Tabs.List
+                overflowX="auto"
+                className="no-scrollbar"
+                pb={1}
+                gap={3}
+              >
                 {tabs.map((tab) => (
                   <Tabs.Trigger
                     key={tab.folder}
+                    value={tab.folder}
                     onClick={() => setActiveTab(tab.folder)}
                   >
                     {tab.title}
@@ -198,7 +215,7 @@ export default function DashboardSettingsPage() {
               </Tabs.List>
 
               <Tabs.ContentGroup py={5}>
-                <Tabs.Content px={2}>
+                <Tabs.Content value="general" px={2}>
                   <GeneralPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
@@ -206,49 +223,49 @@ export default function DashboardSettingsPage() {
                     openMediaModal={openMediaModal}
                   />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="analytics">
                   <AnalyticsPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="monitoring">
                   <MonitoringPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="media">
                   <MediaPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="email">
                   <EmailPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="social">
                   <SocialPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="advanced">
                   <AdvancedPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="misc">
                   <MiscPanel
                     settings={settings}
                     handleInputChange={handleInputChange}

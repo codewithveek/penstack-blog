@@ -1,4 +1,14 @@
-import { Card, Heading, HStack, Button, Box, Text, Menu, Icon, VStack } from "@chakra-ui/react";
+import {
+  Card,
+  Heading,
+  HStack,
+  Button,
+  Box,
+  Text,
+  Menu,
+  Icon,
+  VStack,
+} from "@chakra-ui/react";
 import React, { memo, useMemo, useState } from "react";
 import {
   AreaChart,
@@ -96,15 +106,14 @@ const PostViewsChart = () => {
               {({ isOpen }) => (
                 <>
                   <Menu.Trigger asChild>
-                    <Button
-                      size={"sm"}
-                      variant={"outline"}
-                    >
+                    <Button size={"sm"} variant={"outline"}>
                       {selectedTimeRange.label}
                       <LuChevronDown
                         style={{
                           transition: "0.2s ease-in-out",
-                          transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)",
+                          transform: isOpen
+                            ? "rotate(-180deg)"
+                            : "rotate(0deg)",
                         }}
                       />
                     </Button>
@@ -153,7 +162,7 @@ const PostViewsChart = () => {
                 fontSize={14}
               />
               <YAxis fontSize={14} width={50} />
-              <Tooltip.Root
+              <Tooltip
                 content={<CustomTooltip />}
                 labelFormatter={formatDate}
               />
@@ -228,16 +237,14 @@ const PostViewChartWrapper = () => {
                   {({ isOpen }) => (
                     <>
                       <Menu.Trigger asChild>
-                        <Button
-                          disabled
-                          size={"sm"}
-                          variant={"outline"}
-                        >
+                        <Button disabled size={"sm"} variant={"outline"}>
                           {selectedTimeRange.label}
                           <LuChevronDown
                             style={{
                               transition: "0.2s ease-in-out",
-                              transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)",
+                              transform: isOpen
+                                ? "rotate(-180deg)"
+                                : "rotate(0deg)",
                             }}
                           />
                         </Button>

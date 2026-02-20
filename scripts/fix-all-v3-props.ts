@@ -13,7 +13,10 @@ import * as path from "path";
 const SRC = path.resolve(__dirname, "..", "src");
 
 // Utility: extract brace-balanced content starting from a { at position idx
-function extractBraceContent(str: string, startIdx: number): { content: string; endIdx: number } | null {
+function extractBraceContent(
+  str: string,
+  startIdx: number
+): { content: string; endIdx: number } | null {
   if (str[startIdx] !== "{") return null;
   let depth = 0;
   let i = startIdx;
@@ -71,22 +74,22 @@ function removeProp(
 function fixLeftRightIcon(content: string): string {
   const lines = content.split("\n");
   let i = 0;
-  
+
   while (i < lines.length) {
     const line = lines[i];
-    
+
     // Check for leftIcon or rightIcon on a single line
     if (/\bleftIcon=\{/.test(line) || /\brightIcon=\{/.test(line)) {
       // Check if the prop is on a single line (brace balanced)
       const isLeftIcon = /\bleftIcon=\{/.test(line);
       const propName = isLeftIcon ? "leftIcon" : "rightIcon";
-      
+
       // Try single-line extraction first
       const result = removeProp(line, propName);
       if (result) {
         lines[i] = result.newLine;
         const iconJsx = result.value.trim();
-        
+
         // Find the children - look for closing tag or self-closing
         // Walk forward to find the Button's content
         if (isLeftIcon) {
@@ -97,9 +100,15 @@ function fixLeftRightIcon(content: string): string {
             if (lines[j].includes(">") && !lines[j].includes("/>")) {
               // Check if this line ends with > (closing the opening tag)
               const trimmed = lines[j].trim();
-              if (trimmed.endsWith(">") && !trimmed.endsWith("/>") && !trimmed.startsWith("</" ) && !trimmed.startsWith("//")) {
+              if (
+                trimmed.endsWith(">") &&
+                !trimmed.endsWith("/>") &&
+                !trimmed.startsWith("</") &&
+                !trimmed.startsWith("//")
+              ) {
                 // Add icon before the next line's content
-                const indent = lines[j + 1]?.match(/^(\s*)/)?.[1] || "              ";
+                const indent =
+                  lines[j + 1]?.match(/^(\s*)/)?.[1] || "              ";
                 lines.splice(j + 1, 0, `${indent}{${iconJsx}} `);
                 found = true;
                 break;
@@ -110,7 +119,10 @@ function fixLeftRightIcon(content: string): string {
           // rightIcon - need to append icon after children, before closing tag
           // Find </Button> or </Menu.Trigger>
           for (let j = i; j < Math.min(i + 20, lines.length); j++) {
-            if (/^\s*<\/Button>/.test(lines[j]) || /^\s*<\/Menu\.Trigger>/.test(lines[j])) {
+            if (
+              /^\s*<\/Button>/.test(lines[j]) ||
+              /^\s*<\/Menu\.Trigger>/.test(lines[j])
+            ) {
               const indent = lines[j].match(/^(\s*)/)?.[1] || "              ";
               lines.splice(j, 0, `${indent}  {${iconJsx}}`);
               break;
@@ -124,12 +136,12 @@ function fixLeftRightIcon(content: string): string {
         if (propMatch) {
           const propStart = propMatch.index!;
           const braceStart = propStart + propMatch[0].length - 1;
-          
+
           // Join lines until we balance braces
           let depth = 0;
           let joined = "";
           let endLineIdx = i;
-          
+
           for (let j = i; j < lines.length; j++) {
             const startChar = j === i ? braceStart : 0;
             for (let k = startChar; k < lines[j].length; k++) {
@@ -140,14 +152,16 @@ function fixLeftRightIcon(content: string): string {
                   // Found the end
                   const value = lines.slice(i, j + 1).join("\n");
                   const fullMatch = value.slice(
-                    value.indexOf(`${propName}={`) + `${propName}={`.length,
+                    value.indexOf(`${propName}={`) + `${propName}={`.length
                   );
-                  const iconJsx = fullMatch.slice(0, fullMatch.lastIndexOf("}")).trim();
-                  
+                  const iconJsx = fullMatch
+                    .slice(0, fullMatch.lastIndexOf("}"))
+                    .trim();
+
                   // Remove the prop lines
                   const beforeProp = lines[i].slice(0, propStart).trimEnd();
                   const afterProp = lines[j].slice(k + 1);
-                  
+
                   if (beforeProp.trim() === "" && afterProp.trim() === "") {
                     // Entire lines are the prop
                     lines.splice(i, j - i + 1);
@@ -160,27 +174,38 @@ function fixLeftRightIcon(content: string): string {
                       lines[i] += " " + afterProp.trim();
                     }
                   }
-                  
+
                   // Now add the icon as children
                   if (isLeftIcon) {
                     for (let m = i; m < Math.min(i + 20, lines.length); m++) {
                       const trimmed = lines[m].trim();
-                      if (trimmed.endsWith(">") && !trimmed.endsWith("/>") && !trimmed.startsWith("</") && !trimmed.startsWith("//")) {
-                        const indent = lines[m + 1]?.match(/^(\s*)/)?.[1] || "              ";
+                      if (
+                        trimmed.endsWith(">") &&
+                        !trimmed.endsWith("/>") &&
+                        !trimmed.startsWith("</") &&
+                        !trimmed.startsWith("//")
+                      ) {
+                        const indent =
+                          lines[m + 1]?.match(/^(\s*)/)?.[1] ||
+                          "              ";
                         lines.splice(m + 1, 0, `${indent}{${iconJsx}}`);
                         break;
                       }
                     }
                   } else {
                     for (let m = i; m < Math.min(i + 20, lines.length); m++) {
-                      if (/^\s*<\/Button>/.test(lines[m]) || /^\s*<\/Menu\.Trigger>/.test(lines[m])) {
-                        const indent = lines[m].match(/^(\s*)/)?.[1] || "              ";
+                      if (
+                        /^\s*<\/Button>/.test(lines[m]) ||
+                        /^\s*<\/Menu\.Trigger>/.test(lines[m])
+                      ) {
+                        const indent =
+                          lines[m].match(/^(\s*)/)?.[1] || "              ";
                         lines.splice(m, 0, `${indent}  {${iconJsx}}`);
                         break;
                       }
                     }
                   }
-                  
+
                   endLineIdx = j;
                   break;
                 }
@@ -193,7 +218,7 @@ function fixLeftRightIcon(content: string): string {
     }
     i++;
   }
-  
+
   return lines.join("\n");
 }
 
@@ -201,24 +226,27 @@ function fixLeftRightIcon(content: string): string {
 function fixIconButtonIcon(content: string): string {
   const lines = content.split("\n");
   let i = 0;
-  
+
   while (i < lines.length) {
     const line = lines[i];
-    
+
     // Check for icon= prop (but not leftIcon/rightIcon)
     if (/(?<!left|right)\bicon=\{/.test(line)) {
       // Make sure we're inside an IconButton context
       // Look backwards for <IconButton
       let isIconButton = false;
       for (let j = i; j >= Math.max(0, i - 10); j--) {
-        if (/\bIconButton\b/.test(lines[j]) && !/<\/IconButton/.test(lines[j])) {
+        if (
+          /\bIconButton\b/.test(lines[j]) &&
+          !/<\/IconButton/.test(lines[j])
+        ) {
           isIconButton = true;
           break;
         }
       }
       // Also check if icon is on same line as IconButton
       if (/\bIconButton\b/.test(line)) isIconButton = true;
-      
+
       // Also check for Menu.Item with icon
       let isMenuItem = false;
       for (let j = i; j >= Math.max(0, i - 5); j--) {
@@ -227,18 +255,18 @@ function fixIconButtonIcon(content: string): string {
           break;
         }
       }
-      
+
       if (!isIconButton && !isMenuItem) {
         i++;
         continue;
       }
-      
+
       // Extract icon value
       const result = removeProp(line, "icon");
       if (result) {
         lines[i] = result.newLine;
         const iconJsx = result.value.trim();
-        
+
         if (isIconButton) {
           // Find the self-closing /> and convert to >{icon}</IconButton>
           for (let j = i; j < Math.min(i + 10, lines.length); j++) {
@@ -253,7 +281,8 @@ function fixIconButtonIcon(content: string): string {
             if (lines[j].includes(">") && !lines[j].includes("/>")) {
               const trimmed = lines[j].trim();
               if (trimmed.endsWith(">") && !trimmed.startsWith("</")) {
-                const indent = lines[j + 1]?.match(/^(\s*)/)?.[1] || "            ";
+                const indent =
+                  lines[j + 1]?.match(/^(\s*)/)?.[1] || "            ";
                 lines.splice(j + 1, 0, `${indent}{${iconJsx}}`);
                 break;
               }
@@ -267,7 +296,7 @@ function fixIconButtonIcon(content: string): string {
           const propStart = propMatch.index!;
           const braceStart = propStart + propMatch[0].length - 1;
           let depth = 0;
-          
+
           for (let j = i; j < lines.length; j++) {
             const startChar = j === i ? braceStart : 0;
             for (let k = startChar; k < lines[j].length; k++) {
@@ -276,14 +305,17 @@ function fixIconButtonIcon(content: string): string {
                 depth--;
                 if (depth === 0) {
                   const fullLines = lines.slice(i, j + 1).join("\n");
-                  const iconStartIdx = fullLines.indexOf("icon={") + "icon={".length;
+                  const iconStartIdx =
+                    fullLines.indexOf("icon={") + "icon={".length;
                   const iconContent = fullLines.slice(iconStartIdx);
-                  const iconJsx = iconContent.slice(0, iconContent.lastIndexOf("}")).trim();
-                  
+                  const iconJsx = iconContent
+                    .slice(0, iconContent.lastIndexOf("}"))
+                    .trim();
+
                   // Remove prop lines
                   const beforeProp = lines[i].slice(0, propStart).trimEnd();
                   const afterProp = lines[j].slice(k + 1);
-                  
+
                   if (beforeProp.trim() === "" && afterProp.trim() === "") {
                     lines.splice(i, j - i + 1);
                   } else {
@@ -291,12 +323,15 @@ function fixIconButtonIcon(content: string): string {
                     if (j > i) lines.splice(i + 1, j - i);
                     if (afterProp.trim()) lines[i] += " " + afterProp.trim();
                   }
-                  
+
                   // Find /> and convert
                   if (isIconButton) {
                     for (let m = i; m < Math.min(i + 10, lines.length); m++) {
                       if (/\/>/.test(lines[m])) {
-                        lines[m] = lines[m].replace("/>", `>{${iconJsx}}</IconButton>`);
+                        lines[m] = lines[m].replace(
+                          "/>",
+                          `>{${iconJsx}}</IconButton>`
+                        );
                         break;
                       }
                     }
@@ -312,7 +347,7 @@ function fixIconButtonIcon(content: string): string {
     }
     i++;
   }
-  
+
   return lines.join("\n");
 }
 
@@ -320,7 +355,7 @@ function fixIconButtonIcon(content: string): string {
 function fixIconAs(content: string): string {
   // Simple case: <Icon as={LuSomething} /> -> <LuSomething />
   // With other props: <Icon as={LuSomething} size={20} /> -> <LuSomething size={20} />
-  
+
   // Single-line pattern
   content = content.replace(
     /<Icon\s+as=\{(\w+)\}\s*((?:[^/](?!\/>))*?)\s*\/>/g,
@@ -329,7 +364,7 @@ function fixIconAs(content: string): string {
       return props ? `<${component} ${props} />` : `<${component} />`;
     }
   );
-  
+
   // Multi-line Icon as= pattern
   const lines = content.split("\n");
   let i = 0;
@@ -343,7 +378,11 @@ function fixIconAs(content: string): string {
           const component = match[1];
           lines[i] = line.replace(/<Icon\s+as=\{\w+\}/, `<${component}`);
         }
-      } else if (/<Icon$/.test(line.trim()) && i + 1 < lines.length && /\s*as=\{/.test(lines[i + 1])) {
+      } else if (
+        /<Icon$/.test(line.trim()) &&
+        i + 1 < lines.length &&
+        /\s*as=\{/.test(lines[i + 1])
+      ) {
         const asMatch = lines[i + 1].match(/\s*as=\{(\w+)\}/);
         if (asMatch) {
           const component = asMatch[1];
@@ -355,7 +394,7 @@ function fixIconAs(content: string): string {
     }
     i++;
   }
-  
+
   return lines.join("\n");
 }
 
@@ -363,17 +402,17 @@ function fixIconAs(content: string): string {
 function fixMenuTriggerAsButton(content: string): string {
   const lines = content.split("\n");
   let i = 0;
-  
+
   while (i < lines.length) {
     const line = lines[i];
-    
+
     // Look for Menu.Trigger with as={Button}
     if (/Menu\.Trigger/.test(line) && /as=\{Button\}/.test(line)) {
       // Remove as={Button} and replace with asChild
       lines[i] = line
         .replace(/\s*as=\{Button\}/, "")
         .replace(/Menu\.Trigger/, "Menu.Trigger asChild");
-      
+
       // Collect all props from Menu.Trigger to move to Button
       // Find the end of Menu.Trigger opening tag
       let tagEndLine = i;
@@ -387,7 +426,7 @@ function fixMenuTriggerAsButton(content: string): string {
           break;
         }
       }
-      
+
       // Extract props between <Menu.Trigger asChild and >
       // We need to wrap children in <Button ...props>...</Button>
       // Collect props from Menu.Trigger lines
@@ -396,23 +435,25 @@ function fixMenuTriggerAsButton(content: string): string {
         propsLines.push(lines[j]);
       }
       const propsText = propsLines.join(" ");
-      
+
       // Extract individual props from Menu.Trigger
-      const triggerPropsMatch = propsText.match(/<Menu\.Trigger\s+asChild\s*([\s\S]*?)>/);
+      const triggerPropsMatch = propsText.match(
+        /<Menu\.Trigger\s+asChild\s*([\s\S]*?)>/
+      );
       const triggerProps = triggerPropsMatch ? triggerPropsMatch[1].trim() : "";
-      
-      // Rewrite: <Menu.Trigger asChild>\n<Button ...props>  
+
+      // Rewrite: <Menu.Trigger asChild>\n<Button ...props>
       const indent = lines[i].match(/^(\s*)/)?.[1] || "";
       lines[i] = `${indent}<Menu.Trigger asChild>`;
-      
+
       // Remove old prop lines
       if (tagEndLine > i) {
         lines.splice(i + 1, tagEndLine - i);
       }
-      
+
       // Insert <Button with props> after Menu.Trigger
       lines.splice(i + 1, 0, `${indent}  <Button ${triggerProps}>`);
-      
+
       // Find matching </Menu.Trigger> and insert </Button> before it
       for (let j = i + 2; j < lines.length; j++) {
         if (/^\s*<\/Menu\.Trigger>/.test(lines[j])) {
@@ -434,7 +475,7 @@ function fixMenuTriggerAsButton(content: string): string {
         }
         if (lines[j].includes(">")) break; // End of opening tag
       }
-      
+
       if (hasAsButton && asButtonLine >= 0) {
         // Remove as={Button} line or just the prop
         const asLine = lines[asButtonLine];
@@ -443,7 +484,7 @@ function fixMenuTriggerAsButton(content: string): string {
         } else {
           lines[asButtonLine] = asLine.replace(/\s*as=\{Button\}/, "");
         }
-        
+
         // Collect remaining props from the Menu.Trigger tag
         let tagEndLine = i;
         for (let j = i; j < lines.length; j++) {
@@ -452,7 +493,7 @@ function fixMenuTriggerAsButton(content: string): string {
             break;
           }
         }
-        
+
         // Extract props
         const propLines: string[] = [];
         for (let j = i; j <= tagEndLine; j++) {
@@ -461,16 +502,16 @@ function fixMenuTriggerAsButton(content: string): string {
         const propsText = propLines.join("\n");
         const propsMatch = propsText.match(/<Menu\.Trigger\s*([\s\S]*?)>/);
         let triggerProps = propsMatch ? propsMatch[1].trim() : "";
-        
+
         const indent = lines[i].match(/^(\s*)/)?.[1] || "";
-        
+
         // Rewrite
         lines[i] = `${indent}<Menu.Trigger asChild>`;
         if (tagEndLine > i) {
           lines.splice(i + 1, tagEndLine - i);
         }
         lines.splice(i + 1, 0, `${indent}  <Button ${triggerProps}>`);
-        
+
         // Find </Menu.Trigger> and add </Button> before it
         for (let j = i + 2; j < lines.length; j++) {
           if (/^\s*<\/Menu\.Trigger>/.test(lines[j])) {
@@ -482,7 +523,7 @@ function fixMenuTriggerAsButton(content: string): string {
     }
     i++;
   }
-  
+
   return lines.join("\n");
 }
 
@@ -490,20 +531,23 @@ function fixMenuTriggerAsButton(content: string): string {
 function fixAsLink(content: string): string {
   const lines = content.split("\n");
   let i = 0;
-  
+
   while (i < lines.length) {
     const line = lines[i];
-    
+
     // Check for as={Link} on various components
     if (/\bas=\{Link\}/.test(line)) {
       // Identify the component (Button, IconButton, HStack, etc.)
       const componentMatch = line.match(/<(\w+(?:\.\w+)?)\s/);
-      if (!componentMatch) { i++; continue; }
+      if (!componentMatch) {
+        i++;
+        continue;
+      }
       const component = componentMatch[1];
-      
+
       // Remove as={Link} and extract href
       lines[i] = line.replace(/\s*as=\{Link\}/, "");
-      
+
       // Find href prop (might be on same line or different line)
       let hrefValue = "";
       let hrefLine = -1;
@@ -522,12 +566,15 @@ function fixAsLink(content: string): string {
         }
         if (lines[j].includes(">")) break;
       }
-      
+
       // Add asChild to the component
-      lines[i] = lines[i].replace(new RegExp(`<${component.replace('.', '\\.')}\\s`), `<${component} asChild `);
+      lines[i] = lines[i].replace(
+        new RegExp(`<${component.replace(".", "\\.")}\\s`),
+        `<${component} asChild `
+      );
       // Clean up potential double spaces
       lines[i] = lines[i].replace(/\s{2,}/g, " ");
-      
+
       // Find end of opening tag
       let tagEndLine = i;
       for (let j = i; j < lines.length; j++) {
@@ -540,28 +587,31 @@ function fixAsLink(content: string): string {
           break;
         }
       }
-      
+
       // After the opening tag's >, insert <Link href={...}>
       const indent = lines[i].match(/^(\s*)/)?.[1] || "";
-      
+
       // Check if self-closing
       if (lines[tagEndLine].includes("/>")) {
         // Self-closing: convert to <Component asChild><Link href={...}>content</Link></Component>
         // This case is unlikely for as={Link} but handle it
-        lines[tagEndLine] = lines[tagEndLine].replace("/>", `><Link href=${hrefValue} /></${component}>`);
+        lines[tagEndLine] = lines[tagEndLine].replace(
+          "/>",
+          `><Link href=${hrefValue} /></${component}>`
+        );
       } else {
         // After >, insert <Link href={...}>
         // Find the > position
         const gtIdx = lines[tagEndLine].lastIndexOf(">");
         const afterGt = lines[tagEndLine].slice(gtIdx + 1);
         lines[tagEndLine] = lines[tagEndLine].slice(0, gtIdx + 1);
-        
+
         // Insert Link wrapper
         lines.splice(tagEndLine + 1, 0, `${indent}  <Link href=${hrefValue}>`);
         if (afterGt.trim()) {
           lines.splice(tagEndLine + 2, 0, `${indent}    ${afterGt.trim()}`);
         }
-        
+
         // Find closing tag and wrap with </Link>
         const closingTag = `</${component}>`;
         for (let j = tagEndLine + 2; j < lines.length; j++) {
@@ -574,14 +624,14 @@ function fixAsLink(content: string): string {
     }
     i++;
   }
-  
+
   return lines.join("\n");
 }
 
 // Process all TypeScript/TSX files
 function processFiles(): void {
   const allFiles: string[] = [];
-  
+
   function walk(dir: string) {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
@@ -595,32 +645,34 @@ function processFiles(): void {
       }
     }
   }
-  
+
   walk(SRC);
-  
+
   let totalChanges = 0;
   let filesChanged = 0;
-  
+
   for (const filePath of allFiles) {
     const original = fs.readFileSync(filePath, "utf8");
     let content = original;
-    
+
     // Apply transformations in order
     content = fixLeftRightIcon(content);
     content = fixIconButtonIcon(content);
     content = fixIconAs(content);
     // Don't run as={Button} and as={Link} fixes in this automated script
     // They're too complex and context-dependent
-    
+
     if (content !== original) {
       fs.writeFileSync(filePath, content, "utf8");
       const changes = countDifferences(original, content);
       totalChanges += changes;
       filesChanged++;
-      console.log(`  Fixed ${filePath.replace(SRC, "src")} (${changes} changes)`);
+      console.log(
+        `  Fixed ${filePath.replace(SRC, "src")} (${changes} changes)`
+      );
     }
   }
-  
+
   console.log(`\nTotal: ${filesChanged} files, ${totalChanges} changes`);
 }
 

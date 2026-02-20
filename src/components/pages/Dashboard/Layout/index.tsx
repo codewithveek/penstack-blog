@@ -2,7 +2,7 @@
 
 import { Box, Flex, Text, Icon, Drawer } from "@chakra-ui/react";
 
-import { memo, Suspense } from "react";
+import { memo, Suspense, useState } from "react";
 import { ReactNode } from "react";
 import { DashboardSidebar } from "@/components/Dashboard/Sidebar";
 import { LuMenu } from "react-icons/lu";
@@ -20,7 +20,7 @@ export default memo(function DashboardLayout({
   children: ReactNode;
   navLinks: NavItemWithoutPermission[];
 }) {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
   const { isMinimized, toggleMinimized } = useDashboardSidebarState();
@@ -36,7 +36,7 @@ export default memo(function DashboardLayout({
         <Suspense fallback={<Loader />}>
           <DashboardSidebar
             navLinks={navLinks}
-            onOpenChange={() => onClose}
+            onClose={onClose}
             display={{ base: "none", md: "block" }}
             isMinimized={isMinimized}
             toggleMinimized={toggleMinimized}
@@ -44,10 +44,10 @@ export default memo(function DashboardLayout({
         </Suspense>
         <Drawer.Root
           open={isOpen}
-          placement="left"
-          onOpenChange={onClose}
-          returnFocusOnClose={false}
-          onOverlayClick={onClose}
+          placement="start"
+          onOpenChange={(details) => {
+            if (!details.open) onClose();
+          }}
           size={"xs"}
         >
           <Drawer.Backdrop />
@@ -58,7 +58,7 @@ export default memo(function DashboardLayout({
               <Suspense fallback={<Loader />}>
                 <DashboardSidebar
                   navLinks={navLinks}
-                  onOpenChange={onClose}
+                  onClose={onClose}
                   isMinimized={false}
                   toggleMinimized={() => {}}
                 />
@@ -82,7 +82,9 @@ export default memo(function DashboardLayout({
           justifyContent="flex-start"
           display={{ base: "flex", md: "none" }}
         >
-          <Icon onClick={onOpen} fontSize="20" cursor="pointer"><LuMenu /></Icon>
+          <Icon onClick={onOpen} fontSize="20" cursor="pointer">
+            <LuMenu />
+          </Icon>
           <Text fontSize="lg" ml="4" fontWeight="bold" letterSpacing={1}>
             {siteSettings?.siteName?.value}
           </Text>

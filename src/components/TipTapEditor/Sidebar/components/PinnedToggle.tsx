@@ -10,7 +10,9 @@ export const PinnedToggle = ({ isSticky, onChange }: PinnedToggleProps) => {
       <List.Item>
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon mr={1}><LuPin /></Icon>
+            <Icon mr={1}>
+              <LuPin />
+            </Icon>
             Pinned:
           </Text>
           <Switch.Root checked={isSticky} onChange={onChange} size={"sm"} />

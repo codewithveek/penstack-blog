@@ -1,4 +1,17 @@
-import { Box, VStack, Text, Image, Input, HStack, Stack, Button, Skeleton, Separator, Card, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  VStack,
+  Text,
+  Image,
+  Input,
+  HStack,
+  Stack,
+  Button,
+  Skeleton,
+  Separator,
+  Card,
+  IconButton,
+} from "@chakra-ui/react";
 import { SearchPostsComponent } from "@/lib/editor/nodes/MiniPostCard/SearchPostsComponent";
 import { PostSelect } from "@/types";
 import {

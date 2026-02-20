@@ -13,7 +13,7 @@ export const ActionButtons = memo(() => {
   const autoSave = useEditorPostManagerStore((state) => state.autoSave);
   const savePost = useEditorPostManagerStore((state) => state.savePost);
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
-  
+
   const postId = useEditorPostManagerStore(
     (state) => state.activePost?.post_id
   );
@@ -99,6 +99,7 @@ export const ActionButtons = memo(() => {
 
           <Menu.Content px={2} rounded={"lg"}>
             <Menu.Item
+              value="draft"
               onClick={onDraft}
               fontSize="sm"
               fontWeight={"semibold"}
@@ -109,6 +110,7 @@ export const ActionButtons = memo(() => {
 
             <PermissionGuard requiredPermission="posts:delete">
               <Menu.Item
+                value="delete"
                 rounded={"lg"}
                 onClick={onDelete}
                 fontSize="sm"

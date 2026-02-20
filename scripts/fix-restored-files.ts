@@ -138,7 +138,11 @@ function processFile(filePath: string) {
         .map((s: string) => s.trim())
         .filter(Boolean);
       const colorModeImports = allImports.filter(
-        (i: string) => i === "useColorMode" || i === "useColorModeValue" || i === "LightMode" || i === "DarkMode"
+        (i: string) =>
+          i === "useColorMode" ||
+          i === "useColorModeValue" ||
+          i === "LightMode" ||
+          i === "DarkMode"
       );
       const chakraImports = allImports.filter(
         (i: string) => !colorModeImports.includes(i)
@@ -185,10 +189,7 @@ function processFile(filePath: string) {
 
   // Sub-component JSX tags FIRST (before base components, to avoid partial matches)
   for (const [oldName, newName] of sortedEntries) {
-    const openRegex = new RegExp(
-      `<${escapeRegex(oldName)}(?=[\\s>\/])`,
-      "g"
-    );
+    const openRegex = new RegExp(`<${escapeRegex(oldName)}(?=[\\s>\/])`, "g");
     content = content.replace(openRegex, `<${newName}`);
 
     const closeRegex = new RegExp(`<\\/${escapeRegex(oldName)}>`, "g");
@@ -196,7 +197,23 @@ function processFile(filePath: string) {
   }
 
   // Base components become .Root (AFTER sub-components are handled)
-  for (const comp of ["Card", "Alert", "Menu", "Avatar", "Switch", "Checkbox", "Tooltip", "Tag", "Table", "Tabs", "Progress", "Drawer", "List", "Popover", "Accordion"]) {
+  for (const comp of [
+    "Card",
+    "Alert",
+    "Menu",
+    "Avatar",
+    "Switch",
+    "Checkbox",
+    "Tooltip",
+    "Tag",
+    "Table",
+    "Tabs",
+    "Progress",
+    "Drawer",
+    "List",
+    "Popover",
+    "Accordion",
+  ]) {
     content = content.replace(
       new RegExp(`<${comp}(?=[\\s>\/])(?!\\.)`, "g"),
       `<${comp}.Root`
@@ -240,10 +257,7 @@ function processFile(filePath: string) {
   content = content.replace(/\bnoOfLines=/g, "lineClamp=");
 
   // Fix toaster status → type
-  content = content.replace(
-    /(toaster\.create\(\{[^}]*?)\bstatus:/g,
-    "$1type:"
-  );
+  content = content.replace(/(toaster\.create\(\{[^}]*?)\bstatus:/g, "$1type:");
 
   // Fix Tooltip label → content
   content = content.replace(
@@ -285,7 +299,9 @@ function processFile(filePath: string) {
     fs.writeFileSync(filePath, content);
     filesChanged++;
     totalChanges++;
-    console.log(`Fixed: ${path.relative(path.join(__dirname, ".."), filePath)}`);
+    console.log(
+      `Fixed: ${path.relative(path.join(__dirname, ".."), filePath)}`
+    );
   }
 }
 

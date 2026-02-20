@@ -18,7 +18,9 @@ export const ScheduleItem = ({
         <HStack justify="space-between">
           <HStack>
             <Text as="span" color="gray.500">
-              <Icon mr={1}><LuTimer /></Icon>
+              <Icon mr={1}>
+                <LuTimer />
+              </Icon>
               Schedule:
             </Text>
             <Text as="span" fontWeight="semibold" textTransform="capitalize">

@@ -1,5 +1,22 @@
 import React, { useState } from "react";
-import { Box, Container, HStack, Button, IconButton, Menu, Text, Drawer, VStack, Separator, Icon, Hide, useBreakpointValue, Show, Input, InputGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  HStack,
+  Button,
+  IconButton,
+  Menu,
+  Text,
+  Drawer,
+  VStack,
+  Separator,
+  Icon,
+  Hide,
+  useBreakpointValue,
+  Show,
+  Input,
+  InputGroup,
+} from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { LuMenu, LuChevronDown, LuSearch } from "react-icons/lu";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,6 +30,8 @@ import { useSiteConfig } from "@/context/SiteConfig";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const onOpen = () => setOpen(true);
+  const onOpenChange = () => setOpen(false);
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
@@ -71,20 +90,11 @@ const Header = () => {
         }
       }}
     >
-      <InputGroup>
-        <Input
-          rounded={"full"}
-          onChange={(e) => {
-            setSearchInput(e.target.value);
-          }}
-          w="full"
-          placeholder="Search Articles..."
-        />
-        <InputElement>
+      <InputGroup
+        endElement={
           <IconButton
             size="sm"
             rounded={"full"}
-            // variant={"ghost"}
             disabled={!searchInput}
             onClick={() => {
               if (searchInput) {
@@ -95,7 +105,16 @@ const Header = () => {
           >
             <LuSearch />
           </IconButton>
-        </InputElement>
+        }
+      >
+        <Input
+          rounded={"full"}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
+          w="full"
+          placeholder="Search Articles..."
+        />
       </InputGroup>
     </HStack>
   );
@@ -127,18 +146,18 @@ const Header = () => {
           <HStack justify="space-between" align="center">
             <Link href="/" style={{ textDecoration: "none" }}>
               <HStack gap={0}>
-              <AppLogo src={logo!} size={logoSize!} />
-              {siteSettings.showSiteNameWithLogo?.enabled && (
-                <Text
-                  hideBelow={"md"}
-                  as={"span"}
-                  fontSize={{ base: "medium", lg: "large" }}
-                  fontWeight="bold"
-                  fontFamily={"var(--font-heading)"}
-                >
-                  {siteSettings?.siteName?.value}
-                </Text>
-              )}
+                <AppLogo src={logo!} size={logoSize!} />
+                {siteSettings.showSiteNameWithLogo?.enabled && (
+                  <Text
+                    hideBelow={"md"}
+                    as={"span"}
+                    fontSize={{ base: "medium", lg: "large" }}
+                    fontWeight="bold"
+                    fontFamily={"var(--font-heading)"}
+                  >
+                    {siteSettings?.siteName?.value}
+                  </Text>
+                )}
               </HStack>
             </Link>
 
@@ -225,6 +244,7 @@ const Header = () => {
                         categories.map((topic) => (
                           <Menu.Item
                             key={topic.name}
+                            value={topic.slug}
                             asChild
                           >
                             <Link href={`/category/${topic.slug}`}>
@@ -310,9 +330,7 @@ const Header = () => {
                       w="full"
                       onClick={onOpenChange}
                     >
-                      <Link href={resource.href}>
-                        {resource.name}
-                      </Link>
+                      <Link href={resource.href}>{resource.name}</Link>
                     </Button>
                   ))}
                 </Box>

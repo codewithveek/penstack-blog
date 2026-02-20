@@ -7,12 +7,11 @@ import {
   LuChevronsRight,
 } from "react-icons/lu";
 
-
 const Pagination = ({
   currentPage,
   totalPages,
   onPageChange,
-  isLoading = false,
+  loading = false,
 }: {
   currentPage: number;
   totalPages: number;

@@ -17,9 +17,7 @@ export const SignUp = () => {
         bg: hoverBgSignup,
       }}
     >
-      <Link href="/auth/signup">
-        Sign up
-      </Link>
+      <Link href="/auth/signup">Sign up</Link>
     </Button>
   );
 };

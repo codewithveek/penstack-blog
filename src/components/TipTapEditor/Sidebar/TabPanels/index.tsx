@@ -11,8 +11,8 @@ export const EditorSidebarTabPanels = () => {
     "aTab",
     parseAsStringLiteral(tabs).withDefault("post")
   );
-  const handleTabChange = (index: number) => {
-    setActiveEditorTab(tabs[index]);
+  const handleTabChange = (details: { value: string }) => {
+    setActiveEditorTab(details.value as typeof activeEditorTab);
   };
   return (
     <Box
@@ -24,9 +24,9 @@ export const EditorSidebarTabPanels = () => {
       className=""
     >
       <Tabs.Root
-        onChange={handleTabChange}
-        defaultIndex={tabs.indexOf(activeEditorTab)}
-        isLazy
+        onValueChange={handleTabChange}
+        defaultValue={activeEditorTab}
+        lazyMount
       >
         <Tabs.List
           bg="white"
@@ -34,17 +34,17 @@ export const EditorSidebarTabPanels = () => {
           borderColor="gray.200"
           className="rounded-t-lg "
         >
-          <Tabs.Trigger>Post</Tabs.Trigger>
-          <Tabs.Trigger>SEO</Tabs.Trigger>
+          <Tabs.Trigger value="post">Post</Tabs.Trigger>
+          <Tabs.Trigger value="seo">SEO</Tabs.Trigger>
         </Tabs.List>
         <Tabs.ContentGroup>
-          <Tabs.Content px={0} pt={1}>
+          <Tabs.Content value="post" px={0} pt={1}>
             <PublishPanel />
           </Tabs.Content>
-          {/* <Tabs.Content px={0} pt={1}>
+          {/* <Tabs.Content value="block" px={0} pt={1}>
             <BlockPanel />
           </Tabs.Content> */}
-          <Tabs.Content px={0} pt={1}>
+          <Tabs.Content value="seo" px={0} pt={1}>
             <SeoPanel />
           </Tabs.Content>
         </Tabs.ContentGroup>

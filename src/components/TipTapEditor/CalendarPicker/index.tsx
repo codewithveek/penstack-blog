@@ -1,5 +1,5 @@
 import { Button, Popover } from "@chakra-ui/react";
-import { ReactNode, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Calendar from "@/components/Calendar";
 
 import { useMutation } from "@tanstack/react-query";
@@ -21,11 +21,16 @@ export const CalendarPicker = ({
   onClose: () => void;
   trigger: ReactNode;
 }) => {
-  const popRef = useRef(null);
-  useOutsideClick({
-    ref: popRef,
-    handler: onClose,
-  });
+  const popRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (popRef.current && !popRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
   const activePostTitle = useEditorPostManagerStore(
     (state) => state.activePost?.title
   );
@@ -40,7 +45,7 @@ export const CalendarPicker = ({
   const [dateValue, setDateValue] = useState<Date | undefined>(defaultValue);
   // State to manage the selected timezone
   const [timezone, setTimezone] = useState<string>(defaultTimezone);
-  
+
   const { mutateAsync } = useMutation({
     mutationFn: async (bodyData: CronJobPayload) => {
       const { data } = await axios.post("/api/cron", bodyData);

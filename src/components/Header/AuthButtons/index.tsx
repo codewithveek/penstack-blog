@@ -24,9 +24,7 @@ export const AuthButtons = () => {
         py={"7px"}
         h="auto"
       >
-        <Link href="/auth/signin">
-          Log In
-        </Link>
+        <Link href="/auth/signin">Log In</Link>
       </Button>
       <SignUp />
     </HStack>

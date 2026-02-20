@@ -1,4 +1,16 @@
-import { Box, Container, Flex, Grid, IconButton, Link, Stack, Text, VStack, Heading, GridItem } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Flex,
+  Grid,
+  IconButton,
+  Link,
+  Stack,
+  Text,
+  VStack,
+  Heading,
+  GridItem,
+} from "@chakra-ui/react";
 import React, { useMemo } from "react";
 
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";

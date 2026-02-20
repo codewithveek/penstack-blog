@@ -10,7 +10,9 @@ export const TocActions = ({ generateToc, onChange }: TocActionsProps) => {
     <List.Item>
       <HStack>
         <Text as="span" color="gray.500">
-          <Icon mr={1}><LuStickyNote /></Icon>
+          <Icon mr={1}>
+            <LuStickyNote />
+          </Icon>
           Generate Table of Content:
         </Text>
         <Switch.Root checked={generateToc} onChange={onChange} size={"sm"} />

@@ -1,5 +1,15 @@
 import { MediaResponse } from "@/types";
-import { Box, Flex, HStack, IconButton, Image, Stack, Text, Tooltip, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  IconButton,
+  Image,
+  Stack,
+  Text,
+  Button,
+} from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import isEmpty from "just-is-empty";
 import { useCallback, useState } from "react";
@@ -73,7 +83,12 @@ export const ImageCard = ({
               w="full"
               objectFit="cover"
             />
-            <Tooltip.Root content="Remove image" hasArrow placement="top" rounded="md">
+            <Tooltip
+              content="Remove image"
+              hasArrow
+              placement="top"
+              rounded="md"
+            >
               <IconButton
                 zIndex={9}
                 pos="absolute"
@@ -86,7 +101,7 @@ export const ImageCard = ({
               >
                 <LuTrash2 />
               </IconButton>
-            </Tooltip.Root>
+            </Tooltip>
           </>
         ) : (
           <Stack justify="center" align="center" h="100%" w="full">
@@ -106,7 +121,7 @@ export const ImageCard = ({
       <HStack justify={"flex-end"}>
         <Button
           size="sm"
-          onClick={onOpen}
+          onClick={() => setOpen(true)}
           variant={"ghost"}
           rounded="full"
           // w="full"
@@ -117,7 +132,7 @@ export const ImageCard = ({
       </HStack>
 
       <MediaModal
-        onOpenChange={onOpenChange}
+        onOpenChange={() => setOpen(false)}
         open={open}
         maxSelection={1}
         defaultFilters={{ type: "image" }}

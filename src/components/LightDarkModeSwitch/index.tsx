@@ -1,5 +1,15 @@
-import { Button, ButtonGroup, HStack, IconButton, Text } from "@chakra-ui/react";
-import { LightMode, useColorMode, useColorModeValue } from "@/components/ui/color-mode";
+import {
+  Button,
+  ButtonGroup,
+  HStack,
+  IconButton,
+  Text,
+} from "@chakra-ui/react";
+import {
+  LightMode,
+  useColorMode,
+  useColorModeValue,
+} from "@/components/ui/color-mode";
 import { LuMoon, LuSun } from "react-icons/lu";
 
 export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {

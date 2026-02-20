@@ -13,10 +13,16 @@ export const CommentsToggle = ({
       <List.Item>
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon mr={1}><LuMessageSquare /></Icon>
+            <Icon mr={1}>
+              <LuMessageSquare />
+            </Icon>
             Allow Comments:
           </Text>
-          <Switch.Root checked={allowComments} onChange={onChange} size={"sm"} />
+          <Switch.Root
+            checked={allowComments}
+            onChange={onChange}
+            size={"sm"}
+          />
         </HStack>
       </List.Item>
     </PermissionGuard>

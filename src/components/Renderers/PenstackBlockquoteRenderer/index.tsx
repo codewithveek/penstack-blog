@@ -110,6 +110,7 @@ const PenstackBlockquoteRenderer: React.FC<
                   {blockquoteVariants.map((variant) => (
                     <Menu.Item
                       key={variant}
+                      value={variant}
                       onClick={() => {
                         updateAttributes?.({
                           variant,

@@ -66,11 +66,7 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, postsWithMeta }) => {
             <PostsCards posts={postsWithMeta?.data} loading={false} />
             {postsWithMeta?.meta && postsWithMeta?.meta.totalPages > 1 && (
               <HStack justify={"center"} my={8}>
-                <Button
-                  asChild
-                  px={6}
-                  py={2}
-                >
+                <Button asChild px={6} py={2}>
                   <Link href="/articles">
                     View all posts <LuArrowRight />
                   </Link>

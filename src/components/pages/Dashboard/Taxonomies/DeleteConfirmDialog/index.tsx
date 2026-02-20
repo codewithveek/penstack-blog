@@ -25,14 +25,14 @@ export const DeleteConfirmDialog = ({
   }
   return (
     <>
-      <Dialog.Root role="alertdialog"
+      <Dialog.Root
+        role="alertdialog"
         open={isOpen}
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
         onOpenChange={handleModalClose}
       >
-        <AlertDialog.Backdrop>
-          <Dialog.Positioner><Dialog.Content>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
             <Dialog.Header fontSize="lg" fontWeight="bold">
               {title}
             </Dialog.Header>
@@ -56,8 +56,8 @@ export const DeleteConfirmDialog = ({
                 Delete
               </Button>
             </Dialog.Footer>
-          </Dialog.Content></Dialog.Positioner>
-        </AlertDialog.Backdrop>
+          </Dialog.Content>
+        </Dialog.Positioner>
       </Dialog.Root>
     </>
   );

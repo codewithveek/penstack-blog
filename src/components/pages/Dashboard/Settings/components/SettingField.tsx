@@ -1,4 +1,13 @@
-import { Field, Input, Switch, HStack, Text, Group, InputElement, IconButton } from "@chakra-ui/react";
+import {
+  Field,
+  Input,
+  Switch,
+  HStack,
+  Text,
+  Group,
+  InputElement,
+  IconButton,
+} from "@chakra-ui/react";
 
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";

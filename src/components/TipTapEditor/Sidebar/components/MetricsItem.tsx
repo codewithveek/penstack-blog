@@ -15,7 +15,9 @@ export const MetricsItem = () => {
       <List.Item>
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon mr={1}><LuFileText /></Icon>
+            <Icon mr={1}>
+              <LuFileText />
+            </Icon>
             Word count:
           </Text>
           <Text as="span" fontWeight="semibold">
@@ -26,7 +28,9 @@ export const MetricsItem = () => {
       <List.Item>
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon mr={1}><LuType /></Icon>
+            <Icon mr={1}>
+              <LuType />
+            </Icon>
             Character count:
           </Text>
           <Text as="span" fontWeight="semibold">

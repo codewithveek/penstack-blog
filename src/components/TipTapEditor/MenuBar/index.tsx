@@ -1,11 +1,19 @@
 "use client";
 
-import { HStack, IconButton, Input, Tooltip, Box, Button, Stack } from "@chakra-ui/react";
-
+import {
+  HStack,
+  IconButton,
+  Input,
+  Box,
+  Button,
+  Stack,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 import { Editor } from "@tiptap/react";
 import { useFormik } from "formik";
-import React, { FormEvent, memo, useRef, useState } from "react";
+import React, { FormEvent, memo, useEffect, useRef, useState } from "react";
 
 import { LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
 import EditorActionsDropdown from "./EditorActionsDropdown";
@@ -67,7 +75,12 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       {nonHeadingOrParagraphActions.map((item, index) =>
         item.label === "Insert Media" ? (
           <Box key={index}>
-            <Tooltip.Root content={item.label} hasArrow placement="top" rounded={"lg"}>
+            <Tooltip
+              content={item.label}
+              hasArrow
+              placement="top"
+              rounded={"lg"}
+            >
               <IconButton
                 aria-label={item.label}
                 {...btnStyles}
@@ -76,7 +89,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
               >
                 <item.icon size={20} />
               </IconButton>
-            </Tooltip.Root>
+            </Tooltip>
             <MediaInsert
               editor={editor}
               open={isMediaModalOpen}
@@ -84,7 +97,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             />
           </Box>
         ) : (
-          <Tooltip.Root
+          <Tooltip
             key={index}
             label={item.label}
             hasArrow
@@ -101,11 +114,16 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             >
               <item.icon size={20} />
             </IconButton>
-          </Tooltip.Root>
+          </Tooltip>
         )
       )}
 
-      <Tooltip.Root content="Insert Link" hasArrow placement="top" rounded={"lg"}>
+      <Tooltip
+        content="Insert Link"
+        hasArrow
+        placement="top"
+        rounded={"lg"}
+      >
         <Box pos={"relative"}>
           <IconButton
             aria-label=""
@@ -124,9 +142,9 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             />
           )}
         </Box>
-      </Tooltip.Root>
+      </Tooltip>
 
-      <Tooltip.Root content="Undo" hasArrow placement="top" rounded={"lg"}>
+      <Tooltip content="Undo" hasArrow placement="top" rounded={"lg"}>
         <IconButton
           aria-label=""
           {...btnStyles}
@@ -136,8 +154,8 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         >
           <LuUndo2 size={20} />
         </IconButton>
-      </Tooltip.Root>
-      <Tooltip.Root content="Redo" hasArrow placement="top" rounded={"lg"}>
+      </Tooltip>
+      <Tooltip content="Redo" hasArrow placement="top" rounded={"lg"}>
         <IconButton
           aria-label=""
           {...btnStyles}
@@ -147,7 +165,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         >
           <LuRedo2 size={20} />
         </IconButton>
-      </Tooltip.Root>
+      </Tooltip>
       <MiniPostCardButton editor={editor} />
       <MediaButton editor={editor} />
     </HStack>
@@ -164,12 +182,18 @@ export const LinkInputForm = ({
   const linkFormRef = useRef<HTMLDivElement | null>(null);
 
   const selectedContentJson = editor.state.selection.content().content.toJSON();
-  useOutsideClick({
-    ref: linkFormRef,
-    handler() {
-      setIsLinkFormOpen(false);
-    },
-  });
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        linkFormRef.current &&
+        !linkFormRef.current.contains(e.target as Node)
+      ) {
+        setIsLinkFormOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [setIsLinkFormOpen]);
   const selectedContent = extractContentAndLinkMark(selectedContentJson);
   const formik = useFormik({
     enableReinitialize: true,

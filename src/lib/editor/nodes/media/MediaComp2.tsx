@@ -1,4 +1,5 @@
-import { Box, Image, ButtonGroup, IconButton, Tooltip, Flex } from "@chakra-ui/react";
+import { Box, Image, ButtonGroup, IconButton, Flex } from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 import React, { useState } from "react";
 import { NodeViewWrapper, NodeViewProps, NodeViewContent } from "@tiptap/react";
 
@@ -93,7 +94,7 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
               variant={"outline"}
             >
               {alignments.map(({ icon: Icon, value }) => (
-                <Tooltip.Root key={value} label={`Align ${value}`}>
+                <Tooltip key={value} label={`Align ${value}`}>
                   <IconButton
                     aria-label={`Align ${value}`}
                     onClick={() => updateAttributes({ align: value })}
@@ -102,7 +103,7 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
                   >
                     <Icon />
                   </IconButton>
-                </Tooltip.Root>
+                </Tooltip>
               ))}
             </ButtonGroup>
           )}

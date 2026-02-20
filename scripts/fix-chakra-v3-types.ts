@@ -82,10 +82,7 @@ function processFile(filePath: string) {
     content = content.replace(/<\/Tabs(?!\.)/g, "</Tabs.Root");
 
     // Progress: <Progress ...> → <Progress.Root ...>
-    content = content.replace(
-      /<Progress(?=[\s>\/])(?!\.)/g,
-      "<Progress.Root"
-    );
+    content = content.replace(/<Progress(?=[\s>\/])(?!\.)/g, "<Progress.Root");
     content = content.replace(/<\/Progress(?!\.)/g, "</Progress.Root");
 
     // Drawer: <Drawer ...> → <Drawer.Root ...>
@@ -146,7 +143,9 @@ function processFile(filePath: string) {
     filesChanged++;
     const changes = countDiffs(original, content);
     totalChanges += changes;
-    console.log(`Fixed: ${path.relative(srcDir, filePath)} (${changes} changes)`);
+    console.log(
+      `Fixed: ${path.relative(srcDir, filePath)} (${changes} changes)`
+    );
   }
 }
 
@@ -166,4 +165,6 @@ const files = getFiles(srcDir);
 for (const file of files) {
   processFile(file);
 }
-console.log(`\nDone! Changed ${filesChanged} files with ${totalChanges} line changes.`);
+console.log(
+  `\nDone! Changed ${filesChanged} files with ${totalChanges} line changes.`
+);

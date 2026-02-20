@@ -1,6 +1,17 @@
 "use client";
 
-import { Dialog, Button, Field, Input, NativeSelect, VStack, Group, InputElement, IconButton, Textarea } from "@chakra-ui/react";
+import {
+  Dialog,
+  Button,
+  Field,
+  Input,
+  NativeSelect,
+  VStack,
+  Group,
+  InputElement,
+  IconButton,
+  Textarea,
+} from "@chakra-ui/react";
 
 import { useState, useEffect } from "react";
 
@@ -39,7 +50,6 @@ export function OAuthProviderForm({
   const [errors, setErrors] = useState<any>({});
   const [showSecret, setShowSecret] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
 
   useEffect(() => {
     if (provider) {
@@ -161,134 +171,136 @@ export function OAuthProviderForm({
   return (
     <Dialog.Root open={isOpen} onOpenChange={() => onClose()} size="lg">
       <Dialog.Backdrop />
-      <Dialog.Positioner><Dialog.Content>
-        <Dialog.Header>
-          {provider ? "Edit OAuth Provider" : "Add OAuth Provider"}
-        </Dialog.Header>
-        <Dialog.CloseTrigger />
+      <Dialog.Positioner>
+        <Dialog.Content>
+          <Dialog.Header>
+            {provider ? "Edit OAuth Provider" : "Add OAuth Provider"}
+          </Dialog.Header>
+          <Dialog.CloseTrigger />
 
-        <Dialog.Body>
-          <VStack gap={4}>
-            <Field.Root invalid={!!errors.provider_name} required>
-              <Field.Label>Provider</Field.Label>
-              <NativeSelect.Root
-                value={formData.provider_name}
-                onChange={(e) =>
-                  setFormData({ ...formData, provider_name: e.target.value })
-                }
-                disabled={!!provider}
-              >
-                <option value="">Select provider</option>
-                <option value="google">Google</option>
-                <option value="github">GitHub</option>
-                <option value="facebook">Facebook</option>
-                <option value="twitter">Twitter</option>
-                <option value="linkedin">LinkedIn</option>
-              </NativeSelect.Root>
-              <Field.ErrorText>{errors.provider_name}</Field.ErrorText>
-            </Field.Root>
-
-            <Field.Root invalid={!!errors.display_name} required>
-              <Field.Label>Display Name</Field.Label>
-              <Input
-                value={formData.display_name}
-                onChange={(e) =>
-                  setFormData({ ...formData, display_name: e.target.value })
-                }
-                placeholder="Google OAuth"
-              />
-              <Field.ErrorText>{errors.display_name}</Field.ErrorText>
-            </Field.Root>
-
-            <Field.Root invalid={!!errors.client_id} required>
-              <Field.Label>Client ID</Field.Label>
-              <Input
-                value={formData.client_id}
-                onChange={(e) =>
-                  setFormData({ ...formData, client_id: e.target.value })
-                }
-                placeholder="Enter client ID"
-              />
-              <Field.ErrorText>{errors.client_id}</Field.ErrorText>
-            </Field.Root>
-
-            <Field.Root
-              invalid={!!errors.client_secret}
-              required={!provider}
-            >
-              <Field.Label>Client Secret</Field.Label>
-              <Group>
-                <Input
-                  type={showSecret ? "text" : "password"}
-                  value={formData.client_secret}
+          <Dialog.Body>
+            <VStack gap={4}>
+              <Field.Root invalid={!!errors.provider_name} required>
+                <Field.Label>Provider</Field.Label>
+                <NativeSelect.Root
+                  value={formData.provider_name}
                   onChange={(e) =>
-                    setFormData({ ...formData, client_secret: e.target.value })
+                    setFormData({ ...formData, provider_name: e.target.value })
                   }
-                  placeholder={
-                    provider
-                      ? "Leave blank to keep current"
-                      : "Enter client secret"
+                  disabled={!!provider}
+                >
+                  <option value="">Select provider</option>
+                  <option value="google">Google</option>
+                  <option value="github">GitHub</option>
+                  <option value="facebook">Facebook</option>
+                  <option value="twitter">Twitter</option>
+                  <option value="linkedin">LinkedIn</option>
+                </NativeSelect.Root>
+                <Field.ErrorText>{errors.provider_name}</Field.ErrorText>
+              </Field.Root>
+
+              <Field.Root invalid={!!errors.display_name} required>
+                <Field.Label>Display Name</Field.Label>
+                <Input
+                  value={formData.display_name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, display_name: e.target.value })
                   }
+                  placeholder="Google OAuth"
                 />
-                <InputElement placement="end">
-                  <IconButton
-                    aria-label="Toggle secret visibility"
-                    onClick={() => setShowSecret(!showSecret)}
-                    variant="ghost"
-                    size="sm"
-                  >
-                    {showSecret ? <LuEyeOff /> : <LuEye />}
-                  </IconButton>
-                </InputElement>
-              </Group>
-              <Field.ErrorText>{errors.client_secret}</Field.ErrorText>
-            </Field.Root>
+                <Field.ErrorText>{errors.display_name}</Field.ErrorText>
+              </Field.Root>
 
-            <Field.Root invalid={!!errors.redirect_uri}>
-              <Field.Label>Redirect URI</Field.Label>
-              <Input
-                value={formData.redirect_uri}
-                onChange={(e) =>
-                  setFormData({ ...formData, redirect_uri: e.target.value })
-                }
-                placeholder="https://yourdomain.com/api/auth/callback/google"
-              />
-              <Field.HelperText>
-                Optional - Callback URL for OAuth flow
-              </Field.HelperText>
-              <Field.ErrorText>{errors.redirect_uri}</Field.ErrorText>
-            </Field.Root>
+              <Field.Root invalid={!!errors.client_id} required>
+                <Field.Label>Client ID</Field.Label>
+                <Input
+                  value={formData.client_id}
+                  onChange={(e) =>
+                    setFormData({ ...formData, client_id: e.target.value })
+                  }
+                  placeholder="Enter client ID"
+                />
+                <Field.ErrorText>{errors.client_id}</Field.ErrorText>
+              </Field.Root>
 
-            <Field.Root>
-              <Field.Label>Scopes</Field.Label>
-              <Textarea
-                value={formData.scopes}
-                onChange={(e) =>
-                  setFormData({ ...formData, scopes: e.target.value })
-                }
-                placeholder="email, profile, openid"
-                rows={2}
-              />
-              <Field.HelperText>
-                Comma-separated list of OAuth scopes
-              </Field.HelperText>
-            </Field.Root>
-          </VStack>
-        </Dialog.Body>
+              <Field.Root invalid={!!errors.client_secret} required={!provider}>
+                <Field.Label>Client Secret</Field.Label>
+                <Group>
+                  <Input
+                    type={showSecret ? "text" : "password"}
+                    value={formData.client_secret}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        client_secret: e.target.value,
+                      })
+                    }
+                    placeholder={
+                      provider
+                        ? "Leave blank to keep current"
+                        : "Enter client secret"
+                    }
+                  />
+                  <InputElement placement="end">
+                    <IconButton
+                      aria-label="Toggle secret visibility"
+                      onClick={() => setShowSecret(!showSecret)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      {showSecret ? <LuEyeOff /> : <LuEye />}
+                    </IconButton>
+                  </InputElement>
+                </Group>
+                <Field.ErrorText>{errors.client_secret}</Field.ErrorText>
+              </Field.Root>
 
-        <Dialog.Footer>
-          <Button variant="ghost" mr={3} onClick={() => onClose()}>
-            Cancel
-          </Button>
-          <Button
-            colorPalette="blue"
-            onClick={handleSubmit}
-            loading={isSubmitting}
-          >
-            {provider ? "Update" : "Create"}
-          </Button>
-        </Dialog.Footer>
-      </Dialog.Content></Dialog.Positioner>
+              <Field.Root invalid={!!errors.redirect_uri}>
+                <Field.Label>Redirect URI</Field.Label>
+                <Input
+                  value={formData.redirect_uri}
+                  onChange={(e) =>
+                    setFormData({ ...formData, redirect_uri: e.target.value })
+                  }
+                  placeholder="https://yourdomain.com/api/auth/callback/google"
+                />
+                <Field.HelperText>
+                  Optional - Callback URL for OAuth flow
+                </Field.HelperText>
+                <Field.ErrorText>{errors.redirect_uri}</Field.ErrorText>
+              </Field.Root>
+
+              <Field.Root>
+                <Field.Label>Scopes</Field.Label>
+                <Textarea
+                  value={formData.scopes}
+                  onChange={(e) =>
+                    setFormData({ ...formData, scopes: e.target.value })
+                  }
+                  placeholder="email, profile, openid"
+                  rows={2}
+                />
+                <Field.HelperText>
+                  Comma-separated list of OAuth scopes
+                </Field.HelperText>
+              </Field.Root>
+            </VStack>
+          </Dialog.Body>
+
+          <Dialog.Footer>
+            <Button variant="ghost" mr={3} onClick={() => onClose()}>
+              Cancel
+            </Button>
+            <Button
+              colorPalette="blue"
+              onClick={handleSubmit}
+              loading={isSubmitting}
+            >
+              {provider ? "Update" : "Create"}
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Positioner>
     </Dialog.Root>
   );
 }

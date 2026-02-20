@@ -1,6 +1,15 @@
 "use client";
 
-import { Card, Tabs, Button, Input, Box, Flex, Group, InputElement } from "@chakra-ui/react";
+import {
+  Card,
+  Tabs,
+  Button,
+  Input,
+  Box,
+  Flex,
+  Group,
+  InputElement,
+} from "@chakra-ui/react";
 import React, { useEffect } from "react";
 
 import { LuSearch, LuPlus } from "react-icons/lu";
@@ -25,8 +34,8 @@ const DashboardTaxonomyPage: React.FC = () => {
     "tab",
     parseAsStringLiteral(tabsOptions).withDefault("categories")
   );
-  function handleTabChange(index: number) {
-    setActiveTab(tabsOptions[index]);
+  function handleTabChange(value: string) {
+    setActiveTab(value as typeof activeTab);
     setSearchTerm("");
   }
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -45,45 +54,44 @@ const DashboardTaxonomyPage: React.FC = () => {
       <Box p={{ base: 4, md: 5 }}>
         <Card.Root>
           <PageTitleHeader title="Taxonomies">
-            <Button onClick={handleModalOpen}><LuPlus /> Add New</Button>
+            <Button onClick={handleModalOpen}>
+              <LuPlus /> Add New
+            </Button>
           </PageTitleHeader>
 
           <Card.Body>
             <Tabs.Root
-              isLazy
-              defaultIndex={activeTab === "categories" ? 0 : 1}
-              onChange={(index) => {
-                handleTabChange(index);
+              lazyMount
+              defaultValue={activeTab}
+              onValueChange={(details) => {
+                handleTabChange(details.value);
               }}
             >
               <Tabs.List>
-                <Tabs.Trigger>Categories</Tabs.Trigger>
-                <Tabs.Trigger>Tags</Tabs.Trigger>
+                <Tabs.Trigger value="categories">Categories</Tabs.Trigger>
+                <Tabs.Trigger value="tags">Tags</Tabs.Trigger>
               </Tabs.List>
 
               <Box my={4}>
                 <Flex align="center" gap={4}>
                   <Box position="relative" flex={1}>
-                    <Group>
-                      <InputElement placement="start">
-                        <LuSearch />
-                      </InputElement>
+                    <InputGroup startElement={<LuSearch />}>
                       <Input
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={handleSearch}
                         maxW={"300px"}
                       />
-                    </Group>
+                    </InputGroup>
                   </Box>
                 </Flex>
               </Box>
 
               <Tabs.ContentGroup>
-                <Tabs.Content>
+                <Tabs.Content value="categories">
                   <CategoriesPanel />
                 </Tabs.Content>
-                <Tabs.Content>
+                <Tabs.Content value="tags">
                   <TagsPanel />
                 </Tabs.Content>
               </Tabs.ContentGroup>

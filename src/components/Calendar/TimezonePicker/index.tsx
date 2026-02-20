@@ -1,4 +1,14 @@
-import { Button, Menu, Stack, Text, Input, Group, InputElement, Icon, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Menu,
+  Stack,
+  Text,
+  Input,
+  Group,
+  InputElement,
+  Icon,
+  Box,
+} from "@chakra-ui/react";
 
 import timezones from "@/lib/timezones.json";
 import { memo, useEffect, useState, useMemo, useCallback } from "react";
@@ -127,11 +137,7 @@ const TimezonePicker = ({
         {({ isOpen }) => (
           <>
             <Menu.Trigger asChild>
-              <Button
-                size="sm"
-                variant="outline"
-                rounded="full"
-              >
+              <Button size="sm" variant="outline" rounded="full">
                 {selectedTimezone || "Select timezone"}
                 <LuChevronDown
                   style={{
@@ -140,7 +146,12 @@ const TimezonePicker = ({
                 />
               </Button>
             </Menu.Trigger>
-            <Menu.Content rounded="xl" maxH={LIST_HEIGHT} overflowY="auto" px={2}>
+            <Menu.Content
+              rounded="xl"
+              maxH={LIST_HEIGHT}
+              overflowY="auto"
+              px={2}
+            >
               <SearchInput
                 searchQuery={searchQuery}
                 setSearchQuery={searchCb}

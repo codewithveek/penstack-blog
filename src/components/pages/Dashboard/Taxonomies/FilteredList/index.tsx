@@ -1,5 +1,15 @@
 import { TaxonomyItem, TaxonomyItemsWithMeta } from "@/types";
-import { Flex, Box, Grid, GridItem, Stack, Badge, Menu, Button, Checkbox } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Grid,
+  GridItem,
+  Stack,
+  Badge,
+  Menu,
+  Button,
+  Checkbox,
+} from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { toaster } from "@/components/ui/toaster";
 import { useState } from "react";
@@ -26,13 +36,8 @@ interface FilteredListProps {
 }
 export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
   const [open, setOpen] = useState(false);
+  const onOpenChange = () => setOpen(!open);
   const queryClient = useQueryClient();
-  const toast = useToast({
-    duration: 5000,
-    status: "success",
-    isClosable: true,
-    position: "top",
-  });
   const searchTerm = useTaxonomiesStore((state) => state.searchTerm);
   const type = useTaxonomiesStore((state) => state.type);
   const setEditItem = useTaxonomiesStore((state) => state.setEditItem);
@@ -151,11 +156,7 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
       <Box flexShrink={0} flexGrow={1} mb={4}>
         <Flex justify="space-between" mb={4}>
           {selectedItems.length > 0 && (
-            <Button
-              colorPalette="red"
-              size="sm"
-              onClick={handleBulkDelete}
-            >
+            <Button colorPalette="red" size="sm" onClick={handleBulkDelete}>
               <LuTrash2 /> Delete Selected ({selectedItems.length})
             </Button>
           )}
@@ -246,12 +247,11 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
                     </Button>
                   </Menu.Trigger>
                   <Menu.Content>
-                    <Menu.Item
-                      onClick={() => handleEdit(item)}
-                    >
+                    <Menu.Item value="edit" onClick={() => handleEdit(item)}>
                       <LuFileEdit /> Edit
                     </Menu.Item>
                     <Menu.Item
+                      value="delete"
                       color="red.600"
                       onClick={() => handleDelete(item.id)}
                     >
