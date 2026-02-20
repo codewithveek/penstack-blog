@@ -135,9 +135,9 @@ const Header = () => {
         style={{
           borderBottom: useTransform(borderOpacity, (opacity) =>
             opacity === 0 ? "none" : `1px solid ${borderColor}`
-          ),
+          ) as any,
           backdropFilter: backdrop,
-          boxShadow,
+          boxShadow: boxShadow as any,
         }}
         transition="all 0.3s ease-in-out"
       >

@@ -225,7 +225,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     if (errorCount > 0) {
       toaster.create({
         title: `${errorCount} file${errorCount > 1 ? "s" : ""} failed to upload`,
-        status: "error",
+        type: "error",
       });
     }
 
@@ -260,7 +260,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         toaster.create({
           title: `${rejectedFiles.length} file${rejectedFiles.length > 1 ? "s" : ""} rejected`,
           description: "Files may be too large or have invalid formats",
-          status: "warning",
+          type: "warning",
         });
       }
     },

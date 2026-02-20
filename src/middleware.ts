@@ -8,24 +8,24 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  try {
-    const setupStatusResponse = await fetch(
-      new URL("/api/setup/status", request.url),
-      {
-        headers: request.headers,
-      }
-    );
+  // try {
+  //   const setupStatusResponse = await fetch(
+  //     new URL("/api/setup/status", request.url),
+  //     {
+  //       headers: request.headers,
+  //     }
+  //   );
 
-    if (setupStatusResponse.ok) {
-      const { data } = await setupStatusResponse.json();
+  //   if (setupStatusResponse.ok) {
+  //     const { data } = await setupStatusResponse.json();
 
-      if (data.requiresSetup) {
-        return NextResponse.redirect(new URL("/setup", request.url));
-      }
-    }
-  } catch (error) {
-    console.error("Setup status check failed:", error);
-  }
+  //     if (data.requiresSetup) {
+  //       return NextResponse.redirect(new URL("/setup", request.url));
+  //     }
+  //   }
+  // } catch (error) {
+  //   console.error("Setup status check failed:", error);
+  // }
 
   if (pathname.startsWith("/dashboard")) {
     // Check for better-auth session cookie

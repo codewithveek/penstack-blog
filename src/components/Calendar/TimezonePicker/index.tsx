@@ -104,7 +104,7 @@ const TimezonePicker = ({
 
       return (
         <Menu.Item
-          value={item.name}
+          value={item.name ?? ""}
           rounded="full"
           bg={selectedTimezone === item.name ? "brand.500" : ""}
           color={selectedTimezone === item.name ? "white" : ""}
@@ -112,7 +112,7 @@ const TimezonePicker = ({
             bg: hoverBg,
             color: hoverColor,
           }}
-          onClick={() => handleChange(item.name || "")}
+          onClick={() => handleChange(item.name ?? "")}
           style={{ ...style, marginTop: "8px" }}
         >
           {item.name}

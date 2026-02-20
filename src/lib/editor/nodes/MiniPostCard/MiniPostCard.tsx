@@ -26,6 +26,7 @@ export const MiniPostCard: React.FC<MiniPostCardProps> = ({
   const selectPost = (selectedPost: PostSelect) => {
     if (typeof getPos === "function") {
       const pos = getPos();
+      if (pos == null) return;
       editor
         .chain()
         .focus()

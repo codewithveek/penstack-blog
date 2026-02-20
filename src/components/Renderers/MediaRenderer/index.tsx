@@ -3,7 +3,10 @@ import {
   MediaComponentNew,
   type MediaNodeViewProps,
 } from "@/lib/editor/nodes/media/MediaComponents";
-import { StandaloneMedia } from "@/lib/editor/nodes/media/MediaComponents/StandaloneMedia";
+import {
+  StandaloneMedia,
+  StandaloneMediaProps,
+} from "@/lib/editor/nodes/media/MediaComponents/StandaloneMedia";
 
 export const MediaRenderer = ({
   isEditing = false,
@@ -14,5 +17,5 @@ export const MediaRenderer = ({
   attrs?: MediaAttrs;
   node?: MediaNodeViewProps["node"];
 }) => {
-  return <StandaloneMedia {...attrs} />;
+  return <StandaloneMedia {...(attrs as StandaloneMediaProps)} />;
 };

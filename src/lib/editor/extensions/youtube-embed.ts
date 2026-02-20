@@ -40,7 +40,7 @@ export const PenstackYouTubeExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(PenstackYouTubeEmbed);
+    return ReactNodeViewRenderer(PenstackYouTubeEmbed as any);
   },
 
   addCommands() {

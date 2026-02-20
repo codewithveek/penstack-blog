@@ -41,7 +41,7 @@ export const PenstackTwitterExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(PenstackTwitterEmbed);
+    return ReactNodeViewRenderer(PenstackTwitterEmbed as any);
   },
 
   addCommands() {

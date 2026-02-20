@@ -15,13 +15,13 @@ export const TimePicker = ({
       <Text
         as={"span"}
         fontWeight={500}
-        size={"sm"}
+        fontSize={"sm"}
         color={useColorModeValue("gray.500", "gray.400")}
       >
         Time:
       </Text>
       <Box
-        sx={{
+        css={{
           ".react-time-picker__wrapper": { display: "flex" },
           input: {
             border: 0,
@@ -64,20 +64,22 @@ export const TimePicker = ({
             },
           },
         }}
-        as={ReactTimePicker}
         px={3}
         py={1}
         display={"flex"}
         rounded={"full"}
-        value={value}
         ring={1}
         ringColor={"brand.500"}
-        format="h:mm a"
-        onChange={onChange}
-        clockIcon={null}
-        clearIcon={null}
-        shouldOpenClock={() => false}
-      />
+      >
+        <ReactTimePicker
+          value={value}
+          format="h:mm a"
+          onChange={onChange}
+          clockIcon={null}
+          clearIcon={null}
+          shouldOpenClock={() => false}
+        />
+      </Box>
     </Stack>
   );
 };

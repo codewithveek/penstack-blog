@@ -2,11 +2,10 @@
 
 import { Box, VStack, Heading, Text, Spinner, Alert } from "@chakra-ui/react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-
-export default function VerifyEmail() {
+function VerifyEmailContent() {
   const [status, setStatus] = useState("verifying");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -33,14 +32,7 @@ export default function VerifyEmail() {
       alignItems="center"
       justifyContent="center"
     >
-      <VStack
-        gap={6}
-        p={8}
-        maxW="md"
-        w="full"
-        borderRadius="lg"
-        boxShadow="lg"
-      >
+      <VStack gap={6} p={8} maxW="md" w="full" borderRadius="lg" boxShadow="lg">
         <Heading size="lg">Email Verification</Heading>
         {status === "verifying" && (
           <VStack>
@@ -62,5 +54,13 @@ export default function VerifyEmail() {
         )}
       </VStack>
     </Box>
+  );
+}
+
+export default function VerifyEmail() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

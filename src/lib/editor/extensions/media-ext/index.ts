@@ -143,7 +143,7 @@ const PenstackMedia = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(MediaComponentNew);
+    return ReactNodeViewRenderer(MediaComponentNew as any);
   },
 
   addCommands() {

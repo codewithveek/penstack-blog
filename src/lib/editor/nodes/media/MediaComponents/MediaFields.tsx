@@ -152,7 +152,7 @@ export const MediaFields = () => {
               max={2000}
               onValueChange={(details) => handleWidthChange(details.value)}
             >
-              <NumberInput.Field />
+              <NumberInput.Input />
             </NumberInput.Root>
           </VStack>
 
@@ -167,7 +167,7 @@ export const MediaFields = () => {
               max={2000}
               onValueChange={(details) => handleHeightChange(details.value)}
             >
-              <NumberInput.Field />
+              <NumberInput.Input />
             </NumberInput.Root>
           </VStack>
         </HStack>

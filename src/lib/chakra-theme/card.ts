@@ -1,13 +1,8 @@
-import { theme as baseTheme } from "@chakra-ui/react";
-import { createMultiStyleConfigHelpers } from "@chakra-ui/styled-system";
+// Chakra v3 card theme customization
+// In v3, use defineSlotRecipe from @chakra-ui/react instead of styled-system helpers
 
-// This function creates a set of function that helps us create multipart component styles.
-const cardHelpers = createMultiStyleConfigHelpers(["container", "body"]);
-const inputHelpers = createMultiStyleConfigHelpers(["field"]);
-
-export const CardConfig = cardHelpers.defineMultiStyleConfig({
+export const CardConfig = {
   baseStyle: {
-    ...baseTheme.components.Card.baseStyle,
     container: {
       rounded: "xl",
       _light: {
@@ -21,7 +16,6 @@ export const CardConfig = cardHelpers.defineMultiStyleConfig({
       p: 4,
     },
   },
-
   variants: {
     outline: {
       container: {
@@ -35,15 +29,15 @@ export const CardConfig = cardHelpers.defineMultiStyleConfig({
       },
     },
   },
-});
+};
 
-const baseStyle = inputHelpers.definePartsStyle({
-  field: {
-    focusBorderColor: "brand.500",
-    _dark: {
-      focusBorderColor: "brand.300",
+export const InputConfig = {
+  baseStyle: {
+    field: {
+      focusBorderColor: "brand.500",
+      _dark: {
+        focusBorderColor: "brand.300",
+      },
     },
   },
-});
-
-export const InputConfig = inputHelpers.defineMultiStyleConfig({ baseStyle });
+};

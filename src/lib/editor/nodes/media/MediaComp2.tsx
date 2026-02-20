@@ -105,7 +105,9 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
                     aria-label={`Align ${value}`}
                     onClick={() => updateAttributes({ align: value })}
                     _active={{ bg: "brand.500", color: "white" }}
-                    active={node.attrs.align === value}
+                    data-active={node.attrs.align === value ? "" : undefined}
+                    bg={node.attrs.align === value ? "brand.500" : undefined}
+                    color={node.attrs.align === value ? "white" : undefined}
                   >
                     <Icon />
                   </IconButton>

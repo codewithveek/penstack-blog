@@ -35,7 +35,7 @@ function TipTapEditor({
   const editor = useEditor({
     editorProps: { attributes: { class: "penstack-post-editor" } },
     enablePasteRules: true,
-    extensions: extensions,
+    extensions: extensions as any,
     content: initialContent,
     onCreate: ({ editor }) => {
       setEditor(editor);

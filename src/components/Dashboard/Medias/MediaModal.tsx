@@ -24,16 +24,12 @@ export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
     onSelect,
   }) => {
     return (
-      <Dialog.Root
-        open={open}
-        isCentered
-        onOpenChange={onOpenChange}
-        size={{ base: "md", md: "3xl", lg: "5xl", xl: "6xl" }}
-        returnFocusOnClose={false}
-      >
+      <Dialog.Root open={open} onOpenChange={onOpenChange} size="xl">
         <Dialog.Backdrop />
         <Dialog.Positioner>
-          <Dialog.Content>
+          <Dialog.Content
+            maxW={{ base: "md", md: "3xl", lg: "5xl", xl: "6xl" }}
+          >
             <Dialog.Header>
               <Heading size="md">Select Media</Heading>
               <Dialog.CloseTrigger />

@@ -163,7 +163,7 @@ const UsersDashboard = () => {
     // Implement bulk action logic
     toaster.create({
       title: `Performed ${action} on ${selectedUsers.length} users`,
-      status: "info",
+      type: "info",
     });
     setSelectedUsers([]);
   };

@@ -10,7 +10,7 @@ import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { TocActions } from "./TocActions";
 
 export const PublishMetadata = () => {
-  const { isOpen, onClose, onToggle } = useDisclosure();
+  const { open, onClose, onToggle } = useDisclosure();
   const updateField = useEditorPostManagerStore((state) => state.updateField);
   const visibility = useEditorPostManagerStore(
     (state) => state.activePost?.visibility
@@ -33,7 +33,7 @@ export const PublishMetadata = () => {
         <VisibilityItem visibility={visibility as string} />
         <ScheduleItem
           scheduledAt={scheduledAt as Date}
-          open={isOpen}
+          open={open}
           onOpenChange={onClose}
           onToggle={onToggle}
         />

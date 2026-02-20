@@ -50,12 +50,12 @@ export const users = mysqlTable(
     created_at,
     updated_at,
   },
-  (table) => ({
-    emailIdx: index("email_idx").on(table.email),
-    usernameIdx: index("username_idx").on(table.username),
-    authIdIdx: index("auth_id_idx").on(table.auth_id),
-    roleIdIdx: index("role_id_idx").on(table.role_id),
-  })
+  (table)=>  ([
+   index("email_idx").on(table.email),
+    index("username_idx").on(table.username),
+    index("auth_id_idx").on(table.auth_id),
+    index("role_id_idx").on(table.role_id),
+  ])
 );
 
 export const roles = mysqlTable(
@@ -68,9 +68,9 @@ export const roles = mysqlTable(
       .$type<(typeof rolesEnum)[number]>(),
     description: varchar("description", { length: 255 }),
   },
-  (table) => ({
-    nameIdx: index("roles_idx_name").on(table.name),
-  })
+  (table)=>  ([
+    index("roles_idx_name").on(table.name),
+  ])
 );
 
 export const permissions = mysqlTable(
@@ -83,9 +83,9 @@ export const permissions = mysqlTable(
       .$type<(typeof permissionsEnum)[number]>(),
     description: varchar("description", { length: 255 }),
   },
-  (table) => ({
-    nameIdx: index("permissions_idx_name").on(table.name),
-  })
+  (table)=>  ([
+    index("permissions_idx_name").on(table.name),
+  ])
 );
 
 export const userMeta = mysqlTable(
@@ -101,9 +101,9 @@ export const userMeta = mysqlTable(
     created_at,
     updated_at,
   },
-  (table) => ({
-    userIdIdx: index("user_meta_user_id_idx").on(table.user_id),
-  })
+  (table)=>  ([
+    index("user_meta_user_id_idx").on(table.user_id),
+  ] )
 );
 
 export const userRoles = mysqlTable(
@@ -113,9 +113,9 @@ export const userRoles = mysqlTable(
     user_id: int("user_id").notNull(),
     role_id: int("role_id").notNull(),
   },
-  (table) => ({
-    userRoleIdx: index("user_role_idx").on(table.user_id, table.role_id),
-  })
+  (table)=>  ([
+    index("user_role_idx").on(table.user_id, table.role_id),
+  ])
 );
 
 export const rolePermissions = mysqlTable(
@@ -125,12 +125,12 @@ export const rolePermissions = mysqlTable(
     role_id: int("role_id").notNull(),
     permission_id: int("permission_id").notNull(),
   },
-  (table) => ({
-    rolePermissionIdx: index("role_permission_idx").on(
+  (table)=>  ([
+    index("role_permission_idx").on(
       table.role_id,
       table.permission_id
     ),
-  })
+  ])
 );
 
 export const userSocials = mysqlTable(
@@ -149,19 +149,19 @@ export const userSocials = mysqlTable(
     created_at,
     updated_at,
   },
-  (table) => ({
-    userIdIdx: index("user_socials_user_id_idx").on(table.user_id),
-  })
+  (table)=>  ([
+    index("user_socials_user_id_idx").on(table.user_id),
+  ] )
 );
 
-export const userMetaRelations = relations(userMeta, ({ one }) => ({
+export const userMetaRelations = relations(userMeta, ({ one })=>  ({
   user: one(users, {
     fields: [userMeta.user_id],
     references: [users.id],
   }),
 }));
 
-export const userRoleRelations = relations(userRoles, ({ one }) => ({
+export const userRoleRelations = relations(userRoles, ({ one })=>  ({
   user: one(users, {
     fields: [userRoles.user_id],
     references: [users.id],
@@ -172,18 +172,18 @@ export const userRoleRelations = relations(userRoles, ({ one }) => ({
   }),
 }));
 
-export const RoleRelations = relations(roles, ({ many }) => ({
+export const RoleRelations = relations(roles, ({ many })=>  ({
   users: many(users),
   permissions: many(rolePermissions),
 }));
 
-export const PermissionRelations = relations(permissions, ({ many }) => ({
+export const PermissionRelations = relations(permissions, ({ many })=>  ({
   roles: many(rolePermissions),
 }));
 
 export const RolePermissionRelations = relations(
   rolePermissions,
-  ({ one }) => ({
+  ({ one })=>  ({
     role: one(roles, {
       fields: [rolePermissions.role_id],
       references: [roles.id],
@@ -195,7 +195,7 @@ export const RolePermissionRelations = relations(
   })
 );
 
-export const UserRelations = relations(users, ({ many, one }) => ({
+export const UserRelations = relations(users, ({ many, one })=>  ({
   posts: many(posts),
   socials: one(userSocials, {
     fields: [users.social_id],

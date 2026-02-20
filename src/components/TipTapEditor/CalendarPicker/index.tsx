@@ -30,7 +30,7 @@ export const CalendarPicker = ({
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [onClose]);
+  }, [onOpenChange]);
   const activePostTitle = useEditorPostManagerStore(
     (state) => state.activePost?.title
   );

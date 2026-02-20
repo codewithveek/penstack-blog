@@ -108,7 +108,7 @@ export default function OAuthProvidersPage() {
       if (response.ok) {
         toaster.create({
           title: `Provider ${currentStatus ? "disabled" : "enabled"}`,
-          status: "success",
+          type: "success",
           duration: 3000,
         });
         fetchProviders();

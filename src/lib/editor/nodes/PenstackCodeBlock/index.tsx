@@ -92,7 +92,7 @@ export const PenstackCodeblockComponent: React.FC<
         </Menu.Root>
       </HStack>
       <Box as="pre">
-        <NodeViewContent as="code" />
+        <NodeViewContent as={"code" as any} />
       </Box>
     </Stack>
   );

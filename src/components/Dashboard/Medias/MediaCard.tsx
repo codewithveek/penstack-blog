@@ -124,13 +124,13 @@ export const MediaCard: React.FC<MediaCardProps> = ({
       <Card.Root
         pos="relative"
         w="full"
-        h={280}
+        h="280px"
         overflow="hidden"
         borderWidth="2px"
         borderColor={selected ? selectedBorderColor : borderColor}
         boxShadow={selected ? "lg" : "sm"}
         onClick={handleSelectClick}
-        sx={{
+        css={{
           "&:hover": {
             ".media-card-select": canSelect
               ? {

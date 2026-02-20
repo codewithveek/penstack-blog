@@ -2,14 +2,14 @@
 
 import { Container, VStack, Heading, Text, Button, Input } from "@chakra-ui/react";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 
 import axios from "axios";
 import { useQueryState } from "nuqs";
 import PageWrapper from "@/components//PageWrapper";
 import { toaster } from "@/components/ui/toaster";
 
-export default function VerifyEmail() {
+function VerifyEmailContent() {
   const [email, setEmail] = useState("");
   const [loading, setIsLoading] = useState(false);
   const [canResend, setCanResend] = useState(true);
@@ -100,5 +100,13 @@ export default function VerifyEmail() {
         </VStack>
       </Container>
     </PageWrapper>
+  );
+}
+
+export default function VerifyEmail() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

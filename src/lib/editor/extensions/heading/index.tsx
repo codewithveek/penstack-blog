@@ -41,7 +41,7 @@ export const PenstackHeadingExtension = Heading.extend({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(PenstackHeadingsRenderer);
+    return ReactNodeViewRenderer(PenstackHeadingsRenderer as any);
   },
 
   addAttributes() {
@@ -49,16 +49,16 @@ export const PenstackHeadingExtension = Heading.extend({
       ...(this as any).parent?.(),
       id: {
         default: null,
-        parseHTML: (element) => element.getAttribute("id"),
-        renderHTML: (attributes) => ({
+        parseHTML: (element: any) => element.getAttribute("id"),
+        renderHTML: (attributes: any) => ({
           id: attributes.id,
         }),
       },
       level: {
         default: 1,
-        parseHTML: (element) =>
+        parseHTML: (element: any) =>
           Number(element.tagName.toLowerCase().replace("h", "")),
-        renderHTML: (attributes) => ({
+        renderHTML: (attributes: any) => ({
           level: attributes.level,
         }),
       },

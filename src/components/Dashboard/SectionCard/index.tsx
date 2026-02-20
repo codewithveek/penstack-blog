@@ -13,7 +13,8 @@ type SectionCardProps = {
   footer?: ReactNode;
   children?: ReactNode;
   isOpen?: boolean;
-} & Omit<ComponentProps<typeof Card>, "title">;
+  roundedTop?: string;
+} & Omit<ComponentProps<typeof Card.Root>, "title">;
 
 export function SectionCard({
   children,
@@ -21,6 +22,7 @@ export function SectionCard({
   footer,
   title,
   isOpen = true,
+  roundedTop,
   ...props
 }: SectionCardProps) {
   const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -29,7 +31,18 @@ export function SectionCard({
   const toggleCard = () => setIsCardOpen(!isCardOpen);
 
   return (
-    <Card.Root {...props}>
+    <Card.Root
+      {...props}
+      style={{
+        ...(roundedTop
+          ? {
+              borderTopLeftRadius: roundedTop,
+              borderTopRightRadius: roundedTop,
+            }
+          : {}),
+        ...(props.style || {}),
+      }}
+    >
       {(header || title) && (
         <HStack
           justify={"space-between"}

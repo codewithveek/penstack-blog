@@ -51,12 +51,12 @@ export const ResizableImage = () => {
 
   // Memoized classes
   const aspectClass = useMemo(
-    () => getAspectRatioClass(aspectRatio),
+    () => getAspectRatioClass(aspectRatio as MediaAspectRatios),
     [aspectRatio]
   );
 
   const objectFitClass = useMemo(
-    () => getObjectFitClass(objectFit),
+    () => getObjectFitClass(objectFit as MediaObjectFits),
     [objectFit]
   );
 
