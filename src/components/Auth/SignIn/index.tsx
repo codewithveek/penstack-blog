@@ -128,7 +128,7 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
 
                 <Field.Root>
                   <Field.Label>Password</Field.Label>
-                  <Group>
+                  <Group className="w-full">
                     <Input
                       name="password"
                       type={show ? "text" : "password"}

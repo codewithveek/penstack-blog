@@ -5,7 +5,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { users, roles } from "@/db/schemas";
+import { users, roles, session, account, verification } from "@/db/schemas";
 import { IdGenerator } from "@/utils";
 
 async function getSubscriberRoleId(): Promise<number> {
@@ -24,7 +24,9 @@ export const auth = betterAuth({
     provider: "mysql",
     schema: {
       user: users,
-      role: roles,
+      session: session,
+      account: account,
+      verification: verification,
     },
   }),
   secret: process.env.BETTER_AUTH_SECRET,
@@ -57,12 +59,19 @@ export const auth = betterAuth({
     },
   },
   session: {
+    modelName: "Session",
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60, // 5 minutes
     },
   },
   user: {
+    fields: {
+      image: "avatar",
+      emailVerified: "email_verified",
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+    },
     additionalFields: {
       role_id: {
         type: "number",
@@ -112,9 +121,7 @@ export const auth = betterAuth({
   account: {
     modelName: "Account",
   },
-  advanced: {
-    generateId: () => IdGenerator.bigIntId(),
-  } as any,
+  advanced: {} as any,
   databaseHooks: {
     user: {
       create: {

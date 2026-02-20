@@ -119,7 +119,7 @@ export default function SignUp() {
 
                   <Field.Root required>
                     <Field.Label>Password</Field.Label>
-                    <Group>
+                    <Group className="w-full">
                       <Input
                         name="password"
                         type={show ? "text" : "password"}

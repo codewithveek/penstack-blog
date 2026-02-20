@@ -8,3 +8,4 @@ export * from "./settings.sql";
 export * from "./contact.sql";
 export * from "./verification-tokens.sql";
 export * from "./setup.sql";
+export * from "./auth.sql";

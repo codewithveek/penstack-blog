@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createUser } from "@/lib/queries/create-user";
 import { getUser } from "@/lib/queries/get-user";
 import { signupSchema } from "@/lib/validation/schemas";
 import { logger } from "@/lib/logger";
 import { ZodError } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
+import { auth } from "@/lib/auth/auth";
 
 export async function POST(req: NextRequest) {
   const rateLimitResponse = rateLimit(req, 5, 60 * 1000);
@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
     const validatedData = signupSchema.parse(body);
     const { name, email, password } = validatedData;
 
-    const username = email.split("@")[0];
     const existingUser = await getUser(email);
 
     if (existingUser) {
@@ -29,11 +28,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = await createUser({ name, email, password, username });
-    logger.info("User created successfully", { userId: user?.id, email });
+    // Use better-auth's internal API to create user + account properly
+    const result = await auth.api.signUpEmail({
+      body: {
+        name,
+        email,
+        password,
+      },
+    });
+
+    logger.info("User created successfully via better-auth", { email });
 
     return NextResponse.json({
-      data: user,
+      data: result.user,
       message: "User created successfully",
     });
   } catch (error) {
@@ -43,7 +50,7 @@ export async function POST(req: NextRequest) {
         {
           data: null,
           message: "Validation failed",
-          errors: error.issues
+          errors: error.issues,
         },
         { status: 400 }
       );

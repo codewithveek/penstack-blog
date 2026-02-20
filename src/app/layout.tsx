@@ -87,7 +87,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   const siteSettings = await getSettings();
   const groupedSettings = groupSettingsByFolder(siteSettings);
   const socialSettings = groupedSettings["social"] || [];
@@ -120,9 +119,11 @@ export default async function RootLayout({
     },
   };
 
-  const organizationName = siteSettings.organizationName?.value || siteSettings.siteName.value;
+  const organizationName =
+    siteSettings.organizationName?.value || siteSettings.siteName.value;
   const organizationUrl = siteSettings.organizationUrl?.value || getSiteUrl();
-  const organizationEmail = siteSettings.organizationEmail?.value || siteSettings.siteEmail?.value;
+  const organizationEmail =
+    siteSettings.organizationEmail?.value || siteSettings.siteEmail?.value;
   const organizationPhone = siteSettings.organizationPhone?.value;
   const organizationAddress = siteSettings.organizationAddress?.value;
 
@@ -172,6 +173,7 @@ export default async function RootLayout({
     <html
       lang="en"
       className={`${fonts.body.variable} ${fonts.heading.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <ConditionalScriptRenderer

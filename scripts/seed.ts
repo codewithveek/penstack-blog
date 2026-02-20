@@ -17,6 +17,7 @@ import { IdGenerator, isSecretKey } from "@/utils";
 import { updateSettings } from "@/lib/queries/settings";
 import { DEFAULT_SETTINGS } from "@/lib/queries/settings/config";
 import crypto from "crypto";
+import { auth } from "@/lib/auth/auth";
 async function main() {
   try {
     console.log("🌱 Starting seed...");
@@ -476,6 +477,7 @@ async function main() {
       const adminUser = await db.query.users.findFirst({
         where: eq(users.email, adminEmail),
       });
+
       try {
         await db.insert(posts).values({
           title: "Welcome to my blog",
