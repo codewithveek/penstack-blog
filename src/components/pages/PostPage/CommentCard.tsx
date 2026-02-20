@@ -1,4 +1,12 @@
-import { Box, HStack, VStack, Text, Avatar, IconButton, Button } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  VStack,
+  Text,
+  IconButton,
+  Button,
+} from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 import React from "react";
 
 import { LuHeart, LuMessageCircle, LuFlag } from "react-icons/lu";
@@ -22,7 +30,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       // bg={bgColor}
     >
       <HStack gap={3} align="start">
-        <Avatar.Root
+        <Avatar
           size={"sm"}
           src={comment.author?.avatar}
           name={comment.author?.name}
@@ -42,7 +50,9 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               aria-label="Report comment"
               variant="ghost"
               size="sm"
-            ><LuFlag /></IconButton>
+            >
+              <LuFlag />
+            </IconButton>
           </HStack>
 
           <Text fontSize={"14px"}>{comment.content}</Text>

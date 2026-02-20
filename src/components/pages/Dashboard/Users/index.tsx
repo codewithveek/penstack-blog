@@ -9,24 +9,24 @@ import {
   Button,
   Flex,
   Input,
-  Select,
+  NativeSelect,
   Stack,
   Text,
   Dialog,
   InputGroup,
-  InputLeftAddon,
+  InputAddon,
   Field,
   Checkbox,
   VStack,
   HStack,
   Card,
-  Avatar,
   Center,
   Switch,
   Textarea,
 } from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { toaster } from "@/components/ui/toaster";
+import { Avatar } from "@/components/ui/avatar";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PaginatedResponse, RolesSelect, UserSelect } from "@/types";
@@ -221,18 +221,19 @@ const UsersDashboard = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </InputGroup>
-              <Select
-                maxW={{ md: "300px" }}
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-              >
-                <option value="all">All Roles</option>
-                {roles?.map((role) => (
-                  <option key={role.id} value={role.id}>
-                    {role.name}
-                  </option>
-                ))}
-              </Select>
+              <NativeSelect.Root maxW={{ md: "300px" }}>
+                <NativeSelect.Field
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                >
+                  <option value="all">All Roles</option>
+                  {roles?.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
+                </NativeSelect.Field>
+              </NativeSelect.Root>
             </Stack>
 
             {selectedUsers.length > 0 && (
@@ -275,7 +276,7 @@ const UsersDashboard = () => {
             ) : (
               <>
                 <Table.ScrollArea>
-                  <Table.Root variant="simple">
+                  <Table.Root variant="line">
                     <Table.Header>
                       <Table.Row>
                         <Table.ColumnHeader>
@@ -309,7 +310,7 @@ const UsersDashboard = () => {
                             <Table.Cell>{user.id}</Table.Cell>
                             <Table.Cell>
                               <Flex align="center">
-                                <Avatar.Root
+                                <Avatar
                                   size="sm"
                                   name={user.name}
                                   src={user.avatar || ""}
@@ -385,7 +386,7 @@ const UsersDashboard = () => {
                 <Field.Root>
                   <Field.Label>Avatar</Field.Label>
                   <HStack>
-                    <Avatar.Root
+                    <Avatar
                       src={currentUser?.avatar || ""}
                       name={currentUser?.name}
                       size={"lg"}

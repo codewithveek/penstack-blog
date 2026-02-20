@@ -8,7 +8,7 @@ import { LuImage } from "react-icons/lu";
 
 export const MediaButton = ({ editor }: { editor: Editor }) => {
   const {
-    isOpen: isMediaModalOpen,
+    open: isMediaModalOpen,
     onClose: onMediaModalClose,
     onOpen: onMediaModalOpen,
   } = useDisclosure();

@@ -10,7 +10,7 @@ import {
   Badge,
   InputGroup,
   Input,
-  Select,
+  NativeSelect,
   Dialog,
   Table,
   IconButton,
@@ -269,44 +269,45 @@ const PostsDashboard = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </InputGroup>
-              <Select
-                value={statusFilter}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value);
-                  setPage(1);
-                }}
-                maxW={{ md: "200px" }}
-              >
-                <option value="all">All Status</option>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-                <option value="deleted">Deleted</option>
-              </Select>
-              <Select
-                value={sortBy}
-                onChange={(e) => {
-                  setSortBy(e.target.value);
-                  setPage(1);
-                }}
-                maxW={{ md: "200px" }}
-                rounded="md"
-              >
-                <option value="recent">Recent</option>
-                <option value="published_at">Published Date</option>
-                <option value="popular">Popular</option>
-              </Select>
-              <Select
-                value={sortOrder}
-                onChange={(e) => {
-                  setSortOrder(e.target.value);
-                  setPage(1);
-                }}
-                maxW={{ md: "150px" }}
-                rounded="md"
-              >
-                <option value="desc">Descending</option>
-                <option value="asc">Ascending</option>
-              </Select>
+              <NativeSelect.Root maxW={{ md: "200px" }}>
+                <NativeSelect.Field
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="all">All Status</option>
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                  <option value="deleted">Deleted</option>
+                </NativeSelect.Field>
+              </NativeSelect.Root>
+              <NativeSelect.Root maxW={{ md: "200px" }} rounded="md">
+                <NativeSelect.Field
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="recent">Recent</option>
+                  <option value="published_at">Published Date</option>
+                  <option value="popular">Popular</option>
+                </NativeSelect.Field>
+              </NativeSelect.Root>
+              <NativeSelect.Root maxW={{ md: "150px" }} rounded="md">
+                <NativeSelect.Field
+                  value={sortOrder}
+                  onChange={(e) => {
+                    setSortOrder(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="desc">Descending</option>
+                  <option value="asc">Ascending</option>
+                </NativeSelect.Field>
+              </NativeSelect.Root>
             </Stack>
 
             {loading && <Loader loadingText={"Loading posts"} />}
@@ -314,7 +315,7 @@ const PostsDashboard = () => {
             {posts && posts.length > 0 && (
               <>
                 <Table.ScrollArea>
-                  <Table.Root variant="simple">
+                  <Table.Root variant="line">
                     <Table.Header>
                       {table.getHeaderGroups().map((headerGroup) => (
                         <Table.Row key={headerGroup.id}>

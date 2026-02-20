@@ -1,6 +1,13 @@
 "use client";
 
-import { Box, Flex, VStack, Stack, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  VStack,
+  Stack,
+  IconButton,
+  Link as ChakraLink,
+} from "@chakra-ui/react";
 
 import { LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
@@ -69,9 +76,9 @@ export const DashboardSidebar = ({
                   src={siteSettings?.siteLogoMobile?.value ?? ""}
                   size={"30px"}
                 />
-                <Link href={"/"} color={navBtnBg} fontSize={"small"}>
-                  visit site
-                </Link>
+                <ChakraLink asChild color={navBtnBg} fontSize={"small"}>
+                  <Link href="/">visit site</Link>
+                </ChakraLink>
               </Box>
             )}
             <VStack>
@@ -87,7 +94,7 @@ export const DashboardSidebar = ({
                 alignSelf={"start"}
                 colorPalette="gray"
                 color={siteNameColor}
-              // display={{ base: "none", md: "flex" }}
+                // display={{ base: "none", md: "flex" }}
               >
                 {isMinimized ? <LuChevronsRight /> : <LuChevronsLeft />}
               </IconButton>
@@ -138,7 +145,7 @@ export const DashboardSidebar = ({
             justify={"flex-end"}
             mt={"auto"}
             pl={isMinimized ? 0 : 3}
-          // pb={5}
+            // pb={5}
           >
             <LightDarkModeSwitch showLabel={!isMinimized} />
           </Stack>

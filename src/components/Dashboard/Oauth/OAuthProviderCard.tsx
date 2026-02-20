@@ -74,7 +74,7 @@ export function OAuthProviderCard({
             <Text fontSize="xs" color="gray.500" mb={1}>
               Client ID
             </Text>
-            <Text fontSize="sm" noOfLines={1}>
+            <Text fontSize="sm" lineClamp={1}>
               {provider.client_id}
             </Text>
           </Box>
@@ -84,7 +84,7 @@ export function OAuthProviderCard({
               <Text fontSize="xs" color="gray.500" mb={1}>
                 Redirect URI
               </Text>
-              <Text fontSize="sm" noOfLines={1}>
+              <Text fontSize="sm" lineClamp={1}>
                 {provider.redirect_uri}
               </Text>
             </Box>

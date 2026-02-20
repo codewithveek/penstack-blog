@@ -6,23 +6,23 @@ import { MediaModal } from "@/components/Dashboard/Medias/MediaModal";
 
 interface MediaInsertProps {
   editor: Editor;
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: () => void;
   maxSelection?: number;
   defaultFilters?: Partial<FilterParams>;
 }
 
 export const MediaInsert: FC<PropsWithChildren<MediaInsertProps>> = ({
   editor,
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
   maxSelection,
   children,
   defaultFilters = {},
 }) => {
   return (
     <>
-      <MediaModal open={isOpen} onOpenChange={onClose}>
+      <MediaModal open={open} onOpenChange={onOpenChange}>
         <Medias
           maxSelection={maxSelection}
           defaultFilters={defaultFilters}
@@ -54,7 +54,7 @@ export const MediaInsert: FC<PropsWithChildren<MediaInsertProps>> = ({
                 })
                 .run();
             }
-            onClose();
+            onOpenChange();
           }}
         />
       </MediaModal>

@@ -10,7 +10,7 @@ import {
   Img,
   Text,
 } from "@react-email/components";
-import { PostSelect } from "../../../../types";
+import { PostSelect } from "@/types";
 import {
   decodeAndSanitizeHtml,
   generatePostUrl,

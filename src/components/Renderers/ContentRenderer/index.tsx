@@ -1,4 +1,14 @@
-import { Box, Text, Heading, List, Table, Code, Separator, Link, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Heading,
+  List,
+  Table,
+  Code,
+  Separator,
+  Link,
+  Image,
+} from "@chakra-ui/react";
 import React, { memo } from "react";
 import parse, {
   domToReact,
@@ -203,17 +213,23 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "tr") {
             return (
-              <Table.Row>{domToReact(domNode.children as Element[], options)}</Table.Row>
+              <Table.Row>
+                {domToReact(domNode.children as Element[], options)}
+              </Table.Row>
             );
           }
           if (domNode.name === "th") {
             return (
-              <Table.ColumnHeader>{domToReact(domNode.children as Element[], options)}</Table.ColumnHeader>
+              <Table.ColumnHeader>
+                {domToReact(domNode.children as Element[], options)}
+              </Table.ColumnHeader>
             );
           }
           if (domNode.name === "td") {
             return (
-              <Table.Cell>{domToReact(domNode.children as Element[], options)}</Table.Cell>
+              <Table.Cell>
+                {domToReact(domNode.children as Element[], options)}
+              </Table.Cell>
             );
           }
           if (domNode.name === "code") {
@@ -230,8 +246,12 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
             return (
               <Link
                 href={domNode.attribs.href}
-                rel={domNode.attribs.rel}
-                isExternal={domNode.attribs.target === "_blank"}
+                rel={
+                  domNode.attribs.target === "_blank"
+                    ? "noopener noreferrer"
+                    : domNode.attribs.rel
+                }
+                target={domNode.attribs.target}
                 _hover={{ textDecoration: "underline" }}
                 color={"brandBlue.600"}
                 _dark={{ color: "brandBlue.300" }}

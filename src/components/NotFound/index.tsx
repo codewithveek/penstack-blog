@@ -3,7 +3,7 @@ import React, { useState, useEffect, memo } from "react";
 import {
   LuWifiOff,
   LuRefreshCw,
-  LuAlertTriangle,
+  LuTriangleAlert,
   LuGlobe,
   LuClock,
 } from "react-icons/lu";
@@ -95,7 +95,7 @@ export const NetworkErrorHandler = memo(
 
       if (errorString.includes("enotfound") || errorString.includes("dns")) {
         return {
-          icon: LuAlertTriangle,
+          icon: LuTriangleAlert,
           title: "Server Not Found",
           message:
             "The server could not be reached. Please check the URL or try again later.",

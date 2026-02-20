@@ -1,6 +1,6 @@
-import { Box, Button, Code, HStack, Stack, Text, useClipboard } from "@chakra-ui/react";
+import { Box, Button, Code, HStack, Stack, Text } from "@chakra-ui/react";
 
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useState, useCallback } from "react";
 import { all, common, createLowlight } from "lowlight";
 import { LuCheck, LuClipboard } from "react-icons/lu";
 import { DarkMode } from "@/components/ui/color-mode";
@@ -13,7 +13,13 @@ interface PenstackCodeBlockRendererProps {
 export const PenstackCodeBlockRenderer: React.FC<
   PropsWithChildren<PenstackCodeBlockRendererProps>
 > = ({ language, code, children }) => {
-  const { onCopy, hasCopied } = useClipboard(code);
+  const [hasCopied, setHasCopied] = useState(false);
+  const onCopy = useCallback(() => {
+    navigator.clipboard.writeText(code).then(() => {
+      setHasCopied(true);
+      setTimeout(() => setHasCopied(false), 2000);
+    });
+  }, [code]);
 
   const Content = () => {
     try {
@@ -44,7 +50,10 @@ export const PenstackCodeBlockRenderer: React.FC<
                 variant={"ghost"}
                 size={"xs"}
                 onClick={onCopy}
-              >hasCopied ? <LuCheck /> : <LuClipboard /> {hasCopied ? "Copied" : "Copy"}</Button>
+              >
+                hasCopied ? <LuCheck /> : <LuClipboard />{" "}
+                {hasCopied ? "Copied" : "Copy"}
+              </Button>
             </HStack>
           </DarkMode>
           <Box

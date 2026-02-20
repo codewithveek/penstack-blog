@@ -1,6 +1,15 @@
 "use client";
 
-import { Box, Container, VStack, Flex, useBreakpointValue, HStack, Breadcrumb, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  VStack,
+  Flex,
+  useBreakpointValue,
+  HStack,
+  Breadcrumb,
+  Text,
+} from "@chakra-ui/react";
 import React, { Suspense, useEffect, useState } from "react";
 
 import { PostSelect, SiteSettings } from "@/types";
@@ -66,44 +75,54 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
         pr={{ lg: 12 }}
         className="py-8 relative px-4 md:px-5 lg:px-8"
       >
-        <Breadcrumb.Root
+        <Box
           hideBelow={"lg"}
-          gap="8px"
-          fontSize={"0.9em"}
           display={"flex"}
           justifyContent={{ base: "start", md: "center" }}
-          separator={<LuChevronRight color={metaColor} />}
+          fontSize={"0.9em"}
           mb={6}
-          listProps={{ flexWrap: "wrap" }}
         >
-          <Breadcrumb.Item>
-            <Breadcrumb.Link
-              href="/"
-              color={"var(--link-color)"}
-              fontWeight={500}
-            >
-              Home
-            </Breadcrumb.Link>
-          </Breadcrumb.Item>
-          {post?.category && (
-            <Breadcrumb.Item>
-              <Breadcrumb.Link
-                href={`/category/${post?.category.slug}`}
-                color={"var(--link-color)"}
-                fontWeight={500}
-              >
-                {post?.category.name}
-              </Breadcrumb.Link>
-            </Breadcrumb.Item>
-          )}
-          <Breadcrumb.Item
-            isCurrentPage
-            color={metaColor}
-            className="text-wrap "
-          >
-            <Text>{post?.title}</Text>
-          </Breadcrumb.Item>
-        </Breadcrumb.Root>
+          <Breadcrumb.Root>
+            <Breadcrumb.List gap="8px" flexWrap="wrap">
+              <Breadcrumb.Item>
+                <Breadcrumb.Link
+                  href="/"
+                  color={"var(--link-color)"}
+                  fontWeight={500}
+                >
+                  Home
+                </Breadcrumb.Link>
+              </Breadcrumb.Item>
+              {post?.category && (
+                <>
+                  <Breadcrumb.Separator>
+                    <LuChevronRight color={metaColor} />
+                  </Breadcrumb.Separator>
+                  <Breadcrumb.Item>
+                    <Breadcrumb.Link
+                      href={`/category/${post?.category.slug}`}
+                      color={"var(--link-color)"}
+                      fontWeight={500}
+                    >
+                      {post?.category.name}
+                    </Breadcrumb.Link>
+                  </Breadcrumb.Item>
+                </>
+              )}
+              <Breadcrumb.Separator>
+                <LuChevronRight color={metaColor} />
+              </Breadcrumb.Separator>
+              <Breadcrumb.Item>
+                <Breadcrumb.CurrentLink
+                  color={metaColor}
+                  className="text-wrap "
+                >
+                  {post?.title}
+                </Breadcrumb.CurrentLink>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
+        </Box>
         <HStack
           gap={1}
           align={"center"}

@@ -1,7 +1,7 @@
 export interface ScheduleItemProps {
   scheduledAt: Date;
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: () => void;
   onToggle: () => void;
 }
 

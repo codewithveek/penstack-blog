@@ -1,10 +1,20 @@
-import { Popover, Box, VStack, Separator, Flex, HStack, Button, Icon, Text } from "@chakra-ui/react";
+import {
+  Popover,
+  Box,
+  VStack,
+  Separator,
+  Flex,
+  HStack,
+  Button,
+  Icon,
+  Text,
+} from "@chakra-ui/react";
 import { NavItemWithoutPermission } from "@/types";
 
 import { LuChevronDown } from "react-icons/lu";
 import { SidebarNavItem } from "./NavItem";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const NavItemWithChildren = ({
@@ -57,11 +67,12 @@ export const NavItemWithChildren = ({
   if (isMinimized) {
     return (
       <Popover.Root
-        placement="right"
+        positioning={{ placement: "right" }}
         open={isOpen}
-        onOpen={onOpen}
-        onOpenChange={onClose}
-        trigger="hover"
+        onOpenChange={(e) => {
+          if (e.open) onOpen();
+          else onClose();
+        }}
       >
         <Popover.Trigger>
           <Box>
@@ -123,7 +134,7 @@ export const NavItemWithChildren = ({
     <>
       <Button
         fontWeight={isActive ? "500" : "400"}
-        variant={"unstyled"}
+        variant={"plain"}
         w="full"
         p={0}
         roundedBottom={openItems.includes(item.href) ? "0" : "md"}
@@ -143,13 +154,13 @@ export const NavItemWithChildren = ({
           w="full"
           bg={
             item.children?.some((child) => pathname.startsWith(child.href)) ||
-              openItems.includes(item.href)
+            openItems.includes(item.href)
               ? navBtnBg
               : "transparent"
           }
           color={
             item.children?.some((child) => pathname.startsWith(child.href)) ||
-              openItems.includes(item.href)
+            openItems.includes(item.href)
               ? navBtnActiveColor
               : textColor
           }

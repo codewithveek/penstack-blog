@@ -1,4 +1,4 @@
-import { Box, List, Stack } from "@chakra-ui/react";
+import { Box, List, Stack, useDisclosure } from "@chakra-ui/react";
 import React from "react";
 
 import { CommentsToggle } from "./CommentsToggle";
@@ -29,7 +29,7 @@ export const PublishMetadata = () => {
   );
   return (
     <Box p={4} pb={0}>
-      <Stack as={List} fontSize={14} gap={2}>
+      <List.Root fontSize={14} gap={2}>
         <VisibilityItem visibility={visibility as string} />
         <ScheduleItem
           scheduledAt={scheduledAt as Date}
@@ -50,7 +50,7 @@ export const PublishMetadata = () => {
           generateToc={generateToc as boolean}
           onChange={() => updateField("generate_toc", !generateToc)}
         />
-      </Stack>
+      </List.Root>
     </Box>
   );
 };

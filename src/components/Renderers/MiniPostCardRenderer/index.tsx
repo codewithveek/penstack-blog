@@ -22,7 +22,8 @@ import {
   shortenText,
   stripHtml,
 } from "@/utils";
-import Link from "next/link";
+import NextLink from "next/link";
+import { Link as ChakraLink } from "@chakra-ui/react";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { NodeViewProps } from "@tiptap/react";
@@ -144,7 +145,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
               rounded={"none"}
               placeholder="Add custom title (optional)"
               value={inputValue}
-              variant={""}
+              variant={"outline"}
               size={"lg"}
               _focus={{
                 border: "2px solid",
@@ -159,57 +160,59 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
           )}
           {posts?.length > 0 &&
             posts.map((post) => (
-              <Link
+              <ChakraLink
+                asChild
                 key={post?.id}
                 color={"brandPurple.700"}
-                href={generatePostUrl(post)}
                 _hover={{ textDecoration: "none", color: "brandPurple.800" }}
                 onClick={(e) => {
                   if (isEditing) e.preventDefault();
                 }}
               >
-                <HStack gap={4} align="start">
-                  {post?.featured_image && (
-                    <Image
-                      src={post?.featured_image.url}
-                      alt={post?.featured_image.alt_text || ""}
-                      boxSize={{ base: "80px", lg: "80px" }}
-                      maxH={{ base: "80px", lg: "80px" }}
-                      objectFit="contain"
-                      rounded={"lg"}
-                    />
-                  )}
-                  <Stack align="start" gap={1}>
-                    <HStack>
-                      <Text
-                        fontSize={{ base: "medium", lg: "large" }}
-                        fontWeight="bold"
-                      >
-                        {post?.title}
-                      </Text>
-                      {isEditing && (
-                        <IconButton
-                          colorPalette="red"
-                          variant="ghost"
-                          size={"xs"}
-                          aria-label="Remove post"
-                          onClick={() => removePost(post?.post_id || "")}
+                <NextLink href={generatePostUrl(post)}>
+                  <HStack gap={4} align="start">
+                    {post?.featured_image && (
+                      <Image
+                        src={post?.featured_image.url}
+                        alt={post?.featured_image.alt_text || ""}
+                        boxSize={{ base: "80px", lg: "80px" }}
+                        maxH={{ base: "80px", lg: "80px" }}
+                        objectFit="contain"
+                        rounded={"lg"}
+                      />
+                    )}
+                    <Stack align="start" gap={1}>
+                      <HStack>
+                        <Text
+                          fontSize={{ base: "medium", lg: "large" }}
+                          fontWeight="bold"
                         >
-                          <FaTrash />
-                        </IconButton>
-                      )}
-                    </HStack>
-                    <Text
-                      fontSize={{ base: "14px", lg: "medium" }}
-                      color={textColor}
-                      noOfLines={2}
-                      w={"full"}
-                    >
-                      {generatePostDescription(post)}
-                    </Text>
-                  </Stack>
-                </HStack>
-              </Link>
+                          {post?.title}
+                        </Text>
+                        {isEditing && (
+                          <IconButton
+                            colorPalette="red"
+                            variant="ghost"
+                            size={"xs"}
+                            aria-label="Remove post"
+                            onClick={() => removePost(post?.post_id || "")}
+                          >
+                            <FaTrash />
+                          </IconButton>
+                        )}
+                      </HStack>
+                      <Text
+                        fontSize={{ base: "14px", lg: "medium" }}
+                        color={textColor}
+                        lineClamp={2}
+                        w={"full"}
+                      >
+                        {generatePostDescription(post)}
+                      </Text>
+                    </Stack>
+                  </HStack>
+                </NextLink>
+              </ChakraLink>
             ))}
           {isEditing && (
             <>

@@ -45,7 +45,7 @@ export const SocialActions: React.FC<SocialActionsProps> = ({ post }) => {
             <LuShare />
           </IconButton>
         </Tooltip>
-        <Popover.Root trigger={popoverTrigger} placement="right">
+        <Popover.Root positioning={{ placement: "right" }}>
           <Popover.Trigger>
             <IconButton
               variant="outline"

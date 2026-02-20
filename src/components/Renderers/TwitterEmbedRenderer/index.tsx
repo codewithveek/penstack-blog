@@ -1,5 +1,16 @@
-import { Box, Card, Textarea, Stack, Skeleton, SkeletonText, HStack, SkeletonCircle, Text } from "@chakra-ui/react";
-import Link from "next/link";
+import {
+  Box,
+  Card,
+  Textarea,
+  Stack,
+  Skeleton,
+  SkeletonText,
+  HStack,
+  SkeletonCircle,
+  Text,
+} from "@chakra-ui/react";
+import NextLink from "next/link";
+import { Link as ChakraLink } from "@chakra-ui/react";
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import Script from "next/script";
@@ -52,14 +63,15 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
                   Sorry, we couldn&apos;t load the tweet. Please try again
                   later.
                 </Text>
-                <Link
-                  color={"brand.500"}
-                  textDecor={"underline"}
-                  isExternal
-                  href={`https://x.com/${node.attrs?.username || "x"}/status/${node.attrs.tweetId}`}
-                >
-                  View tweet
-                </Link>
+                <ChakraLink asChild color={"brand.500"} textDecor={"underline"}>
+                  <NextLink
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://x.com/${node.attrs?.username || "x"}/status/${node.attrs.tweetId}`}
+                  >
+                    View tweet
+                  </NextLink>
+                </ChakraLink>
               </Box>
             )}
             {hasTweet && isEditing && (
@@ -70,7 +82,7 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
                 borderColor="gray.300"
                 placeholder="Add caption (optional)"
                 value={node.attrs.caption || ""}
-                variant=""
+                variant="outline"
                 onChange={handleCaptionChange}
                 resize="none"
               />

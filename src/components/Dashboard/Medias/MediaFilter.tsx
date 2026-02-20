@@ -1,4 +1,11 @@
-import { Button, HStack, Input, Group, InputAddon, NativeSelect } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Input,
+  Group,
+  InputAddon,
+  NativeSelect,
+} from "@chakra-ui/react";
 import React, { memo } from "react";
 import { LuRefreshCw, LuSearch } from "react-icons/lu";
 
@@ -19,7 +26,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
         justify="space-between"
       >
         <Group maxW={500}>
-          <InputAddon placement="start" roundedLeft="md">
+          <InputAddon roundedLeft="md">
             <LuSearch />
           </InputAddon>
           <Input
@@ -34,7 +41,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
             rounded="md"
             onChange={(e) =>
               onFilterChange({
-                type: e.target.value as MediaType,
+                type: (e.target as HTMLSelectElement).value as MediaType,
               })
             }
           >
@@ -49,7 +56,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
           <NativeSelect.Root
             rounded="md"
             onChange={(e) => {
-              const value = e.target.value;
+              const value = (e.target as HTMLSelectElement).value;
               if (!value) return;
               onFilterChange({
                 sortBy: value.split("-")[0] as "created_at" | "name" | "size",
@@ -72,7 +79,9 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
             size="sm"
             rounded="md"
             onClick={refetchMedia}
-          ><LuRefreshCw /> Refresh</Button>
+          >
+            <LuRefreshCw /> Refresh
+          </Button>
         </HStack>
       </HStack>
     );

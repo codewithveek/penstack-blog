@@ -12,20 +12,20 @@ import { toaster } from "@/components/ui/toaster";
 
 export const CalendarPicker = ({
   defaultValue,
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
   trigger,
 }: {
   defaultValue?: Date;
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: () => void;
   trigger: ReactNode;
 }) => {
   const popRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (popRef.current && !popRef.current.contains(e.target as Node)) {
-        onClose();
+        onOpenChange();
       }
     };
     document.addEventListener("mousedown", handler);
@@ -61,7 +61,7 @@ export const CalendarPicker = ({
     },
   });
   function onDone(date: Date) {
-    onClose();
+    onOpenChange();
     const payload: CronJobPayload = {
       job: {
         notification: {
@@ -93,16 +93,19 @@ export const CalendarPicker = ({
     });
   }
   function onCancel() {
-    onClose();
+    onOpenChange();
   }
   return (
     <>
       <Popover.Root
-        open={isOpen}
-        onOpenChange={onClose}
-        onOpen={() => {
-          if (!dateValue) {
-            setDateValue(new Date());
+        open={open}
+        onOpenChange={(e) => {
+          if (e.open) {
+            if (!dateValue) {
+              setDateValue(new Date());
+            }
+          } else {
+            onOpenChange();
           }
         }}
       >

@@ -5,8 +5,8 @@ import { FC, memo, PropsWithChildren } from "react";
 import Medias from ".";
 
 interface MediaModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: () => void;
   maxSelection?: number;
   defaultFilters?: Partial<FilterParams>;
   multiple?: boolean;
@@ -15,8 +15,8 @@ interface MediaModalProps {
 
 export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
   ({
-    isOpen,
-    onClose,
+    open,
+    onOpenChange,
     maxSelection,
     children,
     multiple,
@@ -25,35 +25,37 @@ export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
   }) => {
     return (
       <Dialog.Root
-        open={isOpen}
+        open={open}
         isCentered
-        onOpenChange={onClose}
+        onOpenChange={onOpenChange}
         size={{ base: "md", md: "3xl", lg: "5xl", xl: "6xl" }}
         returnFocusOnClose={false}
       >
         <Dialog.Backdrop />
-        <Dialog.Positioner><Dialog.Content>
-          <Dialog.Header>
-            <Heading size="md">Select Media</Heading>
-            <Dialog.CloseTrigger />
-          </Dialog.Header>
-          <Dialog.Body px={{ base: 0, md: undefined }}>
-            {children ? (
-              children
-            ) : (
-              <Medias
-                multiple={multiple}
-                defaultFilters={defaultFilters}
-                maxSelection={maxSelection}
-                onSelect={(media: MediaResponse | MediaResponse[]) => {
-                  onSelect?.(media);
-                  onClose();
-                }}
-                canSelect={true}
-              />
-            )}
-          </Dialog.Body>
-        </Dialog.Content></Dialog.Positioner>
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Heading size="md">Select Media</Heading>
+              <Dialog.CloseTrigger />
+            </Dialog.Header>
+            <Dialog.Body px={{ base: 0, md: undefined }}>
+              {children ? (
+                children
+              ) : (
+                <Medias
+                  multiple={multiple}
+                  defaultFilters={defaultFilters}
+                  maxSelection={maxSelection}
+                  onSelect={(media: MediaResponse | MediaResponse[]) => {
+                    onSelect?.(media);
+                    onOpenChange();
+                  }}
+                  canSelect={true}
+                />
+              )}
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Positioner>
       </Dialog.Root>
     );
   }

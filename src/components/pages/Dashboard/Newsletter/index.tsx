@@ -10,7 +10,6 @@ import {
   Group,
   Stack,
   Center,
-  ResponsiveValue,
   InputElement,
   HStack,
   Tag,
@@ -68,7 +67,7 @@ export const DashboardNewsletterPage = () => {
   const headerColor = useColorModeValue("gray.500", "gray.500");
   const cellTextColor = useColorModeValue("gray.500", "gray.400");
   const thStyles = {
-    textTransform: "capitalize" as ResponsiveValue<"capitalize">,
+    textTransform: "capitalize" as const,
     fontSize: "medium",
     fontWeight: "normal",
     color: headerColor,

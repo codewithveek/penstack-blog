@@ -71,32 +71,24 @@ export const PenstackCodeblockComponent: React.FC<
     >
       <HStack justify={"flex-end"} p={0}>
         <Menu.Root>
-          {({ isOpen }) => (
-            <>
-              <DarkMode>
-                <Menu.Trigger asChild>
-                  <Button variant={"ghost"} colorPalette="gray" size={"xs"}>
-                    {defaultLanguage || "auto"}
-                    <LuChevronDown
-                      style={{
-                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                      }}
-                    />
-                  </Button>
-                </Menu.Trigger>
-              </DarkMode>
-              <Menu.Content maxH={heights.listHeight} px={2}>
-                <FixedSizeList
-                  height={heights.listHeight}
-                  itemCount={languages?.length}
-                  itemSize={heights.itemHeight}
-                  width="100%"
-                >
-                  {LanguageRow}
-                </FixedSizeList>
-              </Menu.Content>
-            </>
-          )}
+          <DarkMode>
+            <Menu.Trigger asChild>
+              <Button variant={"ghost"} colorPalette="gray" size={"xs"}>
+                {defaultLanguage || "auto"}
+                <LuChevronDown />
+              </Button>
+            </Menu.Trigger>
+          </DarkMode>
+          <Menu.Content maxH={heights.listHeight} px={2}>
+            <FixedSizeList
+              height={heights.listHeight}
+              itemCount={languages?.length}
+              itemSize={heights.itemHeight}
+              width="100%"
+            >
+              {LanguageRow}
+            </FixedSizeList>
+          </Menu.Content>
         </Menu.Root>
       </HStack>
       <Box as="pre">

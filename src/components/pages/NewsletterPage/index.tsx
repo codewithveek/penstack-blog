@@ -13,7 +13,6 @@ import {
   Icon,
   Container,
   Badge,
-  Avatar,
   HStack,
   SimpleGrid,
 } from "@chakra-ui/react";
@@ -25,6 +24,7 @@ import axios from "axios";
 import isEmpty from "just-is-empty";
 import { Newsletter } from "../../NewsLetter";
 import { useColorModeValue } from "@/components/ui/color-mode";
+import { Avatar } from "@/components/ui/avatar";
 
 const testimonials = [
   {
@@ -95,7 +95,7 @@ const Testimonial = ({
       &apos;{content}&apos;
     </Text>
     <HStack gap={3}>
-      <Avatar.Root src={avatar} size="sm" name={name} />
+      <Avatar src={avatar} size="sm" name={name} />
       <Box>
         <Text fontWeight="bold" fontSize="sm">
           {name}

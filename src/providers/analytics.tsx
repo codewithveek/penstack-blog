@@ -1,28 +1,28 @@
 import dynamic from "next/dynamic";
-import { SiteSettings } from "../types";
-import { CanRender } from "../app/components/CanRender";
+import { SiteSettings } from "@/types";
+import { CanRender } from "@/components/CanRender";
 
 const GoogleTagManager = dynamic(
-  () => import("../app/components/Analytics/GoogleTagManager"),
+  () => import("@/components/Analytics/GoogleTagManager"),
   {
     ssr: false,
   }
 );
 const GoogleAnalytics = dynamic(
-  () => import("../app/components/Analytics/GoogleAnalytics"),
+  () => import("@/components/Analytics/GoogleAnalytics"),
   {
     ssr: false,
   }
 );
 
 const GoogleTagManagerNoscript = dynamic(
-  () => import("../app/components/Analytics/GoogleTagManager/Noscript"),
+  () => import("@/components/Analytics/GoogleTagManager/Noscript"),
   {
     ssr: false,
   }
 );
 const MixpanelAnalytics = dynamic(
-  () => import("../app/components/Analytics/MixpanelAnalytics"),
+  () => import("@/components/Analytics/MixpanelAnalytics"),
   {
     ssr: false,
   }

@@ -1,14 +1,12 @@
 import {
   Box,
   Breadcrumb,
-  BreadcrumbSeparator,
   Button,
   Drawer,
   Flex,
   HStack,
   Icon,
   IconButton,
-  Show,
   Stack,
   Separator,
   Text,
@@ -49,31 +47,41 @@ function EditorHeader() {
     <>
       <DashHeader pos="sticky" top={0} zIndex={10}>
         <Stack gap={1.5}>
-          <Breadcrumb.Root
+          <Box
             my={1}
             hideBelow={"lg"}
-            gap="8px"
-            className="text-sm"
             display={"flex"}
             justifyContent={{ base: "start", md: "center" }}
-            separator={<LuChevronRight className="text-gray-500" />}
           >
-            <Breadcrumb.Item className="font-semibold hover:underline">
-              <Breadcrumb.Link href="/dashboard">
-                <span className="sr-only">Dashboard</span>
-                <LuLayoutDashboard />
-              </Breadcrumb.Link>
-            </Breadcrumb.Item>
+            <Breadcrumb.Root>
+              <Breadcrumb.List gap="8px" className="text-sm">
+                <Breadcrumb.Item className="font-semibold hover:underline">
+                  <Breadcrumb.Link href="/dashboard">
+                    <span className="sr-only">Dashboard</span>
+                    <LuLayoutDashboard />
+                  </Breadcrumb.Link>
+                </Breadcrumb.Item>
 
-            <Breadcrumb.Item className="font-semibold">
-              <Breadcrumb.Link href="/dashboard/posts">Posts</Breadcrumb.Link>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item isCurrentPage>
-              <Breadcrumb.Link isCurrentPage className="text-gray-500">
-                {postTitle}
-              </Breadcrumb.Link>
-            </Breadcrumb.Item>
-          </Breadcrumb.Root>
+                <Breadcrumb.Separator>
+                  <LuChevronRight className="text-gray-500" />
+                </Breadcrumb.Separator>
+
+                <Breadcrumb.Item className="font-semibold">
+                  <Breadcrumb.Link href="/dashboard/posts">
+                    Posts
+                  </Breadcrumb.Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Separator>
+                  <LuChevronRight className="text-gray-500" />
+                </Breadcrumb.Separator>
+                <Breadcrumb.Item>
+                  <Breadcrumb.CurrentLink className="text-gray-500">
+                    {postTitle}
+                  </Breadcrumb.CurrentLink>
+                </Breadcrumb.Item>
+              </Breadcrumb.List>
+            </Breadcrumb.Root>
+          </Box>
           <HStack
             gap={2}
             separator={<Separator />}
@@ -117,7 +125,7 @@ function EditorHeader() {
             )}
           </HStack>
         </Stack>
-        <Box display={{ base: "none" }} below="md">
+        <Box display={{ base: "none" }} hideBelow="md">
           <Button
             variant="outline"
             gap={2}
@@ -130,7 +138,7 @@ function EditorHeader() {
             <Text>Post Settings</Text>
           </Button>
         </Box>
-        <Show below="md">
+        <Box hideBelow="md">
           <IconButton
             rounded={"full"}
             variant={"outline"}
@@ -139,11 +147,11 @@ function EditorHeader() {
           >
             <LuSettings />
           </IconButton>
-        </Show>
+        </Box>
       </DashHeader>
       <Drawer.Root
         open={isOpen}
-        placement="right"
+        placement="end"
         onOpenChange={onClose}
         size="sm"
       >

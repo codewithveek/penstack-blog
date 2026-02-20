@@ -109,7 +109,7 @@ export function EmailConfigStep({
 
       <Checkbox.Root
         checked={skip}
-        onChange={(e) => setSkip(e.target.checked)}
+        onChange={(e) => setSkip((e.target as HTMLInputElement).checked)}
         colorPalette="blue"
       >
         Skip email configuration (set up later)
@@ -119,17 +119,22 @@ export function EmailConfigStep({
         <>
           <Field.Root>
             <Field.Label>Email Service</Field.Label>
-            <NativeSelect.Root
-              value={formData.serviceType}
-              onChange={(e) =>
-                setFormData({ ...formData, serviceType: e.target.value })
-              }
-            >
-              <option value="none">None (Skip)</option>
-              <option value="resend">Resend</option>
-              <option value="sendgrid">SendGrid</option>
-              <option value="mailgun">Mailgun</option>
-              <option value="smtp">Custom SMTP</option>
+            <NativeSelect.Root>
+              <NativeSelect.Field
+                value={formData.serviceType}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    serviceType: e.target.value,
+                  })
+                }
+              >
+                <option value="none">None (Skip)</option>
+                <option value="resend">Resend</option>
+                <option value="sendgrid">SendGrid</option>
+                <option value="mailgun">Mailgun</option>
+                <option value="smtp">Custom SMTP</option>
+              </NativeSelect.Field>
             </NativeSelect.Root>
             <Field.HelperText>
               Choose your preferred email service provider
@@ -234,7 +239,7 @@ export function EmailConfigStep({
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          smtpSecure: e.target.checked,
+                          smtpSecure: (e.target as HTMLInputElement).checked,
                         })
                       }
                     >

@@ -38,7 +38,7 @@ export async function getPosts({
   }
   if (access === "dashboard") {
     const session = await getSession();
-    if (session?.user?.role_id !== 1) {
+    if ((session?.user as any)?.role_id !== 1) {
       whereConditions.push(eq(posts.author_id, session?.user?.id as string));
     }
   }

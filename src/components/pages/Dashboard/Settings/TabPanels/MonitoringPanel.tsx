@@ -16,7 +16,7 @@ export const MonitoringPanel = ({
   handleInputChange,
   handleToggle,
 }: MonitoringPanelProps) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const { open, onToggle } = useDisclosure();
   const groupedSettings = groupSettingsByFolder(settings);
   const monitoringSettings = groupedSettings["monitoring"] || [];
 
@@ -31,7 +31,7 @@ export const MonitoringPanel = ({
         />
       ))}
       <Button onClick={onToggle} size="sm" variant="outline">
-        {isOpen ? "Cancel" : "Add New Monitoring Setting"}
+        {open ? "Cancel" : "Add New Monitoring Setting"}
       </Button>
     </VStack>
   );

@@ -1,4 +1,13 @@
-import { Avatar, Card, Heading, HStack, Stack, Separator, Text, VStack } from "@chakra-ui/react";
+import {
+  Card,
+  Heading,
+  HStack,
+  Stack,
+  Separator,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 import { usePosts } from "@/hooks";
 
 import { LuEye } from "react-icons/lu";
@@ -37,7 +46,7 @@ export default memo(function MostPopularPosts() {
                 <HStack key={post?.id} justify={"space-between"}>
                   <Stack key={post?.id} justify={"space-between"}>
                     <HStack>
-                      <Heading size={"sm"} noOfLines={1}>
+                      <Heading size={"sm"} lineClamp={1}>
                         <Link href={generatePostUrl(post)}>
                           <Text as={"span"} color={"green.500"} mr={2}>
                             #{index + 1}
@@ -52,13 +61,13 @@ export default memo(function MostPopularPosts() {
                     </HStack>
                   </Stack>
                   <HStack>
-                    <Avatar.Root
+                    <Avatar
                       size={"xs"}
                       src={post?.author?.avatar || ""}
                       name={post?.author?.name}
                     />
                     <Stack gap={"2px"}>
-                      <Text noOfLines={1} fontWeight={500} fontSize={"smaller"}>
+                      <Text lineClamp={1} fontWeight={500} fontSize={"smaller"}>
                         {post?.author?.name}
                       </Text>
                       <Text fontSize={"x-small"} color={"gray.400"}>

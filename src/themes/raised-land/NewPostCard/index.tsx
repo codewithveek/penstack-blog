@@ -8,7 +8,6 @@ import {
 } from "@/utils";
 import Link from "next/link";
 import {
-  Avatar,
   Box,
   Heading,
   HStack,
@@ -21,6 +20,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { LuBookmark } from "react-icons/lu";
 
@@ -116,7 +116,7 @@ export default function NewPostCard({
             {showAuthor && (
               <HStack gap={2}>
                 <Link href={`/author/${post?.author?.username}`}>
-                  <Avatar.Root
+                  <Avatar
                     src={post?.author?.avatar || ""}
                     name={post?.author?.name}
                     borderRadius="md"

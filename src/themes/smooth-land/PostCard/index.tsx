@@ -1,4 +1,17 @@
-import { Box, Card, Heading, HStack, Image, LinkBox, LinkOverlay, Text, VStack, Avatar, Stack, GridItem } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  Heading,
+  HStack,
+  Image,
+  LinkBox,
+  LinkOverlay,
+  Text,
+  VStack,
+  Stack,
+  GridItem,
+} from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 import { PostSelect } from "@/types";
 import {
   generatePostDescription,
@@ -94,18 +107,18 @@ export default function PostCard({
                 href={generatePostUrl(post)}
                 _hover={{ textDecoration: "underline" }}
               >
-                <Heading className="!text-xl" fontWeight={600} noOfLines={3}>
+                <Heading className="!text-xl" fontWeight={600} lineClamp={3}>
                   {post?.title}
                 </Heading>
               </LinkOverlay>
 
-              <Text noOfLines={2} color={textColor} fontSize={"15px"}>
+              <Text lineClamp={2} color={textColor} fontSize={"15px"}>
                 {generatePostDescription(post)}
               </Text>
             </VStack>
             {/* {showAuthor && ( */}
             <HStack gap={2} display={"inline-flex"} mt={1}>
-              <Avatar.Root
+              <Avatar
                 src={post?.author?.avatar || ""}
                 name={post?.author?.name}
                 // size="md"

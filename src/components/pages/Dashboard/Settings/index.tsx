@@ -37,7 +37,7 @@ export default function DashboardSettingsPage() {
   const [settings, setSettings] = useState<SiteSettings>(settingsContext);
   const queryClient = useQueryClient();
   const [hasChanges, setHasChanges] = useState(false);
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { open, onClose, onOpen } = useDisclosure();
 
   const [originalSettings, setOriginalSettings] =
     useState<SiteSettings>(settingsContext);
@@ -278,7 +278,7 @@ export default function DashboardSettingsPage() {
         </Card.Root>
       </Container>
       <MediaModal
-        open={isOpen}
+        open={open}
         onOpenChange={onClose}
         multiple={false}
         maxSelection={1}

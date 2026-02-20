@@ -1,4 +1,14 @@
-import { Card, Badge, Heading, Drawer, Image, Text, VStack, HStack, Box } from "@chakra-ui/react";
+import {
+  Card,
+  Badge,
+  Heading,
+  Drawer,
+  Image,
+  Text,
+  VStack,
+  HStack,
+  Box,
+} from "@chakra-ui/react";
 import React, { memo } from "react";
 import { LuFile, LuImage, LuVideo, LuFileText, LuMusic } from "react-icons/lu";
 
@@ -9,12 +19,12 @@ import { useColorModeValue } from "@/components/ui/color-mode";
 const FilePreview = memo(
   ({
     file,
-    isOpen,
-    onClose,
+    open,
+    onOpenChange,
   }: {
     file: MediaResponse;
-    isOpen: boolean;
-    onClose: () => void;
+    open: boolean;
+    onOpenChange: () => void;
   }) => {
     const bgColor = useColorModeValue("gray.50", "gray.700");
     const labelColor = useColorModeValue("gray.600", "gray.400");
@@ -63,36 +73,38 @@ const FilePreview = memo(
           );
         case "video":
           return (
-            <Box
-              as="video"
-              w="full"
-              rounded="lg"
-              maxH="96"
+            <video
+              style={{
+                width: "100%",
+                borderRadius: "0.5rem",
+                maxHeight: "24rem",
+              }}
               controls
               preload="metadata"
               src={file.url}
             >
               Your browser does not support the video tag.
-            </Box>
+            </video>
           );
         case "pdf":
           return (
-            <Box
-              as="object"
+            <object
               data={file.url}
               type="application/pdf"
-              w="full"
-              h="96"
-              rounded="lg"
-              borderWidth="2px"
-              borderColor="gray.200"
+              style={{
+                width: "100%",
+                height: "24rem",
+                borderRadius: "0.5rem",
+                borderWidth: "2px",
+                borderColor: "#E2E8F0",
+              }}
               aria-label="PDF document"
               title={file.name}
             >
               <Text textAlign="center" my={8}>
                 Cloudinary restricts PDFs on free accounts.
               </Text>
-            </Box>
+            </object>
           );
         default:
           return (
@@ -105,8 +117,8 @@ const FilePreview = memo(
 
     return (
       <Drawer.Root
-        open={isOpen}
-        onOpenChange={onClose}
+        open={open}
+        onOpenChange={onOpenChange}
         size={{ base: "full", md: "lg" }}
       >
         <Drawer.Backdrop />
@@ -125,7 +137,7 @@ const FilePreview = memo(
                       {file.name}
                     </Heading>
                   </HStack>
-                  <Badge variant="secondary">{file.type.toUpperCase()}</Badge>
+                  <Badge variant="outline">{file.type.toUpperCase()}</Badge>
                 </HStack>
               </Card.Header>
 

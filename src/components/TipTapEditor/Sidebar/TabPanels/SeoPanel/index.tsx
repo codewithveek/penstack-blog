@@ -24,7 +24,7 @@ export const SeoPanel = () => {
   const keywords = usePostSeoMetaStore((state) => state.keywords);
   const setKeyValue = usePostSeoMetaStore((state) => state.setKeyValue);
   const saveSeoMeta = usePostSeoMetaStore((state) => state.saveSeoMeta);
-  const isLoading = usePostSeoMetaStore((state) => state.loading);
+  const isLoading = usePostSeoMetaStore((state) => state.isLoading);
   const isSaving = usePostSeoMetaStore((state) => state.isSaving);
   const hasChanges = usePostSeoMetaStore((state) => state.hasChanges);
   useEffect(() => {

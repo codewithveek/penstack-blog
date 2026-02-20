@@ -103,34 +103,24 @@ const PostViewsChart = () => {
           <Heading size={"md"}>Post Views</Heading>
           <HStack wrap={"wrap"} gap={2}>
             <Menu.Root>
-              {({ isOpen }) => (
-                <>
-                  <Menu.Trigger asChild>
-                    <Button size={"sm"} variant={"outline"}>
-                      {selectedTimeRange.label}
-                      <LuChevronDown
-                        style={{
-                          transition: "0.2s ease-in-out",
-                          transform: isOpen
-                            ? "rotate(-180deg)"
-                            : "rotate(0deg)",
-                        }}
-                      />
-                    </Button>
-                  </Menu.Trigger>
-                  <Menu.Content>
-                    {timeRanges.map((range) => (
-                      <Menu.Item
-                        key={range.value}
-                        rounded={"lg"}
-                        onClick={() => setSelectedTimeRange(range)}
-                      >
-                        {range.label}
-                      </Menu.Item>
-                    ))}
-                  </Menu.Content>
-                </>
-              )}
+              <Menu.Trigger asChild>
+                <Button size={"sm"} variant={"outline"}>
+                  {selectedTimeRange.label}
+                  <LuChevronDown />
+                </Button>
+              </Menu.Trigger>
+              <Menu.Content>
+                {timeRanges.map((range) => (
+                  <Menu.Item
+                    key={range.value}
+                    value={range.value}
+                    rounded={"lg"}
+                    onClick={() => setSelectedTimeRange(range)}
+                  >
+                    {range.label}
+                  </Menu.Item>
+                ))}
+              </Menu.Content>
             </Menu.Root>
           </HStack>
         </HStack>
@@ -151,7 +141,7 @@ const PostViewsChart = () => {
               width={undefined}
               height={400}
               data={postViews}
-              margopen={{ top: 20, right: 0, left: 0, bottom: 5 }}
+              margin={{ top: 20, right: 0, left: 0, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis
@@ -234,34 +224,24 @@ const PostViewChartWrapper = () => {
               <Heading size={"md"}>Post Views</Heading>
               <HStack wrap={"wrap"} gap={2}>
                 <Menu.Root>
-                  {({ isOpen }) => (
-                    <>
-                      <Menu.Trigger asChild>
-                        <Button disabled size={"sm"} variant={"outline"}>
-                          {selectedTimeRange.label}
-                          <LuChevronDown
-                            style={{
-                              transition: "0.2s ease-in-out",
-                              transform: isOpen
-                                ? "rotate(-180deg)"
-                                : "rotate(0deg)",
-                            }}
-                          />
-                        </Button>
-                      </Menu.Trigger>
-                      <Menu.Content>
-                        {timeRanges.map((range) => (
-                          <Menu.Item
-                            key={range.value}
-                            rounded={"lg"}
-                            onClick={() => setSelectedTimeRange(range)}
-                          >
-                            {range.label}
-                          </Menu.Item>
-                        ))}
-                      </Menu.Content>
-                    </>
-                  )}
+                  <Menu.Trigger asChild>
+                    <Button disabled size={"sm"} variant={"outline"}>
+                      {selectedTimeRange.label}
+                      <LuChevronDown />
+                    </Button>
+                  </Menu.Trigger>
+                  <Menu.Content>
+                    {timeRanges.map((range) => (
+                      <Menu.Item
+                        key={range.value}
+                        value={range.value}
+                        rounded={"lg"}
+                        onClick={() => setSelectedTimeRange(range)}
+                      >
+                        {range.label}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content>
                 </Menu.Root>
               </HStack>
             </HStack>

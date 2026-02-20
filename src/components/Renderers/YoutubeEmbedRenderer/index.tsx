@@ -38,7 +38,7 @@ export const PenstackYouTubeEmbed: React.FC<PenstackYouTubeEmbedProps> = memo(
               borderColor="gray.300"
               placeholder="Add video title (optional)"
               value={node.attrs.title || ""}
-              variant=""
+              variant="outline"
               onChange={handleTitleChange}
             />
           )}

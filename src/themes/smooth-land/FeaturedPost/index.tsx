@@ -1,4 +1,17 @@
-import { Box, Grid, Heading, HStack, LinkBox, LinkOverlay, Tag, VStack, Image, Text, Avatar, Card } from "@chakra-ui/react";
+import {
+  Box,
+  Grid,
+  Heading,
+  HStack,
+  LinkBox,
+  LinkOverlay,
+  Tag,
+  VStack,
+  Image,
+  Text,
+  Card,
+} from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 import { useFeaturedPost } from "@/hooks/useFeaturedPost";
 
 import { Suspense } from "react";
@@ -89,12 +102,12 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
                   </Heading>
                 </LinkOverlay>
                 {post?.summary && (
-                  <Text color={textColor} fontSize="lg" noOfLines={3}>
+                  <Text color={textColor} fontSize="lg" lineClamp={3}>
                     {post?.summary}
                   </Text>
                 )}
                 <HStack gap={4} mt={{ base: 3, md: 4 }}>
-                  <Avatar.Root
+                  <Avatar
                     src={post?.author?.avatar || ""}
                     name={post?.author?.name}
                     className="w-10 h-10 rounded-full"

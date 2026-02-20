@@ -16,7 +16,7 @@ export const AnalyticsPanel = ({
   handleInputChange,
   handleToggle,
 }: AnalyticsPanelProps) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const { open, onToggle } = useDisclosure();
   const groupedSettings = groupSettingsByFolder(settings);
   const analyticsSettings = groupedSettings["analytics"] || [];
 
@@ -31,7 +31,7 @@ export const AnalyticsPanel = ({
         />
       ))}
       <Button onClick={onToggle} size="sm" variant="outline">
-        {isOpen ? "Cancel" : "Add New Analytics Setting"}
+        {open ? "Cancel" : "Add New Analytics Setting"}
       </Button>
     </VStack>
   );

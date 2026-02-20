@@ -11,7 +11,7 @@ export const PenstackHeadingExtension = Heading.extend({
 
   addProseMirrorPlugins() {
     return [
-      ...(this.parent?.() || []),
+      ...((this as any).parent?.() || []),
       new Plugin({
         key: new PluginKey("heading-ids"),
         appendTransaction: (transactions, oldState, newState) => {
@@ -46,7 +46,7 @@ export const PenstackHeadingExtension = Heading.extend({
 
   addAttributes() {
     return {
-      ...this.parent?.(),
+      ...(this as any).parent?.(),
       id: {
         default: null,
         parseHTML: (element) => element.getAttribute("id"),

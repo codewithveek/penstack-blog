@@ -133,40 +133,24 @@ const TimezonePicker = ({
       >
         Timezone:
       </Text>
-      <Menu.Root isLazy>
-        {({ isOpen }) => (
-          <>
-            <Menu.Trigger asChild>
-              <Button size="sm" variant="outline" rounded="full">
-                {selectedTimezone || "Select timezone"}
-                <LuChevronDown
-                  style={{
-                    transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  }}
-                />
-              </Button>
-            </Menu.Trigger>
-            <Menu.Content
-              rounded="xl"
-              maxH={LIST_HEIGHT}
-              overflowY="auto"
-              px={2}
-            >
-              <SearchInput
-                searchQuery={searchQuery}
-                setSearchQuery={searchCb}
-              />
-              <FixedSizeList
-                height={LIST_HEIGHT}
-                itemCount={flattenedTimezones.length}
-                itemSize={ITEM_HEIGHT}
-                width="100%"
-              >
-                {TimezoneRow}
-              </FixedSizeList>
-            </Menu.Content>
-          </>
-        )}
+      <Menu.Root>
+        <Menu.Trigger asChild>
+          <Button size="sm" variant="outline" rounded="full">
+            {selectedTimezone || "Select timezone"}
+            <LuChevronDown />
+          </Button>
+        </Menu.Trigger>
+        <Menu.Content rounded="xl" maxH={LIST_HEIGHT} overflowY="auto" px={2}>
+          <SearchInput searchQuery={searchQuery} setSearchQuery={searchCb} />
+          <FixedSizeList
+            height={LIST_HEIGHT}
+            itemCount={flattenedTimezones.length}
+            itemSize={ITEM_HEIGHT}
+            width="100%"
+          >
+            {TimezoneRow}
+          </FixedSizeList>
+        </Menu.Content>
       </Menu.Root>
     </Stack>
   );
@@ -181,7 +165,7 @@ const SearchInput = memo(
   }) => {
     return (
       <Stack mb={2}>
-        <Group size="sm">
+        <Group>
           <InputElement placement="start">
             <LuSearch />
           </InputElement>

@@ -11,16 +11,15 @@ import {
   VStack,
   Separator,
   Icon,
-  Hide,
   useBreakpointValue,
-  Show,
   Input,
   InputGroup,
 } from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { LuMenu, LuChevronDown, LuSearch } from "react-icons/lu";
 import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
+import NextLink from "next/link";
+import { Link as ChakraLink } from "@chakra-ui/react";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
 import { useCategories } from "@/hooks/useCategories";
@@ -144,7 +143,7 @@ const Header = () => {
       >
         <Container maxW="container.2xl" py={"6px"}>
           <HStack justify="space-between" align="center">
-            <Link href="/" style={{ textDecoration: "none" }}>
+            <NextLink href="/" style={{ textDecoration: "none" }}>
               <HStack gap={0}>
                 <AppLogo src={logo!} size={logoSize!} />
                 {siteSettings.showSiteNameWithLogo?.enabled && (
@@ -159,7 +158,7 @@ const Header = () => {
                   </Text>
                 )}
               </HStack>
-            </Link>
+            </NextLink>
 
             <HStack
               align="center"
@@ -187,12 +186,12 @@ const Header = () => {
               </Link> */}
 
               {resources.map((resource) => (
-                <Link
+                <ChakraLink
+                  asChild
                   key={resource.name}
                   fontFamily={"var(--font-heading)"}
                   textTransform="capitalize"
                   fontWeight={500}
-                  href={resource.href}
                   px={2}
                   py={1}
                   color={
@@ -209,52 +208,44 @@ const Header = () => {
                     color: navLinkHoverColor,
                   }}
                 >
-                  {resource.name}
-                </Link>
+                  <NextLink href={resource.href}>{resource.name}</NextLink>
+                </ChakraLink>
               ))}
               <Menu.Root>
-                {({ open }) => (
-                  <>
-                    <Menu.Trigger asChild>
-                      <Button
-                        rounded={"none"}
-                        textTransform="capitalize"
-                        fontWeight={500}
-                        size="sm"
-                        colorPalette="black"
-                        variant="ghost"
-                        _hover={{
-                          borderColor: navLinkHoverColor,
-                          color: navLinkHoverColor,
-                        }}
-                        borderBottom={"2px solid"}
-                        borderBottomColor={"transparent"}
-                      >
-                        <HStack>
-                          <Text as={"span"} fontWeight={600}>
-                            Topics
-                          </Text>
-                          <LuChevronDown />
-                        </HStack>
-                      </Button>
-                    </Menu.Trigger>
-                    <Menu.Content rounded="lg">
-                      {categories &&
-                        categories?.length > 0 &&
-                        categories.map((topic) => (
-                          <Menu.Item
-                            key={topic.name}
-                            value={topic.slug}
-                            asChild
-                          >
-                            <Link href={`/category/${topic.slug}`}>
-                              {topic.name}
-                            </Link>
-                          </Menu.Item>
-                        ))}
-                    </Menu.Content>
-                  </>
-                )}
+                <Menu.Trigger asChild>
+                  <Button
+                    rounded={"none"}
+                    textTransform="capitalize"
+                    fontWeight={500}
+                    size="sm"
+                    colorPalette="black"
+                    variant="ghost"
+                    _hover={{
+                      borderColor: navLinkHoverColor,
+                      color: navLinkHoverColor,
+                    }}
+                    borderBottom={"2px solid"}
+                    borderBottomColor={"transparent"}
+                  >
+                    <HStack>
+                      <Text as={"span"} fontWeight={600}>
+                        Topics
+                      </Text>
+                      <LuChevronDown />
+                    </HStack>
+                  </Button>
+                </Menu.Trigger>
+                <Menu.Content rounded="lg">
+                  {categories &&
+                    categories?.length > 0 &&
+                    categories.map((topic) => (
+                      <Menu.Item key={topic.name} value={topic.slug} asChild>
+                        <NextLink href={`/category/${topic.slug}`}>
+                          {topic.name}
+                        </NextLink>
+                      </Menu.Item>
+                    ))}
+                </Menu.Content>
               </Menu.Root>
             </HStack>
 
@@ -269,9 +260,9 @@ const Header = () => {
                 </Show> */}
                 <AuthButtons />
               </HStack>
-              <Show below="lg">
+              <Box hideBelow="lg">
                 <AuthButtons />
-              </Show>
+              </Box>
 
               <IconButton
                 // colorPalette="black"
@@ -287,13 +278,13 @@ const Header = () => {
           </HStack>
         </Container>
 
-        <Drawer.Root open={open} placement="right" onOpenChange={onOpenChange}>
+        <Drawer.Root open={open} placement="end" onOpenChange={onOpenChange}>
           <Drawer.Backdrop />
           <Drawer.Content>
             <Drawer.CloseTrigger />
             <Drawer.Header borderBottomWidth="1px">Menu</Drawer.Header>
             <Drawer.Body>
-              <VStack align="stretch" gap={4} Separator={<Separator />}>
+              <VStack align="stretch" gap={4} separator={<Separator />}>
                 <Box>
                   <Text fontWeight="bold" color={textColor}>
                     Categories
@@ -310,9 +301,9 @@ const Header = () => {
                         w="full"
                         onClick={onOpenChange}
                       >
-                        <Link href={`/category/${topic.slug}`}>
+                        <NextLink href={`/category/${topic.slug}`}>
                           {topic.name}
-                        </Link>
+                        </NextLink>
                       </Button>
                     ))}
                 </Box>
@@ -330,7 +321,7 @@ const Header = () => {
                       w="full"
                       onClick={onOpenChange}
                     >
-                      <Link href={resource.href}>{resource.name}</Link>
+                      <NextLink href={resource.href}>{resource.name}</NextLink>
                     </Button>
                   ))}
                 </Box>

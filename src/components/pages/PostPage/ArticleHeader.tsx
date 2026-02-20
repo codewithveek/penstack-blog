@@ -1,8 +1,20 @@
-import { Box, Text, Heading, HStack, Stack, Avatar, Badge, Separator, Image, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Heading,
+  HStack,
+  Stack,
+  Badge,
+  Separator,
+  Image,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 import React from "react";
 
 import { PostSelect } from "@/types";
-import Link from "next/link";
+import NextLink from "next/link";
+import { Link as ChakraLink } from "@chakra-ui/react";
 import { ThemedSocialShareGroup } from "../../SocialShares";
 import {
   generatePostDescription,
@@ -111,7 +123,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
               <HStack
                 align={"center"}
                 gap={1}
-                Separator={
+                separator={
                   <Box
                     w={1}
                     h={1}
@@ -123,7 +135,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
                 wrap={"wrap"}
               >
                 <HStack gap={2} align={"center"}>
-                  <Avatar.Root
+                  <Avatar
                     src={post?.author.avatar || ""}
                     name={post?.author.name}
                     boxSize={"38px"}
@@ -134,16 +146,14 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
                     Written By
                   </Text>
 
-                  <Link
-                    href={"/author/" + post?.author.username}
-                    fontWeight={600}
-                    lineHeight={"tighter"}
-                  >
-                    {post?.author.name}
-                  </Link>
+                  <ChakraLink asChild fontWeight={600} lineHeight={"tighter"}>
+                    <NextLink href={"/author/" + post?.author.username}>
+                      {post?.author.name}
+                    </NextLink>
+                  </ChakraLink>
                 </HStack>
                 <HStack
-                  Separator={
+                  separator={
                     <Box
                       w={1}
                       h={1}

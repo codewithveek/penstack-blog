@@ -1,4 +1,11 @@
-import { Box, Image, ButtonGroup, IconButton, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  ButtonGroup,
+  IconButton,
+  Flex,
+  chakra,
+} from "@chakra-ui/react";
 import { Tooltip } from "@/components/ui/tooltip";
 import React, { useState } from "react";
 import { NodeViewWrapper, NodeViewProps, NodeViewContent } from "@tiptap/react";
@@ -65,8 +72,7 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
                 />
               )}
               {node.attrs.type === "video" && (
-                <Box
-                  as="video"
+                <chakra.video
                   src={node.attrs.url}
                   preload="metadata"
                   title={node.attrs.caption || ""}
@@ -83,7 +89,7 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
           {selected && (
             <ButtonGroup
               size="sm"
-              isAttached
+              attached
               position="absolute"
               top="-40px"
               left="50%"
@@ -99,7 +105,7 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
                     aria-label={`Align ${value}`}
                     onClick={() => updateAttributes({ align: value })}
                     _active={{ bg: "brand.500", color: "white" }}
-                    isActive={node.attrs.align === value}
+                    active={node.attrs.align === value}
                   >
                     <Icon />
                   </IconButton>
@@ -124,8 +130,7 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
             />
           )}
           {node.attrs.type === "video" && (
-            <Box
-              as="video"
+            <chakra.video
               src={node.attrs.url}
               preload="metadata"
               title={node.attrs.caption || ""}

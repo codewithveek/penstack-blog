@@ -1,6 +1,16 @@
 "use client";
 
-import { Box, Container, Text, Heading, VStack, Flex, Card, Stack, Avatar } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Text,
+  Heading,
+  VStack,
+  Flex,
+  Card,
+  Stack,
+} from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 
 import React, { Suspense } from "react";
 import { Newsletter } from "../../NewsLetter";
@@ -34,7 +44,7 @@ const AuthorPage = ({
                 align={{ base: "center", md: "start" }}
                 gap={8}
               >
-                <Avatar.Root
+                <Avatar
                   src={author?.avatar as string}
                   name={author?.name}
                   w="128px"

@@ -14,6 +14,7 @@ export const SidebarNavItem = ({
   label,
   isMinimized,
   onClose,
+  onOpenChange,
   navBtnBg,
   navBtnBgHover,
   textColor,
@@ -28,6 +29,7 @@ export const SidebarNavItem = ({
   label?: string;
   isMinimized?: boolean;
   onClose?: () => void;
+  onOpenChange?: () => void;
   navBtnBg: string;
   navBtnBgHover: string;
   textColor: string;
@@ -43,14 +45,14 @@ export const SidebarNavItem = ({
   const content = (
     <Link
       display={"flex"}
-      variant="unstyled"
+      variant="plain"
       fontWeight={isActive ? "500" : "400"}
       pos={"relative"}
       gap={4}
       // pl={isMinimized ? 2 : 0}
       href={href}
       style={{ textDecoration: "none" }}
-      onClick={onClose}
+      onClick={onOpenChange || onClose}
     >
       <Flex
         rounded={"md"}

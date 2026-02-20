@@ -58,7 +58,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
     const {
       data: media,
       refetch,
-      loading,
+      isLoading,
     } = useQuery({
       queryKey: ["media", filters],
       queryFn: fetchMedia,
@@ -107,13 +107,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
           refetchMedia={refetch}
         />
 
-        {loading && (
+        {isLoading && (
           <VStack justify="center" py={12}>
             <Loader />
           </VStack>
         )}
 
-        {!loading && media && media?.data?.length === 0 && (
+        {!isLoading && media && media?.data?.length === 0 && (
           <VStack justify="center" py={12}>
             <Text color="gray.400" fontWeight={500}>
               No media found
@@ -121,7 +121,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
           </VStack>
         )}
 
-        {!loading && media && media?.data?.length > 0 && (
+        {!isLoading && media && media?.data?.length > 0 && (
           <>
             <Grid
               rounded="lg"
@@ -151,7 +151,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
                   page,
                 }));
               }}
-              loading={loading}
+              loading={isLoading}
             />
           </>
         )}

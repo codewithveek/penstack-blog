@@ -1,4 +1,12 @@
-import { Input, NativeSelect, NumberInput, NumberInputField, VStack, HStack, Text, Stack } from "@chakra-ui/react";
+import {
+  Input,
+  NativeSelect,
+  NumberInput,
+  VStack,
+  HStack,
+  Text,
+  Stack,
+} from "@chakra-ui/react";
 
 import { useCallback } from "react";
 import { useMediaAttrs, useMediaActions } from "../../../stores/mediaStore";
@@ -137,30 +145,30 @@ export const MediaFields = () => {
             <Text fontSize="xs" fontWeight="medium" color="gray.600">
               Width (px)
             </Text>
-            <NumberInput
+            <NumberInput.Root
               size="sm"
-              value={width}
-              mopen={50}
+              value={width?.toString()}
+              min={50}
               max={2000}
-              onChange={handleWidthChange}
+              onValueChange={(details) => handleWidthChange(details.value)}
             >
-              <NumberInputField />
-            </NumberInput>
+              <NumberInput.Field />
+            </NumberInput.Root>
           </VStack>
 
           <VStack align="stretch" gap={1} flex={1}>
             <Text fontSize="xs" fontWeight="medium" color="gray.600">
               Height (px)
             </Text>
-            <NumberInput
+            <NumberInput.Root
               size="sm"
-              value={height}
-              mopen={50}
+              value={height?.toString()}
+              min={50}
               max={2000}
-              onChange={handleHeightChange}
+              onValueChange={(details) => handleHeightChange(details.value)}
             >
-              <NumberInputField />
-            </NumberInput>
+              <NumberInput.Field />
+            </NumberInput.Root>
           </VStack>
         </HStack>
 
@@ -169,16 +177,17 @@ export const MediaFields = () => {
           <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Aspect Ratio
           </Text>
-          <NativeSelect.Root
-            size="sm"
-            value={aspectRatio}
-            onChange={handleAspectRatioChange}
-          >
-            {ASPECT_RATIO_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
+          <NativeSelect.Root size="sm">
+            <NativeSelect.Field
+              value={aspectRatio}
+              onChange={handleAspectRatioChange}
+            >
+              {ASPECT_RATIO_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </NativeSelect.Field>
           </NativeSelect.Root>
         </VStack>
 
@@ -187,12 +196,17 @@ export const MediaFields = () => {
           <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Object Fit
           </Text>
-          <NativeSelect.Root size="sm" value={objectFit} onChange={handleObjectFitChange}>
-            {OBJECT_FIT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
+          <NativeSelect.Root size="sm">
+            <NativeSelect.Field
+              value={objectFit}
+              onChange={handleObjectFitChange}
+            >
+              {OBJECT_FIT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </NativeSelect.Field>
           </NativeSelect.Root>
         </VStack>
       </Stack>

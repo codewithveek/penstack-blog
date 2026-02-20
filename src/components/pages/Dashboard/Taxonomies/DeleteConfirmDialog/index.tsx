@@ -3,14 +3,14 @@ import { Dialog, Button } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 export const DeleteConfirmDialog = ({
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
   onConfirm,
   isDeleting,
   title = "Delete",
 }: {
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: () => void;
   title?: string;
   onConfirm: () => void;
   isDeleting: boolean;
@@ -21,13 +21,13 @@ export const DeleteConfirmDialog = ({
     onConfirm?.();
   }
   function handleModalClose() {
-    onClose();
+    onOpenChange();
   }
   return (
     <>
       <Dialog.Root
         role="alertdialog"
-        open={isOpen}
+        open={open}
         onOpenChange={handleModalClose}
       >
         <Dialog.Backdrop />
@@ -42,7 +42,11 @@ export const DeleteConfirmDialog = ({
             </Dialog.Body>
 
             <Dialog.Footer>
-              <Button ref={cancelRef} onClick={onClose} colorPalette="gray">
+              <Button
+                ref={cancelRef}
+                onClick={onOpenChange}
+                colorPalette="gray"
+              >
                 Cancel
               </Button>
               <Button

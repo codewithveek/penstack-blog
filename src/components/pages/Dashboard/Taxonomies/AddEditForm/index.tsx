@@ -17,7 +17,7 @@ export const AddEditForm: React.FC = () => {
   const setIsItemModalOpen = useTaxonomiesStore(
     (state) => state.setIsItemModalOpen
   );
-  
+
   function dismissModal() {
     setIsItemModalOpen(false);
     setEditItem(null);
@@ -59,44 +59,46 @@ export const AddEditForm: React.FC = () => {
     <Dialog.Root
       open={isItemModalOpen}
       onOpenChange={dismissModal}
-      initialFocusRef={inputRef}
+      initialFocusEl={() => inputRef.current}
     >
       <Dialog.Backdrop />
-      <Dialog.Positioner><Dialog.Content>
-        <Dialog.Header>
-          {editItem ? "Edit" : "Add New"}{" "}
-          {activeTab === "categories" ? "Category" : "Tag"}
-        </Dialog.Header>
-        <Dialog.CloseTrigger />
-        <Dialog.Body>
-          <Stack
-            as="form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSave();
-            }}
-          >
-            <Text mb={4}>
-              Enter the details below. The slug will be auto-generated.
-            </Text>
-            <Input
-              ref={inputRef}
-              placeholder="Name"
-              defaultValue={editItem?.name || ""}
-            />
-          </Stack>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Button
-            loadingText="Saving..."
-            loading={isPending}
-            disabled={inputRef?.current?.value?.trim() === "" || isPending}
-            onClick={() => handleSave()}
-          >
-            Save
-          </Button>
-        </Dialog.Footer>
-      </Dialog.Content></Dialog.Positioner>
+      <Dialog.Positioner>
+        <Dialog.Content>
+          <Dialog.Header>
+            {editItem ? "Edit" : "Add New"}{" "}
+            {activeTab === "categories" ? "Category" : "Tag"}
+          </Dialog.Header>
+          <Dialog.CloseTrigger />
+          <Dialog.Body>
+            <Stack
+              as="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSave();
+              }}
+            >
+              <Text mb={4}>
+                Enter the details below. The slug will be auto-generated.
+              </Text>
+              <Input
+                ref={inputRef}
+                placeholder="Name"
+                defaultValue={editItem?.name || ""}
+              />
+            </Stack>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button
+              loadingText="Saving..."
+              loading={isPending}
+              disabled={inputRef?.current?.value?.trim() === "" || isPending}
+              onClick={() => handleSave()}
+            >
+              Save
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Positioner>
     </Dialog.Root>
   );
 };

@@ -1,8 +1,17 @@
 "use client";
 
-import { Box, Button, Container, Heading, VStack, HStack, Text, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Heading,
+  VStack,
+  HStack,
+  Text,
+  SimpleGrid,
+} from "@chakra-ui/react";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { LuPlus } from "react-icons/lu";
 import { OAuthProviderCard } from "@/components/Dashboard/Oauth/OAuthProviderCard";
@@ -30,7 +39,6 @@ export default function OAuthProvidersPage() {
   const [isOpen, setIsOpen] = React.useState(false);
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
-  
 
   const fetchProviders = async () => {
     try {
@@ -133,7 +141,9 @@ export default function OAuthProvidersPage() {
               Manage OAuth authentication providers for your blog
             </Text>
           </Box>
-          <Button size={"sm"} onClick={handleAdd}><LuPlus /> Add Provider</Button>
+          <Button size={"sm"} onClick={handleAdd}>
+            <LuPlus /> Add Provider
+          </Button>
         </HStack>
 
         {loading ? (

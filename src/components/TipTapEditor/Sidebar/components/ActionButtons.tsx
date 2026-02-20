@@ -61,7 +61,7 @@ export const ActionButtons = memo(() => {
 
   return (
     <HStack gap={5}>
-      <ButtonGroup size="sm" isAttached variant="outline" colorPalette="brand">
+      <ButtonGroup size="sm" attached variant="outline" colorPalette="brand">
         {/* Main Publish Button */}
         <PermissionGuard requiredPermission="posts:publish">
           <Button

@@ -11,5 +11,5 @@ export const usePermissionsStore = create<PermissionsState>((set) => ({
   permissions: [],
   setPermissions: (permissions) => set({ permissions }),
   isLoading: true,
-  setIsLoading: (loading) => set({ loading }),
+  setIsLoading: (loading) => set({ isLoading: loading }),
 }));

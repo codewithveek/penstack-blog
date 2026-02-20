@@ -227,13 +227,10 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               aspectRatio={16 / 9}
               overflow="hidden"
             >
-              <Box
-                as="video"
+              <video
                 src={media.url}
                 poster={media.thumbnail ?? ""}
-                w="full"
-                h="full"
-                objectFit="cover"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
               <Box
                 pos="absolute"
@@ -265,11 +262,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
                 onTimeUpdate={handleAudioTimeUpdate}
                 onEnded={handleAudioEnded}
               />
-              <Box
-                as={LuMusic}
-                size={48}
-                color={useColorModeValue("brand.500", "brand.300")}
-              />
+              <Box color={useColorModeValue("brand.500", "brand.300")}>
+                <LuMusic size={48} />
+              </Box>
               <IconButton
                 aria-label={isPlaying ? "Pause" : "Play"}
                 colorPalette="brand"

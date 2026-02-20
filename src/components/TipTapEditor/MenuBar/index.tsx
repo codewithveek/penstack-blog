@@ -27,13 +27,13 @@ import { useColorModeValue } from "@/components/ui/color-mode";
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
   const {
-    isOpen: isMediaModalOpen,
+    open: isMediaModalOpen,
     onClose: onMediaModalClose,
     onOpen: onMediaModalOpen,
   } = useDisclosure();
 
   const btnStyles = {
-    size: "sm",
+    size: "sm" as const,
     fontSize: "medium",
   };
   const borderColorValue = useColorModeValue("gray.200", "gray.700");
@@ -99,7 +99,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         ) : (
           <Tooltip
             key={index}
-            label={item.label}
+            content={item.label}
             hasArrow
             placement="top"
             rounded={"lg"}
@@ -118,12 +118,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         )
       )}
 
-      <Tooltip
-        content="Insert Link"
-        hasArrow
-        placement="top"
-        rounded={"lg"}
-      >
+      <Tooltip content="Insert Link" hasArrow placement="top" rounded={"lg"}>
         <Box pos={"relative"}>
           <IconButton
             aria-label=""

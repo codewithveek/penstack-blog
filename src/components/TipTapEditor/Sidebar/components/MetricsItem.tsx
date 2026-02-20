@@ -5,10 +5,10 @@ import { usePenstackEditorStore } from "@/state/penstack-editor";
 
 export const MetricsItem = () => {
   const wordCount = usePenstackEditorStore((state) =>
-    state.editor?.storage?.characterCount?.words()
+    (state.editor?.storage as any)?.characterCount?.words()
   );
   const characterCount = usePenstackEditorStore((state) =>
-    state.editor?.storage?.characterCount?.characters()
+    (state.editor?.storage as any)?.characterCount?.characters()
   );
   return (
     <>

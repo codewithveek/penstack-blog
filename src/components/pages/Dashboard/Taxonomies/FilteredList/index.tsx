@@ -240,7 +240,7 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
                 <Badge>{item.postCount}</Badge>
               </GridItem>
               <GridItem colSpan={2}>
-                <Menu.Root arrowPadding={10}>
+                <Menu.Root>
                   <Menu.Trigger asChild>
                     <Button variant="ghost" size="sm">
                       <LuMoreVertical />

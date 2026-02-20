@@ -1,4 +1,16 @@
-import { HStack, Tag, Box, Input, Button, List, Spinner, Text, InputAddon, Group, Skeleton } from "@chakra-ui/react";
+import {
+  HStack,
+  Tag,
+  Box,
+  Input,
+  Button,
+  List,
+  Spinner,
+  Text,
+  InputAddon,
+  Group,
+  Skeleton,
+} from "@chakra-ui/react";
 
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import { memo, useCallback, useEffect, useState } from "react";
@@ -140,7 +152,7 @@ export const TagsSection = memo(() => {
       </HStack>
 
       <Box p={4} position="relative">
-        <Group size={"sm"}>
+        <Group>
           <Input
             placeholder="Search or create tag"
             size={"sm"}
@@ -152,7 +164,7 @@ export const TagsSection = memo(() => {
             }}
           />
           {searchQuery && (
-            <InputAddon placement="end" roundedRight={"full"}>
+            <InputAddon roundedRight={"full"}>
               {isSearching && <Spinner size="sm" />}
               {!isSearching && !searchResults?.length && (
                 <Button

@@ -29,14 +29,14 @@ interface OAuthProvider {
 }
 
 interface OAuthProviderFormProps {
-  isOpen: boolean;
-  onClose: (success?: boolean) => void;
+  open: boolean;
+  onOpenChange: (success?: boolean) => void;
   provider?: OAuthProvider | null;
 }
 
 export function OAuthProviderForm({
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
   provider,
 }: OAuthProviderFormProps) {
   const [formData, setFormData] = useState({
@@ -72,7 +72,7 @@ export function OAuthProviderForm({
       });
     }
     setErrors({});
-  }, [provider, isOpen]);
+  }, [provider, open]);
 
   const validateForm = () => {
     const newErrors: any = {};
@@ -146,7 +146,7 @@ export function OAuthProviderForm({
           type: "success",
           duration: 3000,
         });
-        onClose(true);
+        onOpenChange(true);
       } else {
         const error = await response.json();
         toaster.create({
@@ -169,7 +169,7 @@ export function OAuthProviderForm({
   };
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={() => onClose()} size="lg">
+    <Dialog.Root open={open} onOpenChange={() => onOpenChange()} size="lg">
       <Dialog.Backdrop />
       <Dialog.Positioner>
         <Dialog.Content>
@@ -182,19 +182,23 @@ export function OAuthProviderForm({
             <VStack gap={4}>
               <Field.Root invalid={!!errors.provider_name} required>
                 <Field.Label>Provider</Field.Label>
-                <NativeSelect.Root
-                  value={formData.provider_name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, provider_name: e.target.value })
-                  }
-                  disabled={!!provider}
-                >
-                  <option value="">Select provider</option>
-                  <option value="google">Google</option>
-                  <option value="github">GitHub</option>
-                  <option value="facebook">Facebook</option>
-                  <option value="twitter">Twitter</option>
-                  <option value="linkedin">LinkedIn</option>
+                <NativeSelect.Root disabled={!!provider}>
+                  <NativeSelect.Field
+                    value={formData.provider_name}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        provider_name: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select provider</option>
+                    <option value="google">Google</option>
+                    <option value="github">GitHub</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="twitter">Twitter</option>
+                    <option value="linkedin">LinkedIn</option>
+                  </NativeSelect.Field>
                 </NativeSelect.Root>
                 <Field.ErrorText>{errors.provider_name}</Field.ErrorText>
               </Field.Root>
@@ -288,7 +292,7 @@ export function OAuthProviderForm({
           </Dialog.Body>
 
           <Dialog.Footer>
-            <Button variant="ghost" mr={3} onClick={() => onClose()}>
+            <Button variant="ghost" mr={3} onClick={() => onOpenChange()}>
               Cancel
             </Button>
             <Button

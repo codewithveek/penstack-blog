@@ -31,7 +31,7 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { user } = useAuth();
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { open, onClose, onOpen } = useDisclosure();
   const highlightColor = useColorModeValue("brand.50", "brand.900");
 
   // const bgColor = useColorModeValue("gray.50", "gray.800");
@@ -162,7 +162,7 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
         )
       )}
 
-      <Dialog.Root open={isOpen} onOpenChange={onClose}>
+      <Dialog.Root open={open} onOpenChange={onClose}>
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Body>

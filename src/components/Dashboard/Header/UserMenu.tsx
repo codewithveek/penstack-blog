@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
-import { HStack, Menu, Avatar, Button } from "@chakra-ui/react";
+import { HStack, Menu, Button } from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 
 import { signOut } from "@/lib/auth/auth-client";
 import { LuChevronDown, LuLogOut } from "react-icons/lu";
@@ -12,7 +13,7 @@ export const UserMenu = () => {
       <Menu.Root>
         <Menu.Trigger asChild>
           <Button pl={1} variant={"outline"} rounded={"full"} size={"sm"}>
-            <Avatar.Root
+            <Avatar
               size={"xs"}
               name={user?.name}
               src={(user as any)?.avatar || user?.image}

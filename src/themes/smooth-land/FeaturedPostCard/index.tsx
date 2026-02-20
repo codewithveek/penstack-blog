@@ -1,4 +1,19 @@
-import { Avatar, Box, Grid, Heading, HStack, Image, LinkBox, LinkOverlay, Stack, Tag, Text, VStack, Skeleton, SkeletonText } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Grid,
+  Heading,
+  HStack,
+  Image,
+  LinkBox,
+  LinkOverlay,
+  Stack,
+  Tag,
+  Text,
+  VStack,
+  Skeleton,
+  SkeletonText,
+} from "@chakra-ui/react";
 import { useFeaturedPost } from "@/hooks/useFeaturedPost";
 import {
   decodeAndSanitizeHtml,
@@ -92,7 +107,7 @@ export default function FeaturedPostCard() {
                       {featuredPost.title}
                     </Heading>
                   </LinkOverlay>
-                  <Text color={textColor} fontSize="lg" noOfLines={3}>
+                  <Text color={textColor} fontSize="lg" lineClamp={3}>
                     {featuredPost.summary ||
                       stripHtml(
                         decodeAndSanitizeHtml(featuredPost.content || "")

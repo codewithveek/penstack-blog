@@ -1,16 +1,31 @@
 "use client";
 
-import { Box, Container, Heading, Text, VStack, HStack, Input, Group, InputElement, IconButton, SimpleGrid, NativeSelect, Skeleton, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Input,
+  Group,
+  InputElement,
+  IconButton,
+  SimpleGrid,
+  NativeSelect,
+  Skeleton,
+  Spinner,
+} from "@chakra-ui/react";
 
 import React, { useEffect, useRef, useState } from "react";
 
 import { LuSearch } from "react-icons/lu";
 import { useSearchResults } from "@/hooks/usePostsSearch";
-import PostCard from "../../../../themes/smooth-land/PostCard";
+import PostCard from "@/themes/smooth-land/PostCard";
 import { useCallback } from "react";
 import debounce from "lodash/debounce";
 import { useCategories } from "@/hooks/useCategories";
-import NewPostCard from "../../../../themes/raised-land/NewPostCard";
+import NewPostCard from "@/themes/raised-land/NewPostCard";
 import { PostCardLoader } from "@/themes/smooth-land/PostCardLoader";
 import {
   parseAsInteger,
@@ -40,7 +55,7 @@ const SearchResults = () => {
   );
   const [searchInputValue, setSearchInputValue] = useState(queryParams.q || "");
 
-  const { data, loading } = useSearchResults({
+  const { data, isLoading } = useSearchResults({
     queryParams,
   });
   const searchResults = data?.results || [];
@@ -73,7 +88,7 @@ const SearchResults = () => {
           <Heading size="lg" color={textColor}>
             Search Our Blog Collection
           </Heading>
-          <Group size="lg" maxW="600px">
+          <Group maxW="600px">
             <Input
               placeholder="Search articles..."
               rounded={"xl"}
@@ -90,10 +105,9 @@ const SearchResults = () => {
               }}
             />
             <InputElement placement="end">
-              <IconButton
-                aria-label="Search"
-                variant="ghost"
-              >loading ? <Spinner size="sm" /> : <LuSearch /></IconButton>
+              <IconButton aria-label="Search" variant="ghost">
+                isLoading ? <Spinner size="sm" /> : <LuSearch />
+              </IconButton>
             </InputElement>
           </Group>
         </VStack>
@@ -103,24 +117,24 @@ const SearchResults = () => {
           <HStack>
             <Text as={"span"}>Category:</Text>
             <NativeSelect.Root
-              // placeholder="Category"
               rounded={"md"}
               maxW="200px"
               bg={bgColor}
               borderColor={borderColor}
-              onChange={handleCategorySelect}
             >
-              <option value="">-</option>
-              {categoriesResults?.length > 0 &&
-                categoriesResults?.map((category) => (
-                  <option
-                    key={category?.id}
-                    value={category?.name}
-                    data-slug={category?.slug}
-                  >
-                    {category?.name}
-                  </option>
-                ))}
+              <NativeSelect.Field onChange={handleCategorySelect}>
+                <option value="">-</option>
+                {categoriesResults?.length > 0 &&
+                  categoriesResults?.map((category) => (
+                    <option
+                      key={category?.id}
+                      value={category?.name}
+                      data-slug={category?.slug}
+                    >
+                      {category?.name}
+                    </option>
+                  ))}
+              </NativeSelect.Field>
             </NativeSelect.Root>
           </HStack>
           <HStack>
@@ -128,17 +142,17 @@ const SearchResults = () => {
               Sort by:
             </Text>
             <NativeSelect.Root
-              onChange={handleSortSelect}
-              // placeholder="Sort by"
               rounded={"md"}
               maxW="200px"
               bg={bgColor}
               borderColor={borderColor}
             >
-              <option value="">-</option>
-              <option value="relevant">Most Relevant</option>
-              <option value="recent">Most Recent</option>
-              <option value="popular">Most Popular</option>
+              <NativeSelect.Field onChange={handleSortSelect}>
+                <option value="">-</option>
+                <option value="relevant">Most Relevant</option>
+                <option value="recent">Most Recent</option>
+                <option value="popular">Most Popular</option>
+              </NativeSelect.Field>
             </NativeSelect.Root>
           </HStack>
         </HStack>
@@ -156,9 +170,9 @@ const SearchResults = () => {
           )}
         </Box>
 
-        <PostsCards posts={searchResults} loading={loading} />
+        <PostsCards posts={searchResults} loading={isLoading} />
 
-        {!loading && !searchResults?.length && searchInputValue && (
+        {!isLoading && !searchResults?.length && searchInputValue && (
           <VStack>
             <Text color={mutedColor} my={6}>
               No results found for{" "}

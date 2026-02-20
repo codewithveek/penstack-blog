@@ -1,7 +1,9 @@
-import { Box, VStack, HStack, Heading, Text, Avatar, Button } from "@chakra-ui/react";
+import { Box, VStack, HStack, Heading, Text, Button } from "@chakra-ui/react";
+import { Avatar } from "@/components/ui/avatar";
 import React from "react";
 
-import Link from "next/link";
+import NextLink from "next/link";
+import { Link as ChakraLink } from "@chakra-ui/react";
 import { PostSelect } from "@/types";
 import { LuTwitter, LuGithub } from "react-icons/lu";
 import { useColorModeValue } from "@/components/ui/color-mode";
@@ -26,34 +28,36 @@ export const AuthorSection: React.FC<AuthorSectionProps> = ({ post }) => {
       <VStack align="start" gap={4}>
         <Heading size="md">Written By</Heading>
         <HStack gap={4} w="full" wrap={"wrap"}>
-          <Link href={`/author/${post?.author.username}`} alignSelf={"start"}>
-            <Avatar.Root
-              size={{ base: "md", md: "lg" }}
-              width={"40px"}
-              height={"40px"}
-              src={post?.author.avatar || ""}
-              name={post?.author.name}
-            />
-          </Link>
+          <ChakraLink asChild alignSelf={"start"}>
+            <NextLink href={`/author/${post?.author.username}`}>
+              <Avatar
+                size={{ base: "md", md: "lg" }}
+                width={"40px"}
+                height={"40px"}
+                src={post?.author.avatar || ""}
+                name={post?.author.name}
+              />
+            </NextLink>
+          </ChakraLink>
           <Box flex={1} minW={300}>
-            <Link href={`/author/${post?.author.username}`}>
+            <NextLink href={`/author/${post?.author.username}`}>
               <Text fontWeight="bold" fontSize="xl">
                 {post?.author.name}
               </Text>
               <Text color="gray.500">@{post?.author.username}</Text>
-            </Link>
+            </NextLink>
             {post?.author?.bio && (
               <Text mt={2} fontSize="small">
                 {post?.author.bio}
               </Text>
             )}
             <HStack mt={4} gap={4}>
-              <Button
-                size="sm"
-                variant="ghost"
-                colorPalette="twitter"
-              ><LuTwitter /> Follow</Button>
-              <Button size="sm" variant="ghost"><LuGithub /> GitHub</Button>
+              <Button size="sm" variant="ghost" colorPalette="twitter">
+                <LuTwitter /> Follow
+              </Button>
+              <Button size="sm" variant="ghost">
+                <LuGithub /> GitHub
+              </Button>
             </HStack>
           </Box>
         </HStack>

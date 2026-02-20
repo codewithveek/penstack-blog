@@ -9,6 +9,7 @@ import {
   Flex,
   Group,
   InputElement,
+  InputGroup,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 

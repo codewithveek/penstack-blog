@@ -1,6 +1,17 @@
 "use client";
 
-import { VStack, Field, Input, Button, Group, InputElement, IconButton, Text, Box, HStack } from "@chakra-ui/react";
+import {
+  VStack,
+  Field,
+  Input,
+  Button,
+  Group,
+  InputElement,
+  IconButton,
+  Text,
+  Box,
+  HStack,
+} from "@chakra-ui/react";
 
 import { useState } from "react";
 
@@ -130,11 +141,12 @@ export function AdminAccountStep({
           <InputElement placement="end">
             <IconButton
               aria-label="Toggle password visibility"
-              icon={showPassword ? <LuEyeOff /> : <LuEye />}
               onClick={() => setShowPassword(!showPassword)}
               variant="ghost"
               size="sm"
-            />
+            >
+              {showPassword ? <LuEyeOff /> : <LuEye />}
+            </IconButton>
           </InputElement>
         </Group>
         {formData.password && (
@@ -172,11 +184,12 @@ export function AdminAccountStep({
           <InputElement placement="end">
             <IconButton
               aria-label="Toggle confirm password visibility"
-              icon={showConfirmPassword ? <LuEyeOff /> : <LuEye />}
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               variant="ghost"
               size="sm"
-            />
+            >
+              {showConfirmPassword ? <LuEyeOff /> : <LuEye />}
+            </IconButton>
           </InputElement>
         </Group>
         <Field.ErrorText>{errors.confirmPassword}</Field.ErrorText>

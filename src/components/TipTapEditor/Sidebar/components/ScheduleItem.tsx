@@ -8,8 +8,8 @@ import { ScheduleItemProps } from "../types";
 
 export const ScheduleItem = ({
   scheduledAt,
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
   onToggle,
 }: ScheduleItemProps) => {
   return (
@@ -35,8 +35,8 @@ export const ScheduleItem = ({
           </HStack>
           <CalendarPicker
             defaultValue={scheduledAt ? new Date(scheduledAt) : undefined}
-            open={isOpen}
-            onOpenChange={onClose}
+            open={open}
+            onOpenChange={onOpenChange}
             trigger={
               <Button variant="ghost" size="xs" onClick={onToggle}>
                 Edit

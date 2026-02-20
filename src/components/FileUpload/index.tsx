@@ -404,27 +404,30 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 borderColor={borderColor}
               >
                 <HStack w="full" gap={3}>
-                  <Image
-                    src={fileItem.previewUrl}
-                    alt={`Preview ${index + 1}`}
-                    objectFit="cover"
+                  <Box
                     boxSize="60px"
                     borderRadius="md"
-                    fallback={
-                      <Box
+                    overflow="hidden"
+                    bg="gray.200"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexShrink={0}
+                  >
+                    {fileItem.previewUrl ? (
+                      <Image
+                        src={fileItem.previewUrl}
+                        alt={`Preview ${index + 1}`}
+                        objectFit="cover"
                         boxSize="60px"
-                        bg="gray.200"
                         borderRadius="md"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Text fontSize="xs" color="gray.500">
-                          No preview
-                        </Text>
-                      </Box>
-                    }
-                  />
+                      />
+                    ) : (
+                      <Text fontSize="xs" color="gray.500">
+                        No preview
+                      </Text>
+                    )}
+                  </Box>
                   <VStack flex={1} align="start" gap={1}>
                     <HStack w="full">
                       <Text
