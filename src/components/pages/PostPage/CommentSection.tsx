@@ -1,22 +1,5 @@
-import {
-  useToast,
-  useColorModeValue,
-  useBreakpointValue,
-  Button,
-  Heading,
-  Box,
-  Card,
-  CardBody,
-  Textarea,
-  VStack,
-  Divider,
-  Text,
-  useDisclosure,
-  Modal,
-  ModalBody,
-  ModalContent,
-  HStack,
-} from "@chakra-ui/react";
+import { useBreakpointValue, Button, Heading, Box, Card, Textarea, VStack, Separator, Text, Dialog, HStack } from "@chakra-ui/react";
+
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -27,11 +10,13 @@ import { sanitizeAndEncodeHtml } from "@/utils";
 import { useAuth } from "@/hooks/useAuth";
 import isEmpty from "just-is-empty";
 import { SignInComponent } from "../../Auth/SignIn";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { toaster } from "@/components/ui/toaster";
 
 export const CommentsSection = ({ post }: { post: PostSelect }) => {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const toast = useToast();
+  
   const { user } = useAuth();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const highlightColor = useColorModeValue("brand.50", "brand.900");
@@ -77,17 +62,17 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       );
 
       if (response.status === 201) {
-        toast({
+        toaster.create({
           title: "Comment posted successfully",
-          status: "success",
+          type: "success",
         });
         setNewComment("");
         refetch();
       }
     } catch (error) {
-      toast({
+      toaster.create({
         title: "Failed to post comment",
-        status: "error",
+        type: "error",
       });
     } finally {
       setIsSubmitting(false);
@@ -114,8 +99,8 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       </Heading>
 
       {/* New Comment Form */}
-      <Card mb={4} rounded="lg">
-        <CardBody bg={bgColor}>
+      <Card.Root mb={4} rounded="lg">
+        <Card.Body bg={bgColor}>
           <Textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -126,17 +111,17 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
           />
           <Button
             size={"sm"}
-            isLoading={isSubmitting}
+            loading={isSubmitting}
             onClick={handleCommentSubmit}
           >
             Post Comment
           </Button>
-        </CardBody>
-      </Card>
+        </Card.Body>
+      </Card.Root>
 
       {/* Comments List */}
       {!isFetching && comments?.length > 0 ? (
-        <VStack align="stretch" divider={<Divider />}>
+        <VStack align="stretch" separator={<Separator />}>
           {comments.map((comment: any) => (
             <CommentCard key={comment.id} comment={comment} />
           ))}
@@ -144,8 +129,8 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       ) : (
         !isFetching &&
         comments?.length === 0 && (
-          <Card bg={highlightColor}>
-            <CardBody p={3} pt={1} textAlign="center">
+          <Card.Root bg={highlightColor}>
+            <Card.Body p={3} pt={1} textAlign="center">
               <HStack
                 mx={"auto"}
                 maxW={"500px"}
@@ -159,18 +144,18 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
                   Be the first to share your thoughts!
                 </Text>
               </HStack>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
         )
       )}
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          <ModalBody>
+      <Dialog.Root open={isOpen} onOpenChange={onClose}>
+        <Dialog.Positioner><Dialog.Content>
+          <Dialog.Body>
             <SignInComponent cbUrl={currentUrl} />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+          </Dialog.Body>
+        </Dialog.Content></Dialog.Positioner>
+      </Dialog.Root>
     </Box>
   );
 };

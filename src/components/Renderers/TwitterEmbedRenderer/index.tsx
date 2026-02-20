@@ -1,21 +1,11 @@
+import { Box, Card, Textarea, Stack, Skeleton, SkeletonText, HStack, SkeletonCircle, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import {
-  Box,
-  useColorMode,
-  Card,
-  CardBody,
-  Textarea,
-  Stack,
-  Skeleton,
-  SkeletonText,
-  HStack,
-  SkeletonCircle,
-  Text,
-} from "@chakra-ui/react";
+
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import Script from "next/script";
 import { ChangeEvent, memo, useEffect, useState } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
+import { useColorMode } from "@/components/ui/color-mode";
 
 interface PenstackTwitterEmbedProps {
   isEditing?: boolean;
@@ -36,9 +26,9 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
 
   if (!node?.attrs?.tweetId) return null;
   const content = (
-    <Card maxW="full">
-      <CardBody>
-        <Stack spacing={2}>
+    <Card.Root maxW="full">
+      <Card.Body>
+        <Stack gap={2}>
           <Box>
             <TwitterTweetEmbed
               tweetId={node.attrs.tweetId}
@@ -51,7 +41,7 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
                     <SkeletonCircle size="10" />
                     <SkeletonText noOfLines={1} width="60%" rounded={"xl"} />
                   </HStack>
-                  <SkeletonText noOfLines={4} spacing="4" rounded={"xl"} />
+                  <SkeletonText noOfLines={4} gap="4" rounded={"xl"} />
                   <Skeleton height="150px" mt={4} rounded={"xl"} />
                 </Stack>
               }
@@ -93,8 +83,8 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
             </Box>
           )}
         </Stack>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
   return (
     <>

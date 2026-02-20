@@ -1,15 +1,8 @@
+import { Box, Button, Grid, HStack, Text, VStack } from "@chakra-ui/react";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { MediaCard } from "./MediaCard";
 import { MediaFilter } from "./MediaFilter";
-import {
-  Box,
-  Button,
-  Grid,
-  HStack,
-  Text,
-  useColorModeValue,
-  VStack,
-} from "@chakra-ui/react";
+
 import { LuTrash2 } from "react-icons/lu";
 import { FilterParams, MediaResponse, PaginatedResponse } from "@/types";
 import axios from "axios";
@@ -17,6 +10,7 @@ import Loader from "../../Loader";
 import { objectToQueryParams } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "../../Pagination";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface MediaLibraryProps {
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
@@ -64,7 +58,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
     const {
       data: media,
       refetch,
-      isLoading,
+      loading,
     } = useQuery({
       queryKey: ["media", filters],
       queryFn: fetchMedia,
@@ -113,13 +107,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
           refetchMedia={refetch}
         />
 
-        {isLoading && (
+        {loading && (
           <VStack justify="center" py={12}>
             <Loader />
           </VStack>
         )}
 
-        {!isLoading && media && media?.data?.length === 0 && (
+        {!loading && media && media?.data?.length === 0 && (
           <VStack justify="center" py={12}>
             <Text color="gray.400" fontWeight={500}>
               No media found
@@ -127,7 +121,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
           </VStack>
         )}
 
-        {!isLoading && media && media?.data?.length > 0 && (
+        {!loading && media && media?.data?.length > 0 && (
           <>
             <Grid
               rounded="lg"
@@ -157,7 +151,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
                   page,
                 }));
               }}
-              isLoading={isLoading}
+              loading={loading}
             />
           </>
         )}
@@ -193,11 +187,10 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = memo(
                 <Button
                   rounded="md"
                   onClick={() => setSelectedMedia([])}
-                  colorScheme="red"
-                  leftIcon={<LuTrash2 />}
+                  colorPalette="red"
                   variant="outline"
                 >
-                  Clear
+                  <LuTrash2 /> Clear
                 </Button>
                 <Button rounded="md" onClick={handleConfirmSelection}>
                   Confirm Selection

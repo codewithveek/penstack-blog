@@ -1,10 +1,12 @@
-import { Skeleton, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Skeleton, Stack } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
+
 
 export const FilterListSkeleton = () => {
   const bgColor = useColorModeValue("gray.100", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   return (
-    <Stack spacing={2}>
+    <Stack gap={2}>
       <Skeleton height="45px" w={"100%"} mb={1} rounded={"lg"} />
       {Array.from({ length: 4 }).map((_, index) => {
         return (

@@ -1,14 +1,5 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, Field, HStack, Input, Dialog } from "@chakra-ui/react";
+
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
@@ -40,27 +31,27 @@ export const ShowTokenVerification = ({ isOpen }: { isOpen: boolean }) => {
     });
   }
   return (
-    <Modal size={"sm"} isOpen={isOpen} onClose={handleClose}>
-      <ModalContent>
-        <ModalBody>
-          <FormControl>
-            <FormLabel>Verify Password</FormLabel>
+    <Dialog.Root size={"sm"} open={isOpen} onOpenChange={handleClose}>
+      <Dialog.Positioner><Dialog.Content>
+        <Dialog.Body>
+          <Field.Root>
+            <Field.Label>Verify Password</Field.Label>
             <Input type="password" placeholder="Enter password" />
-          </FormControl>
+          </Field.Root>
           <HStack gap={3}>
             <Button
               onClick={handleClose}
-              colorScheme="gray"
-              isLoading={isPending}
+              colorPalette="gray"
+              loading={isPending}
               loadingText={"verifying..."}
             >
               Cancel
             </Button>
             <Button onClick={verifyPassword}>Verify</Button>
           </HStack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        </Dialog.Body>
+      </Dialog.Content></Dialog.Positioner>
+    </Dialog.Root>
   );
 };
 // TODO: Complete the implementation of the ShowTokenVerification component.

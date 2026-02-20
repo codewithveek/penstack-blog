@@ -1,6 +1,8 @@
+import { Button } from "@chakra-ui/react";
+import React from "react";
 import { MediaModal } from "@/components/Dashboard/Medias/MediaModal";
 import { MediaResponse } from "@/types";
-import { Button, useDisclosure } from "@chakra-ui/react";
+
 import { Editor } from "@tiptap/react";
 import { LuImage } from "react-icons/lu";
 
@@ -39,15 +41,12 @@ export const MediaButton = ({ editor }: { editor: Editor }) => {
     <>
       <Button
         size="sm"
-        leftIcon={<LuImage />}
         variant={editor.isActive("penstackMedia") ? "solid" : "outline"}
         onClick={onMediaModalOpen}
-      >
-        Insert Media
-      </Button>
+      ><LuImage /> Insert Media</Button>
       <MediaModal
-        isOpen={isMediaModalOpen}
-        onClose={onMediaModalClose}
+        open={isMediaModalOpen}
+        onOpenChange={onMediaModalClose}
         onSelect={(medias) => {
           handleMediasSelect(medias as MediaResponse[]);
           onMediaModalClose();

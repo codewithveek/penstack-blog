@@ -1,4 +1,6 @@
-import { VStack, Button, useDisclosure } from "@chakra-ui/react";
+import { VStack, Button } from "@chakra-ui/react";
+import React from "react";
+
 import { SiteSettings } from "@/types";
 import { SettingField } from "../components/SettingField";
 import { groupSettingsByFolder } from "../utils";
@@ -19,7 +21,7 @@ export const MonitoringPanel = ({
   const monitoringSettings = groupedSettings["monitoring"] || [];
 
   return (
-    <VStack spacing={6} align="stretch">
+    <VStack gap={6} align="stretch">
       {monitoringSettings.map((setting) => (
         <SettingField
           key={setting.key}

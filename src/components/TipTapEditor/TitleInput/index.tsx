@@ -1,7 +1,9 @@
-import { Box, useColorModeValue, Input } from "@chakra-ui/react";
+import { Box, Input } from "@chakra-ui/react";
+
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { debounce } from "lodash";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const TitleInput = () => {
   const postTitle = useEditorPostManagerStore(

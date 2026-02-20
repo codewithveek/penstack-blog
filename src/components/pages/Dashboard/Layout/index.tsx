@@ -1,17 +1,7 @@
 "use client";
-import {
-  Box,
-  Flex,
-  Text,
-  Icon,
-  useColorModeValue,
-  Drawer,
-  DrawerContent,
-  useDisclosure,
-  DrawerOverlay,
-  DrawerBody,
-  DrawerCloseButton,
-} from "@chakra-ui/react";
+
+import { Box, Flex, Text, Icon, Drawer } from "@chakra-ui/react";
+
 import { memo, Suspense } from "react";
 import { ReactNode } from "react";
 import { DashboardSidebar } from "@/components/Dashboard/Sidebar";
@@ -21,6 +11,7 @@ import { useSiteConfig } from "@/context/SiteConfig";
 import { useDashboardSidebarState } from "@/hooks/useDashboardSidebarState";
 import Loader from "@/components/Loader";
 import { NavItemWithoutPermission } from "@/types";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default memo(function DashboardLayout({
   children,
@@ -29,7 +20,9 @@ export default memo(function DashboardLayout({
   children: ReactNode;
   navLinks: NavItemWithoutPermission[];
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
   const { isMinimized, toggleMinimized } = useDashboardSidebarState();
   const siteSettings = useSiteConfig();
 
@@ -43,36 +36,36 @@ export default memo(function DashboardLayout({
         <Suspense fallback={<Loader />}>
           <DashboardSidebar
             navLinks={navLinks}
-            onClose={() => onClose}
+            onOpenChange={() => onClose}
             display={{ base: "none", md: "block" }}
             isMinimized={isMinimized}
             toggleMinimized={toggleMinimized}
           />
         </Suspense>
-        <Drawer
-          isOpen={isOpen}
+        <Drawer.Root
+          open={isOpen}
           placement="left"
-          onClose={onClose}
+          onOpenChange={onClose}
           returnFocusOnClose={false}
           onOverlayClick={onClose}
           size={"xs"}
         >
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton zIndex={2000} />
+          <Drawer.Backdrop />
+          <Drawer.Content>
+            <Drawer.CloseTrigger zIndex={2000} />
 
-            <DrawerBody px={0} p={0} mr={0}>
+            <Drawer.Body px={0} p={0} mr={0}>
               <Suspense fallback={<Loader />}>
                 <DashboardSidebar
                   navLinks={navLinks}
-                  onClose={onClose}
+                  onOpenChange={onClose}
                   isMinimized={false}
                   toggleMinimized={() => {}}
                 />
               </Suspense>
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Root>
         {/* mobilenav */}
         <Flex
           ml={{
@@ -89,7 +82,7 @@ export default memo(function DashboardLayout({
           justifyContent="flex-start"
           display={{ base: "flex", md: "none" }}
         >
-          <Icon as={LuMenu} onClick={onOpen} fontSize="20" cursor="pointer" />
+          <Icon onClick={onOpen} fontSize="20" cursor="pointer"><LuMenu /></Icon>
           <Text fontSize="lg" ml="4" fontWeight="bold" letterSpacing={1}>
             {siteSettings?.siteName?.value}
           </Text>

@@ -1,51 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  IconButton,
-  Badge,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Button,
-  useToast,
-  Flex,
-  Input,
-  Select,
-  Stack,
-  Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  InputGroup,
-  InputLeftAddon,
-  FormControl,
-  FormLabel,
-  Checkbox,
-  CheckboxGroup,
-  VStack,
-  HStack,
-  Card,
-  CardBody,
-  Avatar,
-  TableContainer,
-  useColorModeValue,
-  Center,
-  Switch,
-  InputLeftElement,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Table, IconButton, Badge, Menu, Button, Flex, Input, Select, Stack, Text, Dialog, InputGroup, InputLeftAddon, Field, Checkbox, VStack, HStack, Card, Avatar, Center, Switch, Textarea } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { toaster } from "@/components/ui/toaster";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PaginatedResponse, RolesSelect, UserSelect } from "@/types";
@@ -96,16 +53,8 @@ const UsersDashboard = () => {
 
     staleTime: 1000 * 60 * 60, // 1 hour
   });
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isMediaOpen,
-    onOpen: onMediaOpen,
-    onClose: onMediaClose,
-  } = useDisclosure();
-  const toast = useToast({
-    position: "top",
-    duration: 3000,
-  });
+  const [open, setOpen] = useState(false);
+  const [isMediaOpen, setMediaOpen] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -148,7 +97,7 @@ const UsersDashboard = () => {
   // Open modal for create/edit
   const openUserModal = (user?: UserSelect) => {
     setCurrentUser(user || {});
-    onOpen();
+    setOpen(true);
   };
 
   // Save user
@@ -170,15 +119,15 @@ const UsersDashboard = () => {
         });
       }
 
-      toast({
+      toaster.create({
         title: currentUser?.id ? "User Updated" : "User Created",
-        status: "success",
+        type: "success",
       });
-      onClose();
+      setOpen(false);
     } catch (error) {
-      toast({
+      toaster.create({
         title: currentUser?.id ? "Error updating User" : "Error creating User",
-        status: "error",
+        type: "error",
       });
     } finally {
       setIsUpdating(false);
@@ -188,7 +137,7 @@ const UsersDashboard = () => {
   // Bulk actions
   const performBulkAction = (action: string) => {
     // Implement bulk action logic
-    toast({
+    toaster.create({
       title: `Performed ${action} on ${selectedUsers.length} users`,
       status: "info",
     });
@@ -230,19 +179,19 @@ const UsersDashboard = () => {
     <Box>
       <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
-        <Card>
+        <Card.Root>
           <PageTitleHeader title={"Users"}>
-            <Button leftIcon={<LuPlus />} onClick={() => openUserModal()}>
-              Add User
+            <Button onClick={() => openUserModal()}>
+              <LuPlus /> Add User
             </Button>
           </PageTitleHeader>
 
-          <CardBody>
-            <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
+          <Card.Body>
+            <Stack direction={{ base: "column", md: "row" }} gap={4} mb={6}>
               <InputGroup>
-                <InputLeftElement>
+                <InputElement>
                   <LuSearch />
-                </InputLeftElement>
+                </InputElement>
                 <Input
                   maxW={{ md: "320px" }}
                   autoComplete="off"
@@ -268,26 +217,27 @@ const UsersDashboard = () => {
             {selectedUsers.length > 0 && (
               <HStack mb={4}>
                 <Text>{selectedUsers.length} users selected</Text>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={<LuChevronDown />}
-                    size="sm"
-                  >
-                    Bulk Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => performBulkAction("delete")}>
+                <Menu.Root>
+                  <Menu.Trigger asChild>
+                    <Button
+                      size="sm"
+                    >
+                      Bulk Actions
+                      <LuChevronDown />
+                    </Button>
+                  </Menu.Trigger>
+                  <Menu.Content>
+                    <Menu.Item onClick={() => performBulkAction("delete")}>
                       Delete Selected
-                    </MenuItem>
-                    <MenuItem onClick={() => performBulkAction("activate")}>
+                    </Menu.Item>
+                    <Menu.Item onClick={() => performBulkAction("activate")}>
                       Activate
-                    </MenuItem>
-                    <MenuItem onClick={() => performBulkAction("deactivate")}>
+                    </Menu.Item>
+                    <Menu.Item onClick={() => performBulkAction("deactivate")}>
                       Deactivate
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
+                    </Menu.Item>
+                  </Menu.Content>
+                </Menu.Root>
               </HStack>
             )}
             {isFetching ? (
@@ -296,42 +246,42 @@ const UsersDashboard = () => {
               </Center>
             ) : (
               <>
-                <TableContainer>
-                  <Table variant="simple">
-                    <Thead>
-                      <Tr>
-                        <Th>
-                          <Checkbox
-                            isChecked={
+                <Table.ScrollArea>
+                  <Table.Root variant="simple">
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.ColumnHeader>
+                          <Checkbox.Root
+                            checked={
                               selectedUsers.length === filteredUsers.length
                             }
                             onChange={selectAllUsers}
                           />
-                        </Th>
-                        <Th>ID</Th>
-                        <Th>User</Th>
-                        <Th>Email</Th>
-                        <Th>Role</Th>
-                        <Th>Auth Type</Th>
-                        <Th>Created At</Th>
-                        <Th>Actions</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader>ID</Table.ColumnHeader>
+                        <Table.ColumnHeader>User</Table.ColumnHeader>
+                        <Table.ColumnHeader>Email</Table.ColumnHeader>
+                        <Table.ColumnHeader>Role</Table.ColumnHeader>
+                        <Table.ColumnHeader>Auth Type</Table.ColumnHeader>
+                        <Table.ColumnHeader>Created At</Table.ColumnHeader>
+                        <Table.ColumnHeader>Actions</Table.ColumnHeader>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
                       {filteredUsers &&
                         filteredUsers?.length > 0 &&
                         filteredUsers.map((user) => (
-                          <Tr key={user.id}>
-                            <Td>
-                              <Checkbox
-                                isChecked={selectedUsers.includes(user.id)}
+                          <Table.Row key={user.id}>
+                            <Table.Cell>
+                              <Checkbox.Root
+                                checked={selectedUsers.includes(user.id)}
                                 onChange={() => toggleUserSelection(user.id)}
                               />
-                            </Td>
-                            <Td>{user.id}</Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>{user.id}</Table.Cell>
+                            <Table.Cell>
                               <Flex align="center">
-                                <Avatar
+                                <Avatar.Root
                                   size="sm"
                                   name={user.name}
                                   src={user.avatar || ""}
@@ -339,86 +289,86 @@ const UsersDashboard = () => {
                                 />
                                 <Text>{user.name}</Text>
                               </Flex>
-                            </Td>
-                            <Td>{user.email}</Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>{user.email}</Table.Cell>
+                            <Table.Cell>
                               <Badge
                                 rounded={"lg"}
                                 textTransform={"capitalize"}
                                 px={2}
-                                colorScheme={getRoleColor(user.role_id)}
+                                colorPalette={getRoleColor(user.role_id)}
                               >
                                 {getRoleName(user.role_id)}
                               </Badge>
-                            </Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>
                               <Badge
                                 variant="outline"
                                 rounded={"lg"}
                                 textTransform={"capitalize"}
                                 px={2}
-                                colorScheme="purple"
+                                colorPalette="purple"
                               >
                                 {user.auth_type}
                               </Badge>
-                            </Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>
                               {new Date(user.created_at!).toLocaleDateString()}
-                            </Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>
                               <HStack>
                                 <IconButton
-                                  icon={<LuPen />}
                                   size="sm"
                                   variant="ghost"
                                   aria-label="Edit"
                                   onClick={() => openUserModal(user)}
-                                ></IconButton>
+                                >
+                                  <LuPen />
+                                </IconButton>
                                 <IconButton
                                   aria-label="Delete"
-                                  icon={<LuTrash2 />}
                                   color="red.500"
                                   size="sm"
                                   variant="ghost"
                                 >
-                                  Delete
+                                  <LuTrash2 />
                                 </IconButton>
                               </HStack>
-                            </Td>
-                          </Tr>
+                            </Table.Cell>
+                          </Table.Row>
                         ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+                    </Table.Body>
+                  </Table.Root>
+                </Table.ScrollArea>
               </>
             )}
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
-        {/* User Create/Edit Modal */}
-        <Modal isOpen={isOpen} onClose={onClose} size="xl">
-          <ModalOverlay />
-          <ModalContent rounded={"xl"}>
-            <ModalHeader>
+        {/* User Create/Edit Dialog */}
+        <Dialog.Root open={open} onOpenChange={() => setOpen(false)} size="xl">
+          <Dialog.Backdrop />
+          <Dialog.Content rounded={"xl"}>
+            <Dialog.Header>
               {currentUser?.id ? "Edit User" : "Add New User"}
-            </ModalHeader>
-            <ModalBody>
-              <VStack spacing={4} align={"start"} as={"form"} id="user-form">
-                <FormControl>
-                  <FormLabel>Avatar</FormLabel>
+            </Dialog.Header>
+            <Dialog.Body>
+              <VStack gap={4} align={"start"} as={"form"} id="user-form">
+                <Field.Root>
+                  <Field.Label>Avatar</Field.Label>
                   <HStack>
-                    <Avatar
+                    <Avatar.Root
                       src={currentUser?.avatar || ""}
                       name={currentUser?.name}
                       size={"lg"}
                     />
-                    <Button size={"sm"} onClick={() => onMediaOpen()}>
+                    <Button size={"sm"} onClick={() => setMediaOpen(true)}>
                       Change Image
                     </Button>
                   </HStack>
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Name</FormLabel>
+                </Field.Root>
+                <Field.Root required>
+                  <Field.Label>Name</Field.Label>
                   <Input
                     autoComplete="off"
                     placeholder="Enter full name"
@@ -432,9 +382,9 @@ const UsersDashboard = () => {
                       }))
                     }
                   />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Email</FormLabel>
+                </Field.Root>
+                <Field.Root required>
+                  <Field.Label>Email</Field.Label>
                   <Input
                     placeholder="Enter email"
                     type="email"
@@ -448,9 +398,9 @@ const UsersDashboard = () => {
                       }))
                     }
                   />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Password</FormLabel>
+                </Field.Root>
+                <Field.Root required>
+                  <Field.Label>Password</Field.Label>
                   <Input
                     placeholder="Enter password"
                     type="password"
@@ -464,9 +414,9 @@ const UsersDashboard = () => {
                       }))
                     }
                   />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Username</FormLabel>
+                </Field.Root>
+                <Field.Root required>
+                  <Field.Label>Username</Field.Label>
                   <Input
                     autoComplete="off"
                     placeholder="Username"
@@ -480,32 +430,33 @@ const UsersDashboard = () => {
                       }))
                     }
                   />
-                </FormControl>
+                </Field.Root>
 
-                <FormControl isRequired>
-                  <FormLabel>Role</FormLabel>
+                <Field.Root required>
+                  <Field.Label>Role</Field.Label>
 
-                  <Menu>
-                    <MenuButton
-                      as={Button}
-                      variant={"ghost"}
-                      w="full"
-                      colorScheme="gray"
-                      textTransform={"capitalize"}
-                      rightIcon={<LuChevronDown />}
-                      justifyContent={"start"}
-                      fontWeight={"normal"}
-                      textAlign={"left"}
-                      border={"1px solid"}
-                      borderColor={borderColor}
-                    >
-                      {getActiveRole()?.name || "Choose role"}
-                    </MenuButton>
-                    <MenuList rounded={"xl"} px={2} py={2}>
+                  <Menu.Root>
+                    <Menu.Trigger asChild>
+                      <Button
+                        variant={"ghost"}
+                        w="full"
+                        colorPalette="gray"
+                        textTransform={"capitalize"}
+                        justifyContent={"start"}
+                        fontWeight={"normal"}
+                        textAlign={"left"}
+                        border={"1px solid"}
+                        borderColor={borderColor}
+                      >
+                        {getActiveRole()?.name || "Choose role"}
+                        <LuChevronDown />
+                      </Button>
+                    </Menu.Trigger>
+                    <Menu.Content rounded={"xl"} px={2} py={2}>
                       {roles &&
                         roles?.length > 0 &&
                         roles?.map((role) => (
-                          <MenuItem
+                          <Menu.Item
                             key={role.id}
                             textTransform={"capitalize"}
                             onClick={() => {
@@ -526,13 +477,13 @@ const UsersDashboard = () => {
                                 {role?.description}
                               </Text>
                             </HStack>
-                          </MenuItem>
+                          </Menu.Item>
                         ))}
-                    </MenuList>
-                  </Menu>
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Job title</FormLabel>
+                    </Menu.Content>
+                  </Menu.Root>
+                </Field.Root>
+                <Field.Root>
+                  <Field.Label>Job title</Field.Label>
                   <Input
                     autoComplete="off"
                     placeholder="Job Title"
@@ -546,9 +497,9 @@ const UsersDashboard = () => {
                       }))
                     }
                   />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Bio</FormLabel>
+                </Field.Root>
+                <Field.Root>
+                  <Field.Label>Bio</Field.Label>
                   <Textarea
                     autoComplete="off"
                     placeholder="Tell us about yourself"
@@ -563,10 +514,10 @@ const UsersDashboard = () => {
                       }))
                     }
                   />
-                </FormControl>
-                <FormControl w={"full"}>
+                </Field.Root>
+                <Field.Root w={"full"}>
                   {!currentUser?.id && (
-                    <FormLabel
+                    <Field.Label
                       display={"flex"}
                       alignItems={"center"}
                       justifyContent={"space-between"}
@@ -581,32 +532,32 @@ const UsersDashboard = () => {
                           Sends an email with the account details to user.
                         </Text>
                       </Stack>
-                      <Switch />
-                    </FormLabel>
+                      <Switch.Root />
+                    </Field.Label>
                   )}
-                </FormControl>
+                </Field.Root>
               </VStack>
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="ghost" mr={3} onClick={onClose}>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button variant="ghost" mr={3} onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button
                 form="user-form"
                 onClick={saveUser}
-                isLoading={isUpdating}
+                loading={isUpdating}
                 loadingText={currentUser?.id ? "Updating..." : "Creating..."}
               >
                 {currentUser?.id ? "Update" : "Create"}
               </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
       </Box>
       <MediaModal
         multiple={false}
-        isOpen={isMediaOpen}
-        onClose={onMediaClose}
+        open={isMediaOpen}
+        onOpenChange={() => setMediaOpen(false)}
         maxSelection={1}
         onSelect={(media) => {
           if (!Array.isArray(media)) {

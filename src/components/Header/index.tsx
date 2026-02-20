@@ -1,34 +1,6 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Container,
-  HStack,
-  Button,
-  IconButton,
-  useColorModeValue,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Text,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  useDisclosure,
-  VStack,
-  Divider,
-  Icon,
-  Hide,
-  useBreakpointValue,
-  Show,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputRightElement,
-} from "@chakra-ui/react";
+import { Box, Container, HStack, Button, IconButton, Menu, Text, Drawer, VStack, Separator, Icon, Hide, useBreakpointValue, Show, Input, InputGroup } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
 import { LuMenu, LuChevronDown, LuSearch } from "react-icons/lu";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -40,7 +12,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useSiteConfig } from "@/context/SiteConfig";
 
 const Header = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [open, setOpen] = useState(false);
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
@@ -65,7 +37,7 @@ const Header = () => {
     ["none", "var(--chakra-shadows-md)"]
   );
   const backdrop = useTransform(scrollY, [0, 60], ["none", "blur(10px"]) as any;
-  const canFetchCategories = useBreakpointValue({ base: isOpen, md: true });
+  const canFetchCategories = useBreakpointValue({ base: open, md: true });
   const { data } = useCategories({
     limit: 5,
     canFetch: canFetchCategories,
@@ -108,21 +80,22 @@ const Header = () => {
           w="full"
           placeholder="Search Articles..."
         />
-        <InputRightElement>
+        <InputElement>
           <IconButton
             size="sm"
             rounded={"full"}
             // variant={"ghost"}
-            icon={<LuSearch />}
-            isDisabled={!searchInput}
+            disabled={!searchInput}
             onClick={() => {
               if (searchInput) {
                 router.push(`/search?q=${searchInput}`);
               }
             }}
             aria-label="Search"
-          />
-        </InputRightElement>
+          >
+            <LuSearch />
+          </IconButton>
+        </InputElement>
       </InputGroup>
     </HStack>
   );
@@ -152,7 +125,8 @@ const Header = () => {
       >
         <Container maxW="container.2xl" py={"6px"}>
           <HStack justify="space-between" align="center">
-            <HStack as={Link} href="/" gap={0}>
+            <Link href="/" style={{ textDecoration: "none" }}>
+              <HStack gap={0}>
               <AppLogo src={logo!} size={logoSize!} />
               {siteSettings.showSiteNameWithLogo?.enabled && (
                 <Text
@@ -165,11 +139,12 @@ const Header = () => {
                   {siteSettings?.siteName?.value}
                 </Text>
               )}
-            </HStack>
+              </HStack>
+            </Link>
 
             <HStack
               align="center"
-              spacing={4}
+              gap={4}
               display={{ base: "none", xl: "flex" }}
               py={"6px"}
             >
@@ -218,61 +193,57 @@ const Header = () => {
                   {resource.name}
                 </Link>
               ))}
-              <Menu>
-                {({ isOpen }) => (
+              <Menu.Root>
+                {({ open }) => (
                   <>
-                    <MenuButton
-                      as={Button}
-                      rounded={"none"}
-                      textTransform="capitalize"
-                      fontWeight={500}
-                      size="sm"
-                      colorScheme="black"
-                      variant="ghost"
-                      _hover={{
-                        borderColor: navLinkHoverColor,
-                        color: navLinkHoverColor,
-                      }}
-                      borderBottom={"2px solid"}
-                      borderBottomColor={"transparent"}
-                    >
-                      <HStack>
-                        <Text as={"span"} fontWeight={600}>
-                          Topics
-                        </Text>
-                        <Icon
-                          as={LuChevronDown}
-                          transition={"0.2s ease-out"}
-                          transform={
-                            isOpen ? "rotate(-180deg)" : "rotate(0deg)"
-                          }
-                        />
-                      </HStack>
-                    </MenuButton>
-                    <MenuList rounded="lg">
+                    <Menu.Trigger asChild>
+                      <Button
+                        rounded={"none"}
+                        textTransform="capitalize"
+                        fontWeight={500}
+                        size="sm"
+                        colorPalette="black"
+                        variant="ghost"
+                        _hover={{
+                          borderColor: navLinkHoverColor,
+                          color: navLinkHoverColor,
+                        }}
+                        borderBottom={"2px solid"}
+                        borderBottomColor={"transparent"}
+                      >
+                        <HStack>
+                          <Text as={"span"} fontWeight={600}>
+                            Topics
+                          </Text>
+                          <LuChevronDown />
+                        </HStack>
+                      </Button>
+                    </Menu.Trigger>
+                    <Menu.Content rounded="lg">
                       {categories &&
                         categories?.length > 0 &&
                         categories.map((topic) => (
-                          <MenuItem
+                          <Menu.Item
                             key={topic.name}
-                            as={Link}
-                            href={`/category/${topic.slug}`}
+                            asChild
                           >
-                            {topic.name}
-                          </MenuItem>
+                            <Link href={`/category/${topic.slug}`}>
+                              {topic.name}
+                            </Link>
+                          </Menu.Item>
                         ))}
-                    </MenuList>
+                    </Menu.Content>
                   </>
                 )}
-              </Menu>
+              </Menu.Root>
             </HStack>
 
-            <HStack spacing={4} align={"center"}>
+            <HStack gap={4} align={"center"}>
               <Box display={{ base: "none", lg: "flex" }}>
                 <SearchComp />
               </Box>
 
-              <HStack spacing={2} display={{ base: "none", xl: "flex" }}>
+              <HStack gap={2} display={{ base: "none", xl: "flex" }}>
                 {/* <Show above="lg">
                   <LightDarkModeSwitch />
                 </Show> */}
@@ -283,25 +254,26 @@ const Header = () => {
               </Show>
 
               <IconButton
-                // colorScheme="black"
+                // colorPalette="black"
                 display={{ base: "flex", xl: "none" }}
                 aria-label="Open menu"
-                icon={<LuMenu size={20} />}
                 onClick={onOpen}
                 variant="ghost"
                 _hover={{ bg: hoverBgColor }}
-              />
+              >
+                <LuMenu size={20} />
+              </IconButton>
             </HStack>
           </HStack>
         </Container>
 
-        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton />
-            <DrawerHeader borderBottomWidth="1px">Menu</DrawerHeader>
-            <DrawerBody>
-              <VStack align="stretch" spacing={4} divider={<Divider />}>
+        <Drawer.Root open={open} placement="right" onOpenChange={onOpenChange}>
+          <Drawer.Backdrop />
+          <Drawer.Content>
+            <Drawer.CloseTrigger />
+            <Drawer.Header borderBottomWidth="1px">Menu</Drawer.Header>
+            <Drawer.Body>
+              <VStack align="stretch" gap={4} Separator={<Separator />}>
                 <Box>
                   <Text fontWeight="bold" color={textColor}>
                     Categories
@@ -312,14 +284,15 @@ const Header = () => {
                       <Button
                         key={topic.name}
                         rounded={"full"}
-                        as={Link}
-                        href={`/category/${topic.slug}`}
+                        asChild
                         variant="ghost"
                         justifyContent="flex-start"
                         w="full"
-                        onClick={onClose}
+                        onClick={onOpenChange}
                       >
-                        {topic.name}
+                        <Link href={`/category/${topic.slug}`}>
+                          {topic.name}
+                        </Link>
                       </Button>
                     ))}
                 </Box>
@@ -331,14 +304,15 @@ const Header = () => {
                     <Button
                       key={resource.name}
                       rounded={"full"}
-                      as={Link}
-                      href={resource.href}
+                      asChild
                       variant="ghost"
                       justifyContent="flex-start"
                       w="full"
-                      onClick={onClose}
+                      onClick={onOpenChange}
                     >
-                      {resource.name}
+                      <Link href={resource.href}>
+                        {resource.name}
+                      </Link>
                     </Button>
                   ))}
                 </Box>
@@ -349,9 +323,9 @@ const Header = () => {
 
                 {/* <LightDarkModeSwitch showLabel /> */}
               </VStack>
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Root>
       </Box>
     </motion.div>
   );

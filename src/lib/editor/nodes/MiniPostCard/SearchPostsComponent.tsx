@@ -1,15 +1,6 @@
+import { VStack, Text, Image, Spinner, InputElement, Group, Button, HStack, Input } from "@chakra-ui/react";
 import { PostSelect } from "@/types";
-import {
-  VStack,
-  Text,
-  Image,
-  Spinner,
-  InputRightElement,
-  InputGroup,
-  Button,
-  HStack,
-  Input,
-} from "@chakra-ui/react";
+
 import { debounce } from "lodash";
 import { LuSearch } from "react-icons/lu";
 import { useMutation } from "@tanstack/react-query";
@@ -53,11 +44,11 @@ export const SearchPostsComponent: React.FC<SearchPostsComponentProps> = ({
   }, 300);
 
   return (
-    <VStack spacing={4}>
+    <VStack gap={4}>
       <Text fontSize="medium" fontWeight="bold" color="gray.600">
         Search and select a post to embed
       </Text>
-      <InputGroup>
+      <Group>
         <Input
           placeholder="Search posts..."
           value={query}
@@ -66,10 +57,10 @@ export const SearchPostsComponent: React.FC<SearchPostsComponentProps> = ({
             handleSearch(e.target.value);
           }}
         />
-        <InputRightElement>
+        <InputElement placement="end">
           {isSearching ? <Spinner size="sm" /> : <LuSearch />}
-        </InputRightElement>
-      </InputGroup>
+        </InputElement>
+      </Group>
 
       {posts && posts?.length > 0 && (
         <VStack align="stretch" width="100%">
@@ -82,7 +73,7 @@ export const SearchPostsComponent: React.FC<SearchPostsComponentProps> = ({
               height="auto"
               py={2}
             >
-              <HStack spacing={3}>
+              <HStack gap={3}>
                 {searchPost?.featured_image && (
                   <Image
                     src={searchPost?.featured_image.url}

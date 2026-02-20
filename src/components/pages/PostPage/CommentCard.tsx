@@ -1,16 +1,9 @@
+import { Box, HStack, VStack, Text, Avatar, IconButton, Button } from "@chakra-ui/react";
 import React from "react";
-import {
-  Box,
-  HStack,
-  VStack,
-  Text,
-  Avatar,
-  IconButton,
-  useColorModeValue,
-  Button,
-} from "@chakra-ui/react";
+
 import { LuHeart, LuMessageCircle, LuFlag } from "react-icons/lu";
 import { formatDate } from "@/utils";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface CommentCardProps {
   comment: any; // Replace with proper comment type
@@ -28,15 +21,15 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       // borderColor={borderColor}
       // bg={bgColor}
     >
-      <HStack spacing={3} align="start">
-        <Avatar
+      <HStack gap={3} align="start">
+        <Avatar.Root
           size={"sm"}
           src={comment.author?.avatar}
           name={comment.author?.name}
         />
-        <VStack align="start" flex={1} spacing={1}>
+        <VStack align="start" flex={1} gap={1}>
           <HStack justify="space-between" w="full">
-            <VStack align="start" spacing={0}>
+            <VStack align="start" gap={0}>
               <Text fontWeight="bold" fontSize={"14px"}>
                 {comment.author?.name}
               </Text>
@@ -45,25 +38,21 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               </Text>
             </VStack>
             <IconButton
-              colorScheme="gray"
-              icon={<LuFlag />}
+              colorPalette="gray"
               aria-label="Report comment"
               variant="ghost"
               size="sm"
-            />
+            ><LuFlag /></IconButton>
           </HStack>
 
           <Text fontSize={"14px"}>{comment.content}</Text>
 
-          {/* <HStack spacing={4}>
+          {/* <HStack gap={4}>
             <Button
-              leftIcon={<LuMessageCircle />}
               size="xs"
               variant="ghost"
-              colorScheme="gray"
-            >
-              Reply
-            </Button>
+              colorPalette="gray"
+            ><LuMessageCircle /> Reply</Button>
           </HStack> */}
         </VStack>
       </HStack>

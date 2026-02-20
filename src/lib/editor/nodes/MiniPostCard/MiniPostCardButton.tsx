@@ -6,11 +6,10 @@ export const MiniPostCardButton = ({ editor }: { editor: Editor }) => {
   return (
     <Button
       size="sm"
-      leftIcon={<LuFileStack />}
       variant={editor.isActive("postCard") ? "solid" : "outline"}
       onClick={() => editor.commands.insertPostCard()}
     >
-      Insert Post
+      <LuFileStack /> Insert Post
     </Button>
   );
 };

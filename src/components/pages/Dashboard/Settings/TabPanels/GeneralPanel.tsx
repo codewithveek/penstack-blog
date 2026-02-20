@@ -1,17 +1,5 @@
-import {
-  VStack,
-  HStack,
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  FormHelperText,
-  Image,
-  Switch,
-  Stack,
-} from "@chakra-ui/react";
+import { VStack, HStack, Box, Button, Field, Input, Textarea, Image, Switch, Stack } from "@chakra-ui/react";
+
 import { SiteSettings } from "@/types";
 import { groupSettingsByFolder } from "../utils";
 import { SettingField } from "../components/SettingField";
@@ -35,9 +23,9 @@ export const GeneralPanel = ({
   const generalSettings = groupedSettings["general"] || [];
 
   return (
-    <VStack spacing={6} align="stretch">
-      <FormControl>
-        <FormLabel>Site Name</FormLabel>
+    <VStack gap={6} align="stretch">
+      <Field.Root>
+        <Field.Label>Site Name</Field.Label>
         <Input
           maxW={600}
           rounded="md"
@@ -45,13 +33,13 @@ export const GeneralPanel = ({
           onChange={(e) => handleInputChange("siteName", e.target.value)}
           placeholder="My Awesome Blog"
         />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Site Title</FormLabel>
-        <FormHelperText>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>Site Title</Field.Label>
+        <Field.HelperText>
           {settings.siteTitle?.description ||
             "The title of the site displayed in the browser and search engines"}
-        </FormHelperText>
+        </Field.HelperText>
         <Input
           maxW={600}
           rounded="md"
@@ -59,9 +47,9 @@ export const GeneralPanel = ({
           onChange={(e) => handleInputChange("siteTitle", e.target.value)}
           placeholder="My Awesome Blog Title"
         />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Site Description</FormLabel>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>Site Description</Field.Label>
         <Textarea
           maxH={110}
           maxW={600}
@@ -70,12 +58,12 @@ export const GeneralPanel = ({
           onChange={(e) => handleInputChange("siteDescription", e.target.value)}
           placeholder="A brief description of your site"
         />
-      </FormControl>
+      </Field.Root>
       <HStack gap={8} flexWrap="wrap">
         <Stack alignSelf={"stretch"}>
-          <FormControl flex={1} display={"flex"} flexDirection={"column"}>
-            <FormLabel>Site Favicon</FormLabel>
-            <FormHelperText mt={0}>Recommended size 32x32</FormHelperText>
+          <Field.Root flex={1} display={"flex"} flexDirection={"column"}>
+            <Field.Label>Site Favicon</Field.Label>
+            <Field.HelperText mt={0}>Recommended size 32x32</Field.HelperText>
             <Stack flex={1} justify={"flex-end"}>
               {settings.siteFavicon?.value && (
                 <Box mb={2}>
@@ -95,7 +83,7 @@ export const GeneralPanel = ({
                 {settings.siteFavicon?.value && (
                   <Button
                     size="sm"
-                    colorScheme="red"
+                    colorPalette="red"
                     variant={"ghost"}
                     onClick={() => handleInputChange("siteFavicon", "")}
                   >
@@ -104,12 +92,12 @@ export const GeneralPanel = ({
                 )}
               </HStack>
             </Stack>
-          </FormControl>
+          </Field.Root>
         </Stack>
         <Box>
-          <FormControl>
-            <FormLabel>Site Mobile Logo</FormLabel>
-            <FormHelperText>Recommended size 300x300</FormHelperText>
+          <Field.Root>
+            <Field.Label>Site Mobile Logo</Field.Label>
+            <Field.HelperText>Recommended size 300x300</Field.HelperText>
             {settings.siteLogoMobile?.value && (
               <Box mb={2} mt={1}>
                 <Image
@@ -129,7 +117,7 @@ export const GeneralPanel = ({
               {settings?.siteLogoMobile?.value && (
                 <Button
                   size="sm"
-                  colorScheme="red"
+                  colorPalette="red"
                   variant={"ghost"}
                   onClick={() => handleInputChange("siteLogoMobile", "")}
                 >
@@ -137,12 +125,12 @@ export const GeneralPanel = ({
                 </Button>
               )}
             </HStack>
-          </FormControl>
+          </Field.Root>
         </Box>
         <Box>
-          <FormControl>
-            <FormLabel>Site Logo</FormLabel>
-            <FormHelperText>Recommended size 650x250</FormHelperText>
+          <Field.Root>
+            <Field.Label>Site Logo</Field.Label>
+            <Field.HelperText>Recommended size 650x250</Field.HelperText>
             {settings.siteLogo?.value && (
               <Box mb={2} mt={1}>
                 <Image
@@ -159,7 +147,7 @@ export const GeneralPanel = ({
               {settings.siteLogo?.value && (
                 <Button
                   size="sm"
-                  colorScheme="red"
+                  colorPalette="red"
                   variant={"ghost"}
                   onClick={() => handleInputChange("siteLogo", "")}
                 >
@@ -167,12 +155,12 @@ export const GeneralPanel = ({
                 </Button>
               )}
             </HStack>
-          </FormControl>
+          </Field.Root>
         </Box>
       </HStack>
       <Box mt={4}>
-        <FormControl>
-          <FormLabel>Site Opengraph Image</FormLabel>
+        <Field.Root>
+          <Field.Label>Site Opengraph Image</Field.Label>
           {settings.siteOpengraph?.value && (
             <Box mb={2}>
               <Image
@@ -191,7 +179,7 @@ export const GeneralPanel = ({
             {settings.siteOpengraph?.value && (
               <Button
                 size="sm"
-                colorScheme="red"
+                colorPalette="red"
                 variant={"ghost"}
                 onClick={() => handleInputChange("siteOpengraph", "")}
               >
@@ -199,7 +187,7 @@ export const GeneralPanel = ({
               </Button>
             )}
           </HStack>
-        </FormControl>
+        </Field.Root>
       </Box>
       <Stack>
         {generalSettings
@@ -209,13 +197,13 @@ export const GeneralPanel = ({
               setting.key === "maintenanceMode"
           )
           .map((setting) => (
-            <FormControl key={setting.key} display="flex" alignItems="center">
-              <FormLabel mb={0}>{setting.name}</FormLabel>
-              <Switch
-                isChecked={setting.enabled}
+            <Field.Root key={setting.key} display="flex" alignItems="center">
+              <Field.Label mb={0}>{setting.name}</Field.Label>
+              <Switch.Root
+                checked={setting.enabled}
                 onChange={() => handleToggle(setting.key)}
               />
-            </FormControl>
+            </Field.Root>
           ))}
       </Stack>
     </VStack>

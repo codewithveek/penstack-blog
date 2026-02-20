@@ -1,19 +1,6 @@
+import { VStack, IconButton, Tooltip, Popover, List, Text, Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import React from "react";
-import {
-  VStack,
-  IconButton,
-  Tooltip,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  List,
-  ListItem,
-  Text,
-  Box,
-  Flex,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+
 import { LuBookmark, LuHeart, LuShare } from "react-icons/lu";
 import { PostSelect } from "@/types";
 
@@ -28,82 +15,76 @@ export const SocialActions: React.FC<SocialActionsProps> = ({ post }) => {
 
   return (
     <>
-      <VStack spacing={4}>
-        <Tooltip label="Save">
+      <VStack gap={4}>
+        <Tooltip.Root content="Save">
           <IconButton
-            icon={<LuBookmark />}
             variant="outline"
             rounded="full"
             aria-label="bookmark this post"
-          />
-        </Tooltip>
+          ><LuBookmark /></IconButton>
+        </Tooltip.Root>
 
-        <Tooltip label="Share post">
+        <Tooltip.Root content="Share post">
           <IconButton
-            icon={<LuShare />}
             variant="outline"
             rounded="full"
             aria-label="share this post"
-          />
-        </Tooltip>
-        <Popover trigger={popoverTrigger} placement="right">
-          <PopoverTrigger>
+          ><LuShare /></IconButton>
+        </Tooltip.Root>
+        <Popover.Root trigger={popoverTrigger} placement="right">
+          <Popover.Trigger>
             <IconButton
-              icon={<LuHeart />}
               variant="outline"
               rounded="full"
               aria-label="Add reaction"
-            />
-          </PopoverTrigger>
-          <PopoverContent rounded="xl" w="auto">
-            <PopoverBody>
-              <List display="flex" gap={4} alignItems="center">
-                <ListItem>
-                  <Tooltip label="Like">
+            ><LuHeart /></IconButton>
+          </Popover.Trigger>
+          <Popover.Content rounded="xl" w="auto">
+            <Popover.Body>
+              <List.Root display="flex" gap={4} alignItems="center">
+                <List.Item>
+                  <Tooltip.Root content="Like">
                     <IconButton
-                      icon={
-                        <Text as="span" fontSize={24}>
-                          💖
-                        </Text>
-                      }
                       variant="ghost"
                       rounded="full"
                       aria-label="Like"
-                    />
-                  </Tooltip>
-                </ListItem>
-                <ListItem>
-                  <Tooltip label="Grateful">
+                    >
+                      <Text as="span" fontSize={24}>
+                        💖
+                      </Text>
+                    </IconButton>
+                  </Tooltip.Root>
+                </List.Item>
+                <List.Item>
+                  <Tooltip.Root content="Grateful">
                     <IconButton
-                      icon={
-                        <Text as="span" fontSize={24}>
-                          🙌
-                        </Text>
-                      }
                       variant="ghost"
                       rounded="full"
                       aria-label="Grateful"
-                    />
-                  </Tooltip>
-                </ListItem>
-                <ListItem>
-                  <Tooltip label="Celebrate">
+                    >
+                      <Text as="span" fontSize={24}>
+                        🙌
+                      </Text>
+                    </IconButton>
+                  </Tooltip.Root>
+                </List.Item>
+                <List.Item>
+                  <Tooltip.Root content="Celebrate">
                     <IconButton
-                      icon={
-                        <Text as="span" fontSize={24}>
-                          🥳
-                        </Text>
-                      }
                       variant="ghost"
                       rounded="full"
                       aria-label="Celebrate"
-                    />
-                  </Tooltip>
-                </ListItem>
-              </List>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
+                    >
+                      <Text as="span" fontSize={24}>
+                        🥳
+                      </Text>
+                    </IconButton>
+                  </Tooltip.Root>
+                </List.Item>
+              </List.Root>
+            </Popover.Body>
+          </Popover.Content>
+        </Popover.Root>
       </VStack>
 
       <Box

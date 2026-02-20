@@ -1,11 +1,5 @@
-import {
-  VStack,
-  FormControl,
-  FormLabel,
-  Input,
-  Switch,
-  HStack,
-} from "@chakra-ui/react";
+import { VStack, Field, Input, Switch, HStack } from "@chakra-ui/react";
+
 import { SiteSettings } from "@/types";
 import { groupSettingsByFolder } from "../utils";
 
@@ -24,13 +18,13 @@ export const SocialPanel = ({
   const socialSettings = groupedSettings["social"] || [];
 
   return (
-    <VStack spacing={6} align="stretch">
+    <VStack gap={6} align="stretch">
       {socialSettings.map((setting) => (
-        <FormControl key={setting.key}>
+        <Field.Root key={setting.key}>
           <HStack justify="space-between" align="center">
-            <FormLabel mb={0}>{setting.name || setting.key}</FormLabel>
-            <Switch
-              isChecked={setting.enabled}
+            <Field.Label mb={0}>{setting.name || setting.key}</Field.Label>
+            <Switch.Root
+              checked={setting.enabled}
               onChange={() => handleToggle(setting.key)}
             />
           </HStack>
@@ -38,10 +32,10 @@ export const SocialPanel = ({
           <Input
             value={setting.value || ""}
             onChange={(e) => handleInputChange(setting.key, e.target.value)}
-            isDisabled={!setting.enabled}
+            disabled={!setting.enabled}
             placeholder={`Enter your ${setting.name.toLowerCase()} URL`}
           />
-        </FormControl>
+        </Field.Root>
       ))}
     </VStack>
   );

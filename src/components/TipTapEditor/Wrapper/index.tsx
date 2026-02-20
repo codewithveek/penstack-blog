@@ -1,6 +1,8 @@
-import { Stack, useColorModeValue } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
+
 import { ReactNode } from "react";
 import { TitleInput } from "../TitleInput";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const EditorWrapper = ({ children }: { children: ReactNode }) => {
   const borderColor = useColorModeValue("gray.300", "gray.700");

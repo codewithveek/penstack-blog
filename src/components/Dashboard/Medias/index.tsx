@@ -1,17 +1,11 @@
 "use client";
-import {
-  Box,
-  Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
+import { Box, Stack, Tabs } from "@chakra-ui/react";
+
 import { FileUpload, FileUrlUpload } from "@/components/FileUpload";
 import { MediaLibrary } from "@/components/Dashboard/Medias/MediaLibrary";
 import { FilterParams, MediaResponse } from "@/types";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface MediasComponentProps {
   multiple?: boolean;
@@ -30,14 +24,14 @@ export default function Medias({
   const dividerBgColor = useColorModeValue("white", "gray.900");
   return (
     <Box py={6} px={{ base: 0, md: 5 }} bg={dividerBgColor} rounded={"lg"}>
-      <Tabs h={"full"}>
-        <TabList>
-          <Tab>Media Library</Tab>
-          <Tab>Upload Media</Tab>
-          <Tab>Upload from URL</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
+      <Tabs.Root h={"full"}>
+        <Tabs.List>
+          <Tabs.Trigger>Media Library</Tabs.Trigger>
+          <Tabs.Trigger>Upload Media</Tabs.Trigger>
+          <Tabs.Trigger>Upload from URL</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.ContentGroup>
+          <Tabs.Content>
             <MediaLibrary
               multiple={multiple}
               defaultFilters={defaultFilters}
@@ -47,19 +41,19 @@ export default function Medias({
               }}
               canSelect={canSelect}
             />
-          </TabPanel>
-          <TabPanel>
+          </Tabs.Content>
+          <Tabs.Content>
             <Stack gap={4}>
               <FileUpload />
             </Stack>
-          </TabPanel>
-          <TabPanel>
+          </Tabs.Content>
+          <Tabs.Content>
             <Box py={4}>
               <FileUrlUpload />
             </Box>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+          </Tabs.Content>
+        </Tabs.ContentGroup>
+      </Tabs.Root>
     </Box>
   );
 }

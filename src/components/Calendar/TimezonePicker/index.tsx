@@ -1,22 +1,10 @@
-import {
-  Button,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Stack,
-  Text,
-  useColorModeValue,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Icon,
-  Box,
-} from "@chakra-ui/react";
+import { Button, Menu, Stack, Text, Input, Group, InputElement, Icon, Box } from "@chakra-ui/react";
+
 import timezones from "@/lib/timezones.json";
 import { memo, useEffect, useState, useMemo, useCallback } from "react";
 import { LuChevronDown, LuSearch } from "react-icons/lu";
 import { FixedSizeList } from "react-window";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const ITEM_HEIGHT = 35;
 const LIST_HEIGHT = 280;
@@ -56,7 +44,7 @@ const TimezonePicker = ({
       zones.forEach((zone) => {
         result.push({ type: "item", name: zone });
       });
-      result.push({ type: "divider" });
+      result.push({ type: "Separator" });
     });
     return result;
   }, [groupedTimezones]);
@@ -95,7 +83,7 @@ const TimezonePicker = ({
         );
       }
 
-      if (item.type === "divider") {
+      if (item.type === "Separator") {
         return (
           <Box
             style={{ ...style, height: "4px", margin: "10px 0" }}
@@ -105,7 +93,7 @@ const TimezonePicker = ({
       }
 
       return (
-        <MenuItem
+        <Menu.Item
           value={item.name}
           rounded="full"
           bg={selectedTimezone === item.name ? "brand.500" : ""}
@@ -118,7 +106,7 @@ const TimezonePicker = ({
           style={{ ...style, marginTop: "8px" }}
         >
           {item.name}
-        </MenuItem>
+        </Menu.Item>
       );
     }
   );
@@ -135,24 +123,24 @@ const TimezonePicker = ({
       >
         Timezone:
       </Text>
-      <Menu isLazy>
+      <Menu.Root isLazy>
         {({ isOpen }) => (
           <>
-            <MenuButton
-              as={Button}
-              size="sm"
-              variant="outline"
-              rounded="full"
-              rightIcon={
-                <Icon
-                  as={LuChevronDown}
-                  transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
+            <Menu.Trigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                rounded="full"
+              >
+                {selectedTimezone || "Select timezone"}
+                <LuChevronDown
+                  style={{
+                    transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
                 />
-              }
-            >
-              {selectedTimezone || "Select timezone"}
-            </MenuButton>
-            <MenuList rounded="xl" maxH={LIST_HEIGHT} overflowY="auto" px={2}>
+              </Button>
+            </Menu.Trigger>
+            <Menu.Content rounded="xl" maxH={LIST_HEIGHT} overflowY="auto" px={2}>
               <SearchInput
                 searchQuery={searchQuery}
                 setSearchQuery={searchCb}
@@ -165,10 +153,10 @@ const TimezonePicker = ({
               >
                 {TimezoneRow}
               </FixedSizeList>
-            </MenuList>
+            </Menu.Content>
           </>
         )}
-      </Menu>
+      </Menu.Root>
     </Stack>
   );
 };
@@ -182,10 +170,10 @@ const SearchInput = memo(
   }) => {
     return (
       <Stack mb={2}>
-        <InputGroup size="sm">
-          <InputLeftElement>
+        <Group size="sm">
+          <InputElement placement="start">
             <LuSearch />
-          </InputLeftElement>
+          </InputElement>
           <Input
             placeholder="Search timezones..."
             size="sm"
@@ -195,7 +183,7 @@ const SearchInput = memo(
               setSearchQuery(e.target.value);
             }}
           />
-        </InputGroup>
+        </Group>
       </Stack>
     );
   }

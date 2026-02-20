@@ -1,13 +1,9 @@
+import { Button, ButtonGroup, HStack } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import {
-  Button,
-  ButtonGroup,
-  HStack,
-  useColorMode,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import { SignUp } from "./SignUp";
+import { useColorMode, useColorModeValue } from "@/components/ui/color-mode";
 
 export const AuthButtons = () => {
   const { user } = useAuth();
@@ -16,12 +12,11 @@ export const AuthButtons = () => {
   return user ? (
     <></>
   ) : (
-    <HStack spacing={{ base: 3, md: 4 }}>
+    <HStack gap={{ base: 3, md: 4 }}>
       <Button
         variant="ghost"
-        as={Link}
+        asChild
         size="sm"
-        href={"/auth/signin"}
         _hover={{
           textDecor: "none",
           bg: hoverBgLogin,
@@ -29,7 +24,9 @@ export const AuthButtons = () => {
         py={"7px"}
         h="auto"
       >
-        Log In
+        <Link href="/auth/signin">
+          Log In
+        </Link>
       </Button>
       <SignUp />
     </HStack>

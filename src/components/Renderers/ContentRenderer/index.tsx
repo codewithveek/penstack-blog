@@ -1,3 +1,4 @@
+import { Box, Text, Heading, List, Table, Code, Separator, Link, Image } from "@chakra-ui/react";
 import React, { memo } from "react";
 import parse, {
   domToReact,
@@ -8,25 +9,7 @@ import parse, {
 import { MiniPostCardRenderer } from "../MiniPostCardRenderer";
 import { PenstackYouTubeEmbed } from "../YoutubeEmbedRenderer";
 import { PenstackTwitterEmbed } from "../TwitterEmbedRenderer";
-import {
-  Box,
-  Text,
-  Heading,
-  UnorderedList,
-  OrderedList,
-  ListItem,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Code,
-  Divider,
-  Link,
-  Image,
-} from "@chakra-ui/react";
+
 import { PenstackCodeBlockRenderer } from "../PenstackCodeBlockRenderer";
 import PenstackBlockquoteRenderer from "../PenstackBlockquoteRenderer";
 import { PenstackHeadingsRenderer } from "../HeadingsRenderer";
@@ -171,66 +154,66 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "ul") {
             return (
-              <UnorderedList
+              <List.Root
                 my={4}
-                spacing={0}
+                gap={0}
                 // pl={"1rem"}
                 className="gradient-bullets"
               >
                 {domToReact(domNode.children as Element[], options)}
-              </UnorderedList>
+              </List.Root>
             );
           }
           if (domNode.name === "ol") {
             return (
-              <OrderedList my={4} spacing={3} pl={"1rem"}>
+              <List.Root as="ol" my={4} gap={3} pl={"1rem"}>
                 {domToReact(domNode.children as Element[], options)}
-              </OrderedList>
+              </List.Root>
             );
           }
           if (domNode.name === "li") {
             return (
-              <ListItem my={"0.25em"}>
+              <List.Item my={"0.25em"}>
                 {domToReact(domNode.children as Element[], options)}
-              </ListItem>
+              </List.Item>
             );
           }
           if (domNode.name === "table") {
             return (
-              <TableContainer>
-                <Table>
+              <Table.ScrollArea>
+                <Table.Root>
                   {domToReact(domNode.children as Element[], options)}
-                </Table>
-              </TableContainer>
+                </Table.Root>
+              </Table.ScrollArea>
             );
           }
           if (domNode.name === "thead") {
             return (
-              <Thead>
+              <Table.Header>
                 {domToReact(domNode.children as Element[], options)}
-              </Thead>
+              </Table.Header>
             );
           }
           if (domNode.name === "tbody") {
             return (
-              <Tbody>
+              <Table.Body>
                 {domToReact(domNode.children as Element[], options)}
-              </Tbody>
+              </Table.Body>
             );
           }
           if (domNode.name === "tr") {
             return (
-              <Tr>{domToReact(domNode.children as Element[], options)}</Tr>
+              <Table.Row>{domToReact(domNode.children as Element[], options)}</Table.Row>
             );
           }
           if (domNode.name === "th") {
             return (
-              <Th>{domToReact(domNode.children as Element[], options)}</Th>
+              <Table.ColumnHeader>{domToReact(domNode.children as Element[], options)}</Table.ColumnHeader>
             );
           }
           if (domNode.name === "td") {
             return (
-              <Td>{domToReact(domNode.children as Element[], options)}</Td>
+              <Table.Cell>{domToReact(domNode.children as Element[], options)}</Table.Cell>
             );
           }
           if (domNode.name === "code") {
@@ -241,7 +224,7 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
             );
           }
           if (domNode.name === "hr") {
-            return <Divider />;
+            return <Separator />;
           }
           if (domNode.name === "a") {
             return (

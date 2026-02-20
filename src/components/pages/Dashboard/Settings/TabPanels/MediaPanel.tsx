@@ -1,4 +1,5 @@
 import { VStack } from "@chakra-ui/react";
+
 import { SiteSettings } from "@/types";
 import { SettingField } from "../components/SettingField";
 import { groupSettingsByFolder } from "../utils";
@@ -18,7 +19,7 @@ export const MediaPanel = ({
   const mediaSettings = groupedSettings["media"] || [];
 
   return (
-    <VStack spacing={6} align="stretch">
+    <VStack gap={6} align="stretch">
       {mediaSettings.map((setting) => (
         <SettingField
           key={setting.key}

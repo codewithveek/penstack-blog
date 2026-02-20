@@ -11,22 +11,8 @@ import {
   LuPlay,
   LuPause,
 } from "react-icons/lu";
-import {
-  Box,
-  Button,
-  Card,
-  CardBody,
-  useDisclosure,
-  CardFooter,
-  useColorModeValue,
-  HStack,
-  IconButton,
-  VStack,
-  Flex,
-  Text,
-  Progress,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Box, Button, Card, HStack, IconButton, VStack, Flex, Text, Progress, Tooltip } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
 import { formatBytes } from "@/utils";
 import { Image } from "@chakra-ui/react";
 import { MediaResponse } from "@/types";
@@ -45,7 +31,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   selected,
   canSelect,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [open, setOpen] = useState(false);
   const [mediaToPreview, setMediaToPreview] = useState<MediaResponse | null>(
     null
   );
@@ -86,7 +72,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
 
   const handlePreviewClick = (media: MediaResponse) => {
     setMediaToPreview(media);
-    onOpen();
+    setOpen(true);
   };
 
   const handleAudioToggle = (e: React.MouseEvent) => {
@@ -117,10 +103,10 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   return (
     <>
       {mediaToPreview && (
-        <FilePreview isOpen={isOpen} onClose={onClose} file={mediaToPreview} />
+        <FilePreview open={open} onOpenChange={onOpenChange} file={mediaToPreview} />
       )}
 
-      <Card
+      <Card.Root
         pos="relative"
         w="full"
         h={280}
@@ -152,7 +138,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         cursor="pointer"
         transition="all 0.2s ease"
       >
-        <CardBody pos="relative" p={3} bg="transparent">
+        <Card.Body pos="relative" p={3} bg="transparent">
           <Box
             pos="absolute"
             top={3}
@@ -166,16 +152,15 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             <IconButton
               size="sm"
               aria-label="Select"
-              colorScheme={selected ? "brand" : "gray"}
-              icon={
-                selected ? <LuSquareCheck size={18} /> : <LuSquare size={18} />
-              }
+              colorPalette={selected ? "brand" : "gray"}
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect?.(media);
               }}
               boxShadow="md"
-            />
+            >
+              {selected ? <LuSquareCheck size={18} /> : <LuSquare size={18} />}
+            </IconButton>
           </Box>
 
           <VStack
@@ -195,15 +180,14 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             <Button
               size="sm"
               variant="solid"
-              colorScheme="brand"
-              leftIcon={<LuEye />}
+              colorPalette="brand"
               onClick={(e) => {
                 e.stopPropagation();
                 handlePreviewClick(media);
               }}
               w="full"
             >
-              Preview
+              <LuEye /> Preview
             </Button>
           </VStack>
 
@@ -257,7 +241,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               align="center"
               justify="center"
               h={200}
-              spacing={4}
+              gap={4}
               position="relative"
             >
               <audio
@@ -273,18 +257,19 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               />
               <IconButton
                 aria-label={isPlaying ? "Pause" : "Play"}
-                icon={isPlaying ? <LuPause /> : <LuPlay />}
-                colorScheme="brand"
+                colorPalette="brand"
                 rounded="full"
                 size="lg"
                 onClick={handleAudioToggle}
-              />
+              >
+                {isPlaying ? <LuPause /> : <LuPlay />}
+              </IconButton>
               {isPlaying && (
                 <Box w="80%" px={4}>
-                  <Progress
+                  <Progress.Root
                     value={audioProgress}
                     size="sm"
-                    colorScheme="brand"
+                    colorPalette="brand"
                     rounded="full"
                   />
                 </Box>
@@ -310,25 +295,25 @@ export const MediaCard: React.FC<MediaCardProps> = ({
                 </Text>
               </Flex>
             )}
-        </CardBody>
+        </Card.Body>
 
-        <CardFooter p={3} pt={2} borderTop="1px" borderColor={borderColor}>
-          <VStack spacing={1} w="full" align="start">
-            <Tooltip label={media.name} placement="top" hasArrow>
+        <Card.Footer p={3} pt={2} borderTop="1px" borderColor={borderColor}>
+          <VStack gap={1} w="full" align="start">
+            <Tooltip.Root content={media.name} placement="top" hasArrow>
               <Text
                 fontSize="sm"
                 fontWeight="semibold"
-                isTruncated
+                truncate
                 w="full"
                 color={useColorModeValue("gray.700", "gray.200")}
               >
                 {media.name}
               </Text>
-            </Tooltip>
+            </Tooltip.Root>
             <HStack
               fontSize="xs"
               color={useColorModeValue("gray.500", "gray.400")}
-              spacing={2}
+              gap={2}
             >
               <Text>{formatBytes(media.size)}</Text>
               {media.width && media.height && (
@@ -341,8 +326,8 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               )}
             </HStack>
           </VStack>
-        </CardFooter>
-      </Card>
+        </Card.Footer>
+      </Card.Root>
     </>
   );
 };

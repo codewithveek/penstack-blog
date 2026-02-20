@@ -1,31 +1,19 @@
-import {
-  Button,
-  useToast,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  ButtonGroup,
-  Icon,
-  HStack,
-} from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { Button, Menu, ButtonGroup, Icon, HStack } from "@chakra-ui/react";
+
+import { LuChevronDown } from "react-icons/lu";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { memo, useState } from "react";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import Link from "next/link";
 import { LuExternalLink } from "react-icons/lu";
+import { toaster } from "@/components/ui/toaster";
 
 export const ActionButtons = memo(() => {
   const isSaving = useEditorPostManagerStore((state) => state.isSaving);
   const autoSave = useEditorPostManagerStore((state) => state.autoSave);
   const savePost = useEditorPostManagerStore((state) => state.savePost);
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
-  const toast = useToast({
-    duration: 3000,
-    status: "success",
-    position: "top",
-  });
+  
   const postId = useEditorPostManagerStore(
     (state) => state.activePost?.post_id
   );
@@ -35,7 +23,7 @@ export const ActionButtons = memo(() => {
     updateField("status", "draft");
     if (!autoSave) {
       savePost().then(() => {
-        toast({
+        toaster.create({
           title: "Post saved as draft",
           description: "The post has been saved as a draft successfully.",
         });
@@ -49,7 +37,7 @@ export const ActionButtons = memo(() => {
     if (!autoSave) {
       savePost().then(() => {
         setIsPublishing(false);
-        toast({
+        toaster.create({
           title: "Post published",
           description: "The post has been published successfully.",
         });
@@ -61,7 +49,7 @@ export const ActionButtons = memo(() => {
     updateField("status", "deleted");
     if (!autoSave) {
       savePost().then(() => {
-        toast({
+        toaster.create({
           title: "Post deleted",
           description: "The post has been deleted successfully.",
         });
@@ -73,17 +61,17 @@ export const ActionButtons = memo(() => {
 
   return (
     <HStack gap={5}>
-      <ButtonGroup size="sm" isAttached variant="outline" colorScheme="brand">
+      <ButtonGroup size="sm" isAttached variant="outline" colorPalette="brand">
         {/* Main Publish Button */}
         <PermissionGuard requiredPermission="posts:publish">
           <Button
-            isDisabled={isPublishLoading}
-            isLoading={isPublishLoading}
+            disabled={isPublishLoading}
+            loading={isPublishLoading}
             loadingText="Publishing..."
             rounded="md"
             roundedRight="none"
             onClick={onPublish}
-            // colorScheme="blue"
+            // colorPalette="blue"
             variant="solid"
             flex={1}
           >
@@ -92,34 +80,35 @@ export const ActionButtons = memo(() => {
         </PermissionGuard>
 
         {/* Dropdown Menu */}
-        <Menu>
-          <MenuButton
-            as={Button}
-            size="sm"
-            rounded="md"
-            roundedLeft="none"
-            // colorScheme="blue"
-            variant="solid"
-            borderLeft="1px solid"
-            borderLeftColor="blue.600"
-            px={2}
-            isDisabled={isPublishLoading}
-          >
-            <ChevronDownIcon />
-          </MenuButton>
+        <Menu.Root>
+          <Menu.Trigger asChild>
+            <Button
+              size="sm"
+              rounded="md"
+              roundedLeft="none"
+              // colorPalette="blue"
+              variant="solid"
+              borderLeft="1px solid"
+              borderLeftColor="blue.600"
+              px={2}
+              disabled={isPublishLoading}
+            >
+              <LuChevronDown />
+            </Button>
+          </Menu.Trigger>
 
-          <MenuList px={2} rounded={"lg"}>
-            <MenuItem
+          <Menu.Content px={2} rounded={"lg"}>
+            <Menu.Item
               onClick={onDraft}
               fontSize="sm"
               fontWeight={"semibold"}
               rounded={"lg"}
             >
               Save as Draft
-            </MenuItem>
+            </Menu.Item>
 
             <PermissionGuard requiredPermission="posts:delete">
-              <MenuItem
+              <Menu.Item
                 rounded={"lg"}
                 onClick={onDelete}
                 fontSize="sm"
@@ -128,21 +117,20 @@ export const ActionButtons = memo(() => {
                 fontWeight={"semibold"}
               >
                 Delete Post
-              </MenuItem>
+              </Menu.Item>
             </PermissionGuard>
-          </MenuList>
-        </Menu>
+          </Menu.Content>
+        </Menu.Root>
       </ButtonGroup>
       <Button
         variant={"outline"}
-        as={Link}
-        href={"/posts/preview/" + postId}
-        rightIcon={<LuExternalLink />}
+        asChild
         size="sm"
-        // colorScheme="blue"
-        isExternal
+        // colorPalette="blue"
       >
-        Preview{" "}
+        <Link href={"/posts/preview/" + postId} target="_blank">
+          Preview <LuExternalLink />
+        </Link>
       </Button>
     </HStack>
   );

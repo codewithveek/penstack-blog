@@ -1,4 +1,6 @@
-import { Box, List, Stack, useDisclosure } from "@chakra-ui/react";
+import { Box, List, Stack } from "@chakra-ui/react";
+import React from "react";
+
 import { CommentsToggle } from "./CommentsToggle";
 import { MetricsItem } from "./MetricsItem";
 import { PinnedToggle } from "./PinnedToggle";
@@ -31,8 +33,8 @@ export const PublishMetadata = () => {
         <VisibilityItem visibility={visibility as string} />
         <ScheduleItem
           scheduledAt={scheduledAt as Date}
-          isOpen={isOpen}
-          onClose={onClose}
+          open={isOpen}
+          onOpenChange={onClose}
           onToggle={onToggle}
         />
         <MetricsItem />

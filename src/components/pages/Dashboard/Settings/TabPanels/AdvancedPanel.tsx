@@ -1,4 +1,5 @@
 import { VStack, Box, Button } from "@chakra-ui/react";
+
 import { SiteSettings } from "@/types";
 import { SettingField } from "../components/SettingField";
 import { groupSettingsByFolder } from "../utils";
@@ -18,7 +19,7 @@ export const AdvancedPanel = ({
   const advancedSettings = groupedSettings["advanced"] || [];
 
   return (
-    <VStack spacing={6} align="stretch">
+    <VStack gap={6} align="stretch">
       {advancedSettings.map((setting) => (
         <SettingField
           key={setting.key}
@@ -28,7 +29,7 @@ export const AdvancedPanel = ({
         />
       ))}
       <Box>
-        <Button colorScheme="red" variant="outline">
+        <Button colorPalette="red" variant="outline">
           Clear Cache
         </Button>
       </Box>

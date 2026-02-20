@@ -1,5 +1,6 @@
-// components/ResizableImage.tsx
 import { Image } from "@chakra-ui/react";
+// components/ResizableImage.tsx
+
 import { useCallback, useMemo } from "react";
 import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";

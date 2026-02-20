@@ -1,28 +1,5 @@
-import {
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Flex,
-  Hide,
-  HStack,
-  Icon,
-  IconButton,
-  Show,
-  Stack,
-  StackDivider,
-  Text,
-  useColorModeValue,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Breadcrumb, BreadcrumbSeparator, Button, Drawer, Flex, HStack, Icon, IconButton, Show, Stack, Separator, Text } from "@chakra-ui/react";
+
 import DashHeader from "../../Dashboard/Header";
 import {
   LuChevronRight,
@@ -36,9 +13,12 @@ import React from "react";
 import { formatDate } from "@/utils";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { StatusItem } from "../Sidebar/components/StatusItem";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 function EditorHeader() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
   const isDirty = useEditorPostManagerStore((state) => state.isDirty);
   const hasError = useEditorPostManagerStore((state) => state.hasError);
   const lastUpdate = useEditorPostManagerStore(
@@ -55,34 +35,34 @@ function EditorHeader() {
     <>
       <DashHeader pos="sticky" top={0} zIndex={10}>
         <Stack gap={1.5}>
-          <Breadcrumb
+          <Breadcrumb.Root
             my={1}
             hideBelow={"lg"}
-            spacing="8px"
+            gap="8px"
             className="text-sm"
             display={"flex"}
             justifyContent={{ base: "start", md: "center" }}
             separator={<LuChevronRight className="text-gray-500" />}
           >
-            <BreadcrumbItem className="font-semibold hover:underline">
-              <BreadcrumbLink href="/dashboard">
+            <Breadcrumb.Item className="font-semibold hover:underline">
+              <Breadcrumb.Link href="/dashboard">
                 <span className="sr-only">Dashboard</span>
                 <LuLayoutDashboard />
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+              </Breadcrumb.Link>
+            </Breadcrumb.Item>
 
-            <BreadcrumbItem className="font-semibold">
-              <BreadcrumbLink href="/dashboard/posts">Posts</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem isCurrentPage>
-              <BreadcrumbLink isCurrentPage className="text-gray-500">
+            <Breadcrumb.Item className="font-semibold">
+              <Breadcrumb.Link href="/dashboard/posts">Posts</Breadcrumb.Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item isCurrentPage>
+              <Breadcrumb.Link isCurrentPage className="text-gray-500">
                 {postTitle}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+              </Breadcrumb.Link>
+            </Breadcrumb.Item>
+          </Breadcrumb.Root>
           <HStack
             gap={2}
-            divider={<StackDivider />}
+            separator={<Separator />}
             alignItems="center"
             fontSize="sm"
           >
@@ -97,7 +77,7 @@ function EditorHeader() {
             {!hasError && (
               <Flex align="center" gap={1}>
                 <HStack align={"center"} gap={1} className="text-gray-500">
-                  <Icon as={LuClock} />
+                  <Icon><LuClock /></Icon>
                   <Text as="span">Last saved: </Text>
                 </HStack>
 
@@ -121,7 +101,7 @@ function EditorHeader() {
             )}
           </HStack>
         </Stack>
-        <Hide below="md">
+        <Box display={{ base: 'none' }} below="md">
           <Button
             variant="outline"
             gap={2}
@@ -133,29 +113,30 @@ function EditorHeader() {
             <LuSettings />
             <Text>Post Settings</Text>
           </Button>
-        </Hide>
+        </Box>
         <Show below="md">
           <IconButton
-            icon={<LuSettings />}
             rounded={"full"}
             variant={"outline"}
             aria-label="Post Settings"
             onClick={onOpen}
-          ></IconButton>
+          >
+            <LuSettings />
+          </IconButton>
         </Show>
       </DashHeader>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="sm">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Post Settings</DrawerHeader>
-          <DrawerBody px={2} bg={useColorModeValue("gray.100", "gray.700")}>
+      <Drawer.Root open={isOpen} placement="right" onOpenChange={onClose} size="sm">
+        <Drawer.Backdrop />
+        <Drawer.Content>
+          <Drawer.CloseTrigger />
+          <Drawer.Header>Post Settings</Drawer.Header>
+          <Drawer.Body px={2} bg={useColorModeValue("gray.100", "gray.700")}>
             <Box display={"flex"} justifyContent={"center"} py={3}>
               <SidebarContent />
             </Box>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     </>
   );
 }

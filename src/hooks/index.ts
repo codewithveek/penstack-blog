@@ -81,7 +81,7 @@ export function usePosts({
   });
   const {
     data: posts,
-    isLoading,
+    loading,
     isPending,
     isFetching,
     isError,
@@ -112,7 +112,7 @@ export function usePosts({
   );
   return {
     posts,
-    loading: isLoading || isFetching,
+    loading: loading || isFetching,
     error,
     refetchPosts,
     updateParams,

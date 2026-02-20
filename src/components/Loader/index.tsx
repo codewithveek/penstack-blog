@@ -1,5 +1,6 @@
 import { Spinner, Text, VStack, Center } from "@chakra-ui/react";
 
+
 export function LoaderSvg() {
   return (
     <svg className="loader-pl" width="240" height="240" viewBox="0 0 240 240">

@@ -1,9 +1,12 @@
 "use client";
+
+import { Grid } from "@chakra-ui/react";
 import { usePosts } from "@/hooks";
-import { Grid, useColorModeValue } from "@chakra-ui/react";
+
 import PostCard from "../../smooth-land/PostCard";
 import { NewPostCardLoader } from "../NewPostCardLoader";
 import NewPostCard from "../NewPostCard";
+import { useColorModeValue } from "@/components/ui/color-mode";
 export function NewPostsCards({
   maxW,
 }: {

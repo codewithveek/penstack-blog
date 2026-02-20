@@ -1,15 +1,5 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Input,
-  Radio,
-  RadioGroup,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Icon, Input, RadioGroup, Stack, Text } from "@chakra-ui/react";
+
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import isEmpty from "just-is-empty";
 import { LuPlus } from "react-icons/lu";
@@ -20,6 +10,7 @@ import { useState } from "react";
 import { generateSlug } from "@/utils";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toaster } from "@/components/ui/toaster";
 
 export const CategorySection = () => {
   const categoryId = useEditorPostManagerStore(
@@ -41,11 +32,7 @@ export const CategorySection = () => {
     },
   });
 
-  const toast = useToast({
-    duration: 3000,
-    status: "success",
-    position: "top",
-  });
+  
   const { mutateAsync: createCategoryMutation, isPending: isCreating } =
     useMutation({
       mutationFn: async (categoryName: string) => {
@@ -79,13 +66,13 @@ export const CategorySection = () => {
           {categories && categories?.length > 0 && (
             <>
               {categories.map((category) => (
-                <Radio
+                <RadioGroup.Item
                   key={category.id}
                   variant="solid"
                   value={category.id.toString()}
                 >
                   {category.name}
-                </Radio>
+                </RadioGroup.Item>
               ))}
             </>
           )}
@@ -106,11 +93,11 @@ export const CategorySection = () => {
                 }}
               />
               <Button
-                isDisabled={isEmpty(newCategory) || isCreating}
+                disabled={isEmpty(newCategory) || isCreating}
                 onClick={() => {
                   createCategoryMutation(newCategory);
                 }}
-                isLoading={isCreating}
+                loading={isCreating}
                 size={"sm"}
                 variant={"outline"}
                 fontWeight={500}

@@ -1,37 +1,36 @@
 "use client";
 
-import { signIn } from "@/lib/auth/auth-client";
-import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import {
   Box,
   Button,
   Container,
-  Divider,
-  FormControl,
-  FormLabel,
+  Separator,
+  Field,
   Heading,
   Input,
   Stack,
   Text,
   VStack,
   Alert,
-  AlertIcon,
-  useToast,
   AbsoluteCenter,
-  useColorModeValue,
   Center,
   Spinner,
-  InputGroup,
-  InputRightElement,
+  Group,
+  InputElement,
   IconButton,
   Card,
-  CardBody,
 } from "@chakra-ui/react";
+
+import { signIn } from "@/lib/auth/auth-client";
+import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import PageWrapper from "@/components//PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import Link from "next/link";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { toaster } from "@/components/ui/toaster";
 
 export default function SignIn() {
   return (
@@ -42,10 +41,10 @@ export default function SignIn() {
 }
 export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
-  const toast = useToast();
+
   const dividerBg = useColorModeValue("white", "charcoalBlack");
   const searchParams = useSearchParams();
   const callbackUrl = cbUrl || searchParams.get("callbackUrl") || "/";
@@ -86,8 +85,8 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
 
   return (
     <Container maxW="md" py={{ base: 8, md: 12 }} position="relative">
-      <Card>
-        <CardBody>
+      <Card.Root>
+        <Card.Body>
           {isRedirecting && (
             <Box
               position="absolute"
@@ -100,7 +99,7 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
               borderRadius="md"
             >
               <Center height="100%">
-                <VStack spacing={4}>
+                <VStack gap={4}>
                   <Spinner size="xl" color="white" />
                   <Text color="white" fontSize="lg">
                     Successfully logged in! Redirecting...
@@ -109,34 +108,34 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
               </Center>
             </Box>
           )}
-          <VStack spacing={5} align="stretch">
-            <VStack spacing={3}>
+          <VStack gap={5} align="stretch">
+            <VStack gap={3}>
               <Heading size="xl">Sign in</Heading>
               <Text color="gray.500">Welcome back!</Text>
             </VStack>
 
             <form onSubmit={handleSubmit}>
-              <VStack spacing={4}>
-                <FormControl>
-                  <FormLabel>Email or Username</FormLabel>
+              <VStack gap={4}>
+                <Field.Root>
+                  <Field.Label>Email or Username</Field.Label>
                   <Input
                     name="emailOrUsername"
                     type="text"
                     required
                     size="lg"
                   />
-                </FormControl>
+                </Field.Root>
 
-                <FormControl>
-                  <FormLabel>Password</FormLabel>
-                  <InputGroup>
+                <Field.Root>
+                  <Field.Label>Password</Field.Label>
+                  <Group>
                     <Input
                       name="password"
                       type={show ? "text" : "password"}
                       required
                       size="lg"
                     />
-                    <InputRightElement>
+                    <InputElement placement="end">
                       <IconButton
                         variant="ghost"
                         onClick={handleClick}
@@ -144,23 +143,18 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
                       >
                         {show ? <LuEye /> : <LuEyeOff />}
                       </IconButton>
-                    </InputRightElement>
-                  </InputGroup>
-                </FormControl>
+                    </InputElement>
+                  </Group>
+                </Field.Root>
 
                 {error && (
-                  <Alert status="error" borderRadius="lg">
-                    <AlertIcon />
+                  <Alert.Root status="error" borderRadius="lg">
+                    <Alert.Indicator />
                     {error}
-                  </Alert>
+                  </Alert.Root>
                 )}
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  width="full"
-                  isLoading={isLoading}
-                >
+                <Button type="submit" size="lg" width="full" loading={loading}>
                   Sign in
                 </Button>
               </VStack>
@@ -173,36 +167,40 @@ export const SignInComponent = ({ cbUrl }: { cbUrl?: string }) => {
               </Link>
             </Box>
             <Box position="relative" padding="10">
-              <Divider />
+              <Separator />
               <AbsoluteCenter bg={dividerBg} px="4">
                 <Text color="gray.500">or </Text>
               </AbsoluteCenter>
             </Box>
 
-            <Stack spacing={4}>
+            <Stack gap={4}>
               {/* <Button
                 onClick={() => signIn("github", { callbackUrl })}
                 leftIcon={<FaGithub />}
                 width="full"
                 size="lg"
-                colorScheme="gray"
+                colorPalette="gray"
               >
                 GitHub
               </Button> */}
               <Button
-                onClick={() => signIn.social({ provider: "google", callbackURL: callbackUrl })}
-                leftIcon={<FaGoogle />}
+                onClick={() =>
+                  signIn.social({
+                    provider: "google",
+                    callbackURL: callbackUrl,
+                  })
+                }
                 width="full"
                 size="lg"
                 borderRadius="xl"
-                colorScheme="red"
+                colorPalette="red"
               >
-                Continue with Google
+                <FaGoogle /> Continue with Google
               </Button>
             </Stack>
           </VStack>
-        </CardBody>
-      </Card>
+        </Card.Body>
+      </Card.Root>
     </Container>
   );
 };

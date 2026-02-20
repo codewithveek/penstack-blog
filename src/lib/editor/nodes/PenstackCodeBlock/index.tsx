@@ -1,23 +1,12 @@
-import {
-  Box,
-  Button,
-  DarkMode,
-  HStack,
-  Icon,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Select,
-  Stack,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Icon, Menu, NativeSelect, Stack } from "@chakra-ui/react";
+
 import { NodeViewProps } from "@tiptap/core";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import { memo, useMemo } from "react";
 import { LuChevronDown } from "react-icons/lu";
 
 import { FixedSizeList } from "react-window";
+import { DarkMode, useColorModeValue } from "@/components/ui/color-mode";
 
 interface PenstackCodeblockComponentProps extends NodeViewProps {}
 
@@ -48,7 +37,7 @@ export const PenstackCodeblockComponent: React.FC<
       const hoverColor = useColorModeValue("black", "white");
 
       return (
-        <MenuItem
+        <Menu.Item
           value={item}
           rounded="full"
           bg={defaultLanguage === item ? "brand.500" : ""}
@@ -61,7 +50,7 @@ export const PenstackCodeblockComponent: React.FC<
           style={{ ...style, marginTop: "8px" }}
         >
           {item}
-        </MenuItem>
+        </Menu.Item>
       );
     }
   );
@@ -73,26 +62,26 @@ export const PenstackCodeblockComponent: React.FC<
       spellCheck="false"
     >
       <HStack justify={"flex-end"} p={0}>
-        <Menu>
+        <Menu.Root>
           {({ isOpen }) => (
             <>
               <DarkMode>
-                <MenuButton
-                  variant={"ghost"}
-                  colorScheme="gray"
-                  size={"xs"}
-                  as={Button}
-                  rightIcon={
-                    <Icon
-                      as={LuChevronDown}
-                      transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
+                <Menu.Trigger asChild>
+                  <Button
+                    variant={"ghost"}
+                    colorPalette="gray"
+                    size={"xs"}
+                  >
+                    {defaultLanguage || "auto"}
+                    <LuChevronDown
+                      style={{
+                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      }}
                     />
-                  }
-                >
-                  {defaultLanguage || "auto"}
-                </MenuButton>
+                  </Button>
+                </Menu.Trigger>
               </DarkMode>
-              <MenuList maxH={heights.listHeight} px={2}>
+              <Menu.Content maxH={heights.listHeight} px={2}>
                 <FixedSizeList
                   height={heights.listHeight}
                   itemCount={languages?.length}
@@ -101,10 +90,10 @@ export const PenstackCodeblockComponent: React.FC<
                 >
                   {LanguageRow}
                 </FixedSizeList>
-              </MenuList>
+              </Menu.Content>
             </>
           )}
-        </Menu>
+        </Menu.Root>
       </HStack>
       <Box as="pre">
         <NodeViewContent as="code" />

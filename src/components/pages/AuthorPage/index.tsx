@@ -1,22 +1,13 @@
 "use client";
-import {
-  Box,
-  Container,
-  Text,
-  Heading,
-  VStack,
-  useColorModeValue,
-  Flex,
-  Card,
-  Stack,
-  Avatar,
-  CardBody,
-} from "@chakra-ui/react";
+
+import { Box, Container, Text, Heading, VStack, Flex, Card, Stack, Avatar } from "@chakra-ui/react";
+
 import React, { Suspense } from "react";
 import { Newsletter } from "../../NewsLetter";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/themes/smooth-land/PostsCards";
 import { AuthorSelect, PostSelect } from "@/types";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const AuthorPage = ({
   username,
@@ -36,14 +27,14 @@ const AuthorPage = ({
         <Container maxW="7xl">
           {/* Author Profile Section */}
 
-          <Card mb={6}>
-            <CardBody>
+          <Card.Root mb={6}>
+            <Card.Body>
               <Flex
                 direction={{ base: "column", md: "row" }}
                 align={{ base: "center", md: "start" }}
                 gap={8}
               >
-                <Avatar
+                <Avatar.Root
                   src={author?.avatar as string}
                   name={author?.name}
                   w="128px"
@@ -56,7 +47,7 @@ const AuthorPage = ({
                 <VStack
                   flex={1}
                   align={{ base: "center", md: "start" }}
-                  spacing={2}
+                  gap={2}
                 >
                   <Stack gap={0} align={{ base: "center", md: "start" }}>
                     <Heading size="xl">{author?.name}</Heading>
@@ -82,7 +73,7 @@ const AuthorPage = ({
                   </Text>
 
                   {/* <HStack
-                spacing={4}
+                gap={4}
                 wrap="wrap"
                 justify={{ base: "center", md: "start" }}
                 >
@@ -137,11 +128,11 @@ const AuthorPage = ({
                   </HStack> */}
                 </VStack>
               </Flex>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
 
-          <Card mb={12}>
-            <CardBody>
+          <Card.Root mb={12}>
+            <Card.Body>
               <Box mx={"auto"} maxW={"2xl"}>
                 <Newsletter
                   isDark={false}
@@ -149,8 +140,8 @@ const AuthorPage = ({
                   maxW={"2xl"}
                 />
               </Box>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
 
           <Box mt={8}>
             <Heading size="lg" mb={8}>

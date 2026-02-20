@@ -1,26 +1,10 @@
+import { Card, Badge, Heading, Drawer, Image, Text, VStack, HStack, Box } from "@chakra-ui/react";
 import React, { memo } from "react";
 import { LuFile, LuImage, LuVideo, LuFileText, LuMusic } from "react-icons/lu";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Badge,
-  Heading,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  Image,
-  DrawerCloseButton,
-  Text,
-  VStack,
-  HStack,
-  Box,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import { MediaResponse } from "@/types";
 import { formatBytes } from "@/utils";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const FilePreview = memo(
   ({
@@ -120,22 +104,22 @@ const FilePreview = memo(
     };
 
     return (
-      <Drawer
-        isOpen={isOpen}
-        onClose={onClose}
+      <Drawer.Root
+        open={isOpen}
+        onOpenChange={onClose}
         size={{ base: "full", md: "lg" }}
       >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerCloseButton />
-          </DrawerHeader>
+        <Drawer.Backdrop />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
 
-          <DrawerBody>
-            <Card w="full" maxW="2xl">
-              <CardHeader>
+          <Drawer.Body>
+            <Card.Root w="full" maxW="2xl">
+              <Card.Header>
                 <HStack justify="space-between">
-                  <HStack spacing={2}>
+                  <HStack gap={2}>
                     {getFileIcon(file.type)}
                     <Heading size="md" fontWeight="medium">
                       {file.name}
@@ -143,10 +127,10 @@ const FilePreview = memo(
                   </HStack>
                   <Badge variant="secondary">{file.type.toUpperCase()}</Badge>
                 </HStack>
-              </CardHeader>
+              </Card.Header>
 
-              <CardBody>
-                <VStack spacing={4} align="stretch">
+              <Card.Body>
+                <VStack gap={4} align="stretch">
                   {renderPreview()}
 
                   <Box
@@ -211,11 +195,11 @@ const FilePreview = memo(
                     </Text>
                   </Box>
                 </VStack>
-              </CardBody>
-            </Card>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+              </Card.Body>
+            </Card.Root>
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     );
   }
 );

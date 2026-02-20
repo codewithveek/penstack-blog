@@ -1,14 +1,8 @@
 "use client";
+
+import { Box, Heading, Text, Button, VStack, Container, Image } from "@chakra-ui/react";
 import { NextPage } from "next";
-import {
-  Box,
-  Heading,
-  Text,
-  Button,
-  VStack,
-  Container,
-  Image,
-} from "@chakra-ui/react";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -17,7 +11,7 @@ const NotFound: NextPage = () => {
 
   return (
     <Container maxW="container.xl" h="100vh" centerContent>
-      <VStack spacing={8} align="center" justify="center" h="full">
+      <VStack gap={8} align="center" justify="center" h="full">
         <NotFoundSvg />
         <Heading as="h1" size="2xl" textAlign="center">
           Oops! Page Not Found
@@ -27,8 +21,8 @@ const NotFound: NextPage = () => {
           been removed, renamed, or doesn&apos;t exist.
         </Text>
         <Box>
-          <Button as={Link} rounded={"full"} size="lg" href="/" mr={4}>
-            Go Home
+          <Button asChild rounded={"full"} size="lg" mr={4}>
+            <Link href="/">Go Home</Link>
           </Button>
           <Button
             rounded={"full"}

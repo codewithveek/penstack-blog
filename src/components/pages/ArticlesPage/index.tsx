@@ -1,7 +1,9 @@
 "use client";
+
 import { Box } from "@chakra-ui/react";
+
 import PageWrapper from "../../PageWrapper";
-import { PostsCards } from "../../../../themes/smooth-land/PostsCards";
+import { PostsCards } from "@/themes/smooth-land/PostsCards";
 import { usePosts } from "@/hooks";
 import { CategoryItemList } from "../../CategoryItemList";
 import { PostSelect } from "@/types";

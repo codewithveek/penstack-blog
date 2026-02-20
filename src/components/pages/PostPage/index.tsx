@@ -1,18 +1,8 @@
 "use client";
+
+import { Box, Container, VStack, Flex, useBreakpointValue, HStack, Breadcrumb, Text } from "@chakra-ui/react";
 import React, { Suspense, useEffect, useState } from "react";
-import {
-  Box,
-  Container,
-  VStack,
-  Flex,
-  useColorModeValue,
-  useBreakpointValue,
-  HStack,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Text,
-} from "@chakra-ui/react";
+
 import { PostSelect, SiteSettings } from "@/types";
 import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
@@ -20,9 +10,10 @@ import { generatePostDescription } from "@/utils";
 import { ArticleHeader } from "./ArticleHeader";
 import { ArticleContent } from "./ArticleContent";
 import { Newsletter } from "../../NewsLetter";
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { LuChevronRight } from "react-icons/lu";
 import { ThemedSocialShareGroup } from "../../SocialShares";
 import dynamic from "next/dynamic";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const ViewTracker = dynamic(
   () => import("../../ViewTracker").then((mod) => mod.ViewTracker),
@@ -75,44 +66,44 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
         pr={{ lg: 12 }}
         className="py-8 relative px-4 md:px-5 lg:px-8"
       >
-        <Breadcrumb
+        <Breadcrumb.Root
           hideBelow={"lg"}
-          spacing="8px"
+          gap="8px"
           fontSize={"0.9em"}
           display={"flex"}
           justifyContent={{ base: "start", md: "center" }}
-          separator={<ChevronRightIcon color={metaColor} />}
+          separator={<LuChevronRight color={metaColor} />}
           mb={6}
           listProps={{ flexWrap: "wrap" }}
         >
-          <BreadcrumbItem>
-            <BreadcrumbLink
+          <Breadcrumb.Item>
+            <Breadcrumb.Link
               href="/"
               color={"var(--link-color)"}
               fontWeight={500}
             >
               Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
+            </Breadcrumb.Link>
+          </Breadcrumb.Item>
           {post?.category && (
-            <BreadcrumbItem>
-              <BreadcrumbLink
+            <Breadcrumb.Item>
+              <Breadcrumb.Link
                 href={`/category/${post?.category.slug}`}
                 color={"var(--link-color)"}
                 fontWeight={500}
               >
                 {post?.category.name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+              </Breadcrumb.Link>
+            </Breadcrumb.Item>
           )}
-          <BreadcrumbItem
+          <Breadcrumb.Item
             isCurrentPage
             color={metaColor}
             className="text-wrap "
           >
             <Text>{post?.title}</Text>
-          </BreadcrumbItem>
-        </Breadcrumb>
+          </Breadcrumb.Item>
+        </Breadcrumb.Root>
         <HStack
           gap={1}
           align={"center"}
@@ -155,7 +146,7 @@ const PostPage: React.FC<{ post: PostSelect; siteSettings: SiteSettings }> = ({
             w={sidebarWidth || "320px"}
             minW={{ base: "full", md: 320 }}
             pt={4}
-            spacing={4}
+            gap={4}
             alignSelf={"start"}
             position="sticky"
             style={{ scrollPaddingTop: "10px" }}

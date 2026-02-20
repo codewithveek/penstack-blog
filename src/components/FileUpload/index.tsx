@@ -1,4 +1,6 @@
 "use client";
+
+import { Box, Button, Field, Input, Textarea, VStack, HStack, Image, Text, IconButton, Progress, Alert, Badge, Collapsible } from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
@@ -11,28 +13,10 @@ import {
 } from "react-icons/lu";
 import { MediaResponse } from "@/types";
 import axios from "axios";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  useToast,
-  VStack,
-  HStack,
-  Image,
-  Text,
-  IconButton,
-  Progress,
-  useColorModeValue,
-  Alert,
-  AlertIcon,
-  AlertDescription,
-  Badge,
-  Collapse,
-} from "@chakra-ui/react";
+
 import { useQueryClient } from "@tanstack/react-query";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { toaster } from "@/components/ui/toaster";
 
 interface FileUploadProps {
   folder?: string;
@@ -75,12 +59,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [expandedFileIndex, setExpandedFileIndex] = useState<number | null>(
     null
   );
-  const toast = useToast({
-    position: "top",
-    status: "success",
-    duration: 3000,
-    isClosable: true,
-  });
+  
 
   const borderColor = useColorModeValue("gray.300", "gray.600");
   const activeBorderColor = useColorModeValue("brand.500", "brand.400");
@@ -219,7 +198,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     ).length;
 
     if (successCount > 0) {
-      toast({
+      toaster.create({
         title: `${successCount} file${successCount > 1 ? "s" : ""} uploaded successfully`,
       });
       queryClient.invalidateQueries({
@@ -230,7 +209,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
 
     if (errorCount > 0) {
-      toast({
+      toaster.create({
         title: `${errorCount} file${errorCount > 1 ? "s" : ""} failed to upload`,
         status: "error",
       });
@@ -264,7 +243,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       setFilesWithStatus((prev) => [...prev, ...newFiles]);
 
       if (rejectedFiles.length > 0) {
-        toast({
+        toaster.create({
           title: `${rejectedFiles.length} file${rejectedFiles.length > 1 ? "s" : ""} rejected`,
           description: "Files may be too large or have invalid formats",
           status: "warning",
@@ -305,7 +284,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }[status];
 
     return (
-      <Badge colorScheme={colorScheme} fontSize="xs">
+      <Badge colorPalette={colorScheme} fontSize="xs">
         {status}
       </Badge>
     );
@@ -315,7 +294,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
   return (
     <Box mx="auto" h="full" w="full">
-      <VStack spacing={6} w="full">
+      <VStack gap={6} w="full">
         <VStack
           minH="300px"
           justify="center"
@@ -337,9 +316,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           }}
         >
           <input {...getInputProps()} />
-          <VStack spacing={3}>
+          <VStack gap={3}>
             {uploading ? (
-              <VStack spacing={3}>
+              <VStack gap={3}>
                 <Box
                   as={LuLoaderCircle}
                   h={12}
@@ -354,7 +333,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             ) : (
               <>
                 <Box as={LuUpload} h={12} w={12} color={iconColor} />
-                <VStack spacing={1}>
+                <VStack gap={1}>
                   <Text fontSize="lg" fontWeight="medium" color={textColor}>
                     {isDragActive
                       ? "Drop files here"
@@ -374,7 +353,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
         {filesWithStatus.length > 0 && (
           <VStack
-            spacing={3}
+            gap={3}
             w="full"
             bg={bgColor}
             p={4}
@@ -388,11 +367,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               </Text>
               <Button
                 onClick={handleUpload}
-                isLoading={uploading}
+                loading={uploading}
                 loadingText="Uploading..."
-                colorScheme="brand"
+                colorPalette="brand"
                 size="sm"
-                isDisabled={filesWithStatus.every(
+                disabled={filesWithStatus.every(
                   (f) => f.status !== "pending"
                 )}
               >
@@ -404,7 +383,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               <VStack
                 key={index}
                 w="full"
-                spacing={2}
+                gap={2}
                 p={3}
                 bg={itemBgColor}
                 borderRadius="lg"
@@ -412,7 +391,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 borderWidth="1px"
                 borderColor={borderColor}
               >
-                <HStack w="full" spacing={3}>
+                <HStack w="full" gap={3}>
                   <Image
                     src={fileItem.previewUrl}
                     alt={`Preview ${index + 1}`}
@@ -434,12 +413,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                       </Box>
                     }
                   />
-                  <VStack flex={1} align="start" spacing={1}>
+                  <VStack flex={1} align="start" gap={1}>
                     <HStack w="full">
                       <Text
                         fontSize="sm"
                         fontWeight="medium"
-                        isTruncated
+                        truncate
                         flex={1}
                         color={textColor}
                       >
@@ -447,7 +426,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                       </Text>
                       {getStatusBadge(fileItem.status)}
                     </HStack>
-                    <HStack spacing={2} fontSize="xs" color={mutedTextColor}>
+                    <HStack gap={2} fontSize="xs" color={mutedTextColor}>
                       <Text>{(fileItem.file.size / 1024).toFixed(2)} KB</Text>
                       {fileItem.status === "uploading" && (
                         <Text color="brand.500" fontWeight="medium">
@@ -456,7 +435,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                       )}
                     </HStack>
                   </VStack>
-                  <HStack spacing={2}>
+                  <HStack gap={2}>
                     {getStatusIcon(fileItem.status)}
                     {fileItem.status === "pending" && (
                       <Button
@@ -473,23 +452,24 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                     )}
                     <IconButton
                       aria-label="remove file"
-                      colorScheme="red"
+                      colorPalette="red"
                       variant="ghost"
                       size="sm"
-                      isDisabled={uploading && fileItem.status === "uploading"}
+                      disabled={uploading && fileItem.status === "uploading"}
                       onClick={() => handleRemoveFile(index)}
-                      icon={<LuX />}
-                    />
+                    >
+                      <LuX />
+                    </IconButton>
                   </HStack>
                 </HStack>
 
-                <Collapse in={expandedFileIndex === index} animateOpacity>
-                  <VStack spacing={3} w="full" pt={2}>
+                <Collapsible.Root open={expandedFileIndex === index}>
+                  <VStack gap={3} w="full" pt={2}>
                     {isImage(fileItem.file) && (
-                      <FormControl>
-                        <FormLabel fontSize="xs" mb={1}>
+                      <Field.Root>
+                        <Field.Label fontSize="xs" mb={1}>
                           Alt Text
-                        </FormLabel>
+                        </Field.Label>
                         <Input
                           size="sm"
                           placeholder="Describe this image for accessibility"
@@ -502,14 +482,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                             )
                           }
                         />
-                      </FormControl>
+                      </Field.Root>
                     )}
-                    <FormControl>
-                      <FormLabel fontSize="xs" mb={1}>
+                    <Field.Root>
+                      <Field.Label fontSize="xs" mb={1}>
                         Caption
-                      </FormLabel>
-                      <Textarea
-                        size="sm"
+                      </Field.Label>
+                      <Textarea fontSize="sm"
                         placeholder="Add a caption (optional)"
                         rows={2}
                         value={fileItem.caption}
@@ -517,25 +496,25 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                           updateFileMetadata(index, "caption", e.target.value)
                         }
                       />
-                    </FormControl>
+                    </Field.Root>
                   </VStack>
-                </Collapse>
+                </Collapsible.Root>
 
                 {fileItem.status === "uploading" && (
-                  <Progress
+                  <Progress.Root
                     value={fileItem.progress}
                     size="xs"
                     w="full"
-                    colorScheme="brand"
+                    colorPalette="brand"
                     borderRadius="full"
                   />
                 )}
 
                 {fileItem.status === "error" && fileItem.error && (
-                  <Alert status="error" borderRadius="md" fontSize="sm">
-                    <AlertIcon />
-                    <AlertDescription>{fileItem.error}</AlertDescription>
-                  </Alert>
+                  <Alert.Root status="error" borderRadius="md" fontSize="sm">
+                    <Alert.Indicator />
+                    <Alert.Description>{fileItem.error}</Alert.Description>
+                  </Alert.Root>
                 )}
               </VStack>
             ))}
@@ -555,12 +534,7 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
   folder = "uploads",
   onUploadComplete,
 }) => {
-  const toast = useToast({
-    position: "top",
-    status: "success",
-    duration: 3000,
-    isClosable: true,
-  });
+  
   const [url, setUrl] = useState("");
   const [filename, setFilename] = useState("");
   const [alt_text, setAltText] = useState("");
@@ -602,15 +576,15 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
         refetchType: "all",
         exact: false,
       });
-      toast({ title: "Uploaded successfully" });
+      toaster.create({ title: "Uploaded successfully" });
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to upload from URL";
       setError(errorMessage);
-      toast({
+      toaster.create({
         title: "Upload failed",
         description: errorMessage,
-        status: "error",
+        type: "error",
       });
       console.error("Upload error:", err);
     } finally {
@@ -631,91 +605,88 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
       boxShadow="sm"
     >
       <form onSubmit={handleSubmit}>
-        <VStack spacing={5}>
-          <FormControl isRequired>
-            <FormLabel htmlFor="url" fontSize="sm" fontWeight="medium">
+        <VStack gap={5}>
+          <Field.Root required>
+            <Field.Label htmlFor="url" fontSize="sm" fontWeight="medium">
               Image URL
-            </FormLabel>
+            </Field.Label>
             <Input
               id="url"
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://example.com/image.jpg"
-              isDisabled={uploading}
+              disabled={uploading}
               required
               size="lg"
             />
-          </FormControl>
+          </Field.Root>
 
-          <FormControl>
-            <FormLabel fontSize="sm" htmlFor="filename" fontWeight="medium">
+          <Field.Root>
+            <Field.Label fontSize="sm" htmlFor="filename" fontWeight="medium">
               Custom Filename (optional)
-            </FormLabel>
+            </Field.Label>
             <Input
               id="filename"
               type="text"
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
               placeholder="custom-filename"
-              isDisabled={uploading}
+              disabled={uploading}
               size="lg"
             />
-          </FormControl>
+          </Field.Root>
 
-          <FormControl>
-            <FormLabel fontSize="sm" htmlFor="alt_text" fontWeight="medium">
+          <Field.Root>
+            <Field.Label fontSize="sm" htmlFor="alt_text" fontWeight="medium">
               Alt Text (optional)
-            </FormLabel>
+            </Field.Label>
             <Input
               id="alt_text"
               type="text"
               value={alt_text}
               onChange={(e) => setAltText(e.target.value)}
               placeholder="Describe the image for accessibility"
-              isDisabled={uploading}
+              disabled={uploading}
               size="lg"
             />
-          </FormControl>
+          </Field.Root>
 
-          <FormControl>
-            <FormLabel fontSize="sm" htmlFor="caption" fontWeight="medium">
+          <Field.Root>
+            <Field.Label fontSize="sm" htmlFor="caption" fontWeight="medium">
               Caption (optional)
-            </FormLabel>
+            </Field.Label>
             <Textarea
               id="caption"
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               placeholder="Add a caption"
-              isDisabled={uploading}
+              disabled={uploading}
               size="lg"
               rows={3}
             />
-          </FormControl>
+          </Field.Root>
 
           {error && (
-            <Alert status="error" borderRadius="md">
-              <AlertIcon />
-              <AlertDescription fontSize="sm">{error}</AlertDescription>
-            </Alert>
+            <Alert.Root status="error" borderRadius="md">
+              <Alert.Indicator />
+              <Alert.Description fontSize="sm">{error}</Alert.Description>
+            </Alert.Root>
           )}
 
           <Button
             type="submit"
-            isDisabled={uploading || !url}
+            disabled={uploading || !url}
             w="full"
             size="lg"
-            colorScheme="brand"
-            leftIcon={
+            colorPalette="brand"
+          >
               uploading ? (
                 <LuLoaderCircle className="animate-spin" />
               ) : (
                 <LuLink />
               )
-            }
-          >
-            {uploading ? "Uploading..." : "Upload from URL"}
-          </Button>
+             {uploading ? "Uploading..." : "Upload from URL"}</Button>
         </VStack>
       </form>
     </Box>

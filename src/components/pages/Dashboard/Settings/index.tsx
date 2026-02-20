@@ -1,21 +1,8 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Button,
-  useToast,
-  Card,
-  CardBody,
-  Alert,
-  AlertIcon,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Container, Tabs, Button, Card, Alert } from "@chakra-ui/react";
+
+
 import { useState, useEffect } from "react";
 import { SiteSettings } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,10 +22,11 @@ import { parseAsString, useQueryState } from "nuqs";
 import { isEqual } from "lodash";
 import { MiscPanel } from "./TabPanels/MiscPanel";
 import { SocialPanel } from "./TabPanels/SocialPanel";
+import { toaster } from "@/components/ui/toaster";
 
 export default function DashboardSettingsPage() {
-  const toast = useToast({ position: "top" });
-  const [isLoading, setIsLoading] = useState(false);
+  
+  const [loading, setIsLoading] = useState(false);
   const settingsContext = useSiteConfig();
   const [settings, setSettings] = useState<SiteSettings>(settingsContext);
   const queryClient = useQueryClient();
@@ -69,9 +57,9 @@ export default function DashboardSettingsPage() {
       setOriginalSettings({ ...fetchedData });
       return fetchedData;
     } catch (error) {
-      toast({
+      toaster.create({
         title: "Failed to load settings",
-        status: "error",
+        type: "error",
         duration: 3000,
       });
     }
@@ -148,15 +136,15 @@ export default function DashboardSettingsPage() {
         queryKey: ["settings"],
         refetchType: "all",
       });
-      toast({
+      toaster.create({
         title: "Settings saved successfully",
-        status: "success",
+        type: "success",
         duration: 3000,
       });
     } catch (error) {
-      toast({
+      toaster.create({
         title: "Failed to save settings",
-        status: "error",
+        type: "error",
         duration: 3000,
       });
     } finally {
@@ -172,109 +160,109 @@ export default function DashboardSettingsPage() {
     <Box>
       <DashHeader />
       <Container maxW="container.2xl" p={{ base: 4, md: 5 }}>
-        <Card>
+        <Card.Root>
           <PageTitleHeader title={"Settings"}>
             <Button
-              isLoading={isLoading}
+              loading={loading}
               onClick={handleSave}
               rounded="md"
-              isDisabled={!hasChanges}
+              disabled={!hasChanges}
             >
               Save Changes
             </Button>
           </PageTitleHeader>
 
-          <CardBody>
+          <Card.Body>
             {hasChanges && (
-              <Alert status="info" colorScheme="brand" mb={4} rounded="md">
-                <AlertIcon />
+              <Alert.Root status="info" colorPalette="brand" mb={4} rounded="md">
+                <Alert.Indicator />
                 You have unsaved changes
-              </Alert>
+              </Alert.Root>
             )}
 
-            <Tabs
+            <Tabs.Root
               defaultIndex={tabs.findIndex((tab) => tab.folder === activeTab)}
               onChange={(index) => {
                 setActiveTab(tabs[index].folder);
               }}
             >
-              <TabList overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
+              <Tabs.List overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
                 {tabs.map((tab) => (
-                  <Tab
+                  <Tabs.Trigger
                     key={tab.folder}
                     onClick={() => setActiveTab(tab.folder)}
                   >
                     {tab.title}
-                  </Tab>
+                  </Tabs.Trigger>
                 ))}
-              </TabList>
+              </Tabs.List>
 
-              <TabPanels py={5}>
-                <TabPanel px={2}>
+              <Tabs.ContentGroup py={5}>
+                <Tabs.Content px={2}>
                   <GeneralPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                     openMediaModal={openMediaModal}
                   />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <AnalyticsPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <MonitoringPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <MediaPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <EmailPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <SocialPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <AdvancedPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <MiscPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
                     handleToggle={handleToggle}
                   />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </CardBody>
-        </Card>
+                </Tabs.Content>
+              </Tabs.ContentGroup>
+            </Tabs.Root>
+          </Card.Body>
+        </Card.Root>
       </Container>
       <MediaModal
-        isOpen={isOpen}
-        onClose={onClose}
+        open={isOpen}
+        onOpenChange={onClose}
         multiple={false}
         maxSelection={1}
         onSelect={(media) => {

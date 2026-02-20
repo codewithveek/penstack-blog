@@ -1,13 +1,7 @@
+import { Button, HStack, Input, Group, InputAddon, NativeSelect } from "@chakra-ui/react";
 import React, { memo } from "react";
 import { LuRefreshCw, LuSearch } from "react-icons/lu";
-import {
-  Button,
-  HStack,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  Select,
-} from "@chakra-ui/react";
+
 import { FilterParams, MediaType } from "@/types";
 
 interface MediaFilterProps {
@@ -24,19 +18,19 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
         wrap={{ base: "wrap", xl: "nowrap" }}
         justify="space-between"
       >
-        <InputGroup maxW={500}>
-          <InputLeftAddon roundedLeft="md">
+        <Group maxW={500}>
+          <InputAddon placement="start" roundedLeft="md">
             <LuSearch />
-          </InputLeftAddon>
+          </InputAddon>
           <Input
             roundedRight="md"
             placeholder="Search media..."
             onChange={(e) => onFilterChange({ search: e.target.value })}
           />
-        </InputGroup>
+        </Group>
 
         <HStack gap={4} wrap={{ base: "wrap", md: "nowrap" }}>
-          <Select
+          <NativeSelect.Root
             rounded="md"
             onChange={(e) =>
               onFilterChange({
@@ -50,9 +44,9 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
             <option value="audio">Audio</option>
             <option value="pdf">PDF</option>
             <option value="doc">Documents</option>
-          </Select>
+          </NativeSelect.Root>
 
-          <Select
+          <NativeSelect.Root
             rounded="md"
             onChange={(e) => {
               const value = e.target.value;
@@ -70,18 +64,15 @@ export const MediaFilter: React.FC<MediaFilterProps> = memo(
             <option value="name-desc">Name Z-A</option>
             <option value="size-desc">Largest first</option>
             <option value="size-asc">Smallest first</option>
-          </Select>
+          </NativeSelect.Root>
 
           <Button
             flexShrink={0}
             ml="auto"
             size="sm"
             rounded="md"
-            leftIcon={<LuRefreshCw />}
             onClick={refetchMedia}
-          >
-            Refresh
-          </Button>
+          ><LuRefreshCw /> Refresh</Button>
         </HStack>
       </HStack>
     );

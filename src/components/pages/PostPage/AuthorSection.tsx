@@ -1,17 +1,10 @@
+import { Box, VStack, HStack, Heading, Text, Avatar, Button } from "@chakra-ui/react";
 import React from "react";
-import {
-  Box,
-  VStack,
-  HStack,
-  Heading,
-  Text,
-  Avatar,
-  useColorModeValue,
-  Button,
-} from "@chakra-ui/react";
+
 import Link from "next/link";
 import { PostSelect } from "@/types";
 import { LuTwitter, LuGithub } from "react-icons/lu";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface AuthorSectionProps {
   post: PostSelect;
@@ -30,11 +23,11 @@ export const AuthorSection: React.FC<AuthorSectionProps> = ({ post }) => {
       bg={bgColor}
       mt={12}
     >
-      <VStack align="start" spacing={4}>
+      <VStack align="start" gap={4}>
         <Heading size="md">Written By</Heading>
-        <HStack spacing={4} w="full" wrap={"wrap"}>
+        <HStack gap={4} w="full" wrap={"wrap"}>
           <Link href={`/author/${post?.author.username}`} alignSelf={"start"}>
-            <Avatar
+            <Avatar.Root
               size={{ base: "md", md: "lg" }}
               width={"40px"}
               height={"40px"}
@@ -54,18 +47,13 @@ export const AuthorSection: React.FC<AuthorSectionProps> = ({ post }) => {
                 {post?.author.bio}
               </Text>
             )}
-            <HStack mt={4} spacing={4}>
+            <HStack mt={4} gap={4}>
               <Button
-                leftIcon={<LuTwitter />}
                 size="sm"
                 variant="ghost"
-                colorScheme="twitter"
-              >
-                Follow
-              </Button>
-              <Button leftIcon={<LuGithub />} size="sm" variant="ghost">
-                GitHub
-              </Button>
+                colorPalette="twitter"
+              ><LuTwitter /> Follow</Button>
+              <Button size="sm" variant="ghost"><LuGithub /> GitHub</Button>
             </HStack>
           </Box>
         </HStack>

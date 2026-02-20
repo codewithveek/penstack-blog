@@ -1,3 +1,4 @@
+import { VStack, Text, Box, HStack } from "@chakra-ui/react";
 interface CommandListProps {
   items: Array<{
     command: (props: { editor: Editor; range: any }) => void;
@@ -5,7 +6,7 @@ interface CommandListProps {
   }>;
 }
 
-import { VStack, Text, Box, HStack } from "@chakra-ui/react";
+
 import { Editor } from "@tiptap/core";
 import { useState, useEffect } from "react";
 
@@ -38,7 +39,7 @@ export const CommandList = ({ items }: CommandListProps) => {
 
   return (
     <VStack
-      spacing={1}
+      gap={1}
       align="stretch"
       bg="white"
       shadow="lg"
@@ -58,7 +59,7 @@ export const CommandList = ({ items }: CommandListProps) => {
           onClick={() => {}}
           rounded="md"
         >
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Text>{item.title}</Text>
           </HStack>
         </Box>

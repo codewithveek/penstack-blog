@@ -1,13 +1,11 @@
 "use client";
-import {
-  HStack,
-  Text,
-  useBreakpointValue,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
+import { HStack, Text, useBreakpointValue } from "@chakra-ui/react";
+
 import { AppLogo } from "./AppLogo";
 import { useSiteConfig } from "@/context/SiteConfig";
 import { cn } from "@/lib/utils";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface Props {
   logoSize?: string;
@@ -39,7 +37,7 @@ export const AppLogoAndName = ({
           fontSize={nameSize}
           fontWeight="medium"
           fontFamily={"var(--font-heading)"}
-          isTruncated
+          truncate
         >
           {siteSettings?.siteName?.value}
         </Text>

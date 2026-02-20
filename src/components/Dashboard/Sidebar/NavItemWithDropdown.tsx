@@ -1,25 +1,11 @@
+import { Popover, Box, VStack, Separator, Flex, HStack, Button, Icon, Text } from "@chakra-ui/react";
 import { NavItemWithoutPermission } from "@/types";
-import {
-  useDisclosure,
-  Popover,
-  PopoverTrigger,
-  Box,
-  PopoverContent,
-  PopoverArrow,
-  PopoverBody,
-  VStack,
-  Divider,
-  Flex,
-  HStack,
-  Button,
-  Icon,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import { LuChevronDown } from "react-icons/lu";
 import { SidebarNavItem } from "./NavItem";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const NavItemWithChildren = ({
   item,
@@ -43,7 +29,9 @@ export const NavItemWithChildren = ({
   bg: string;
 }) => {
   const pathname = usePathname();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
   const [openItems, setOpenItems] = useState<string[]>([]);
   const childrenBg = useColorModeValue("gray.100", "gray.900");
 
@@ -68,20 +56,20 @@ export const NavItemWithChildren = ({
   }, [navItems, pathname]);
   if (isMinimized) {
     return (
-      <Popover
+      <Popover.Root
         placement="right"
-        isOpen={isOpen}
+        open={isOpen}
         onOpen={onOpen}
-        onClose={onClose}
+        onOpenChange={onClose}
         trigger="hover"
       >
-        <PopoverTrigger>
+        <Popover.Trigger>
           <Box>
             <SidebarNavItem
               navBtnActiveColor={navBtnActiveColor}
               icon={item.icon}
               href={item.href}
-              onClose={onClose}
+              onOpenChange={onClose}
               isMinimized={isMinimized}
               navBtnBg={navBtnBg}
               navBtnBgHover={navBtnBgHover}
@@ -92,14 +80,14 @@ export const NavItemWithChildren = ({
               {item.label}
             </SidebarNavItem>
           </Box>
-        </PopoverTrigger>
-        <PopoverContent ml={2} w="200px" rounded={"md"}>
-          <PopoverArrow bg={bg} />
-          <PopoverBody p={2} bg={bg} rounded={"md"}>
+        </Popover.Trigger>
+        <Popover.Content ml={2} w="200px" rounded={"md"}>
+          <Popover.Arrow bg={bg} />
+          <Popover.Body p={2} bg={bg} rounded={"md"}>
             <VStack
               align="stretch"
-              spacing={2}
-              divider={<Divider />}
+              gap={2}
+              separator={<Separator />}
               role="group"
             >
               {item.children?.map((child, idx) => (
@@ -109,7 +97,7 @@ export const NavItemWithChildren = ({
                   href={child.href}
                   nested
                   label={child?.label}
-                  onClose={onClose}
+                  onOpenChange={onClose}
                   isMinimized={isMinimized}
                   navBtnBg={navBtnBg}
                   navBtnBgHover={navBtnBgHover}
@@ -121,9 +109,9 @@ export const NavItemWithChildren = ({
                 </SidebarNavItem>
               ))}
             </VStack>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+          </Popover.Body>
+        </Popover.Content>
+      </Popover.Root>
     );
   }
   const isActive =
@@ -183,7 +171,7 @@ export const NavItemWithChildren = ({
       </Button>
       {openItems.includes(item.href) && (
         <VStack
-          spacing={3}
+          gap={3}
           align="stretch"
           px={3}
           py={4}

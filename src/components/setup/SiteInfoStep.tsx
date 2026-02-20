@@ -1,18 +1,9 @@
 "use client";
 
+import { VStack, Field, Input, Textarea, Button, Text, HStack } from "@chakra-ui/react";
+
 import { useState } from "react";
-import {
-    VStack,
-    FormControl,
-    FormLabel,
-    Input,
-    Textarea,
-    Button,
-    FormErrorMessage,
-    Text,
-    HStack,
-    FormHelperText,
-} from "@chakra-ui/react";
+
 
 interface SiteInfoStepProps {
     onNext: (data: { siteInfo: any }) => void;
@@ -69,23 +60,23 @@ export function SiteInfoStep({ onNext, onBack, initialData }: SiteInfoStepProps)
     };
 
     return (
-        <VStack spacing={6} align="stretch">
+        <VStack gap={6} align="stretch">
             <Text color="gray.600">
                 Tell us about your blog. You can change these settings later.
             </Text>
 
-            <FormControl isInvalid={!!errors.siteName} isRequired>
-                <FormLabel>Site Name</FormLabel>
+            <Field.Root invalid={!!errors.siteName} required>
+                <Field.Label>Site Name</Field.Label>
                 <Input
                     value={formData.siteName}
                     onChange={(e) => setFormData({ ...formData, siteName: e.target.value })}
                     placeholder="My Awesome Blog"
                 />
-                <FormErrorMessage>{errors.siteName}</FormErrorMessage>
-            </FormControl>
+                <Field.ErrorText>{errors.siteName}</Field.ErrorText>
+            </Field.Root>
 
-            <FormControl>
-                <FormLabel>Site Description</FormLabel>
+            <Field.Root>
+                <Field.Label>Site Description</Field.Label>
                 <Textarea
                     value={formData.siteDescription}
                     onChange={(e) =>
@@ -94,11 +85,11 @@ export function SiteInfoStep({ onNext, onBack, initialData }: SiteInfoStepProps)
                     placeholder="A brief description of your blog"
                     rows={3}
                 />
-                <FormHelperText>Optional - Used for SEO and social sharing</FormHelperText>
-            </FormControl>
+                <Field.HelperText>Optional - Used for SEO and social sharing</Field.HelperText>
+            </Field.Root>
 
-            <FormControl>
-                <FormLabel>Tagline</FormLabel>
+            <Field.Root>
+                <Field.Label>Tagline</Field.Label>
                 <Input
                     value={formData.siteTagline}
                     onChange={(e) =>
@@ -106,37 +97,37 @@ export function SiteInfoStep({ onNext, onBack, initialData }: SiteInfoStepProps)
                     }
                     placeholder="Just another awesome blog"
                 />
-                <FormHelperText>Optional - A catchy phrase for your blog</FormHelperText>
-            </FormControl>
+                <Field.HelperText>Optional - A catchy phrase for your blog</Field.HelperText>
+            </Field.Root>
 
-            <FormControl isInvalid={!!errors.siteLogo}>
-                <FormLabel>Logo URL</FormLabel>
+            <Field.Root invalid={!!errors.siteLogo}>
+                <Field.Label>Logo URL</Field.Label>
                 <Input
                     value={formData.siteLogo}
                     onChange={(e) => setFormData({ ...formData, siteLogo: e.target.value })}
                     placeholder="https://example.com/logo.png"
                 />
-                <FormHelperText>Optional - URL to your logo image</FormHelperText>
-                <FormErrorMessage>{errors.siteLogo}</FormErrorMessage>
-            </FormControl>
+                <Field.HelperText>Optional - URL to your logo image</Field.HelperText>
+                <Field.ErrorText>{errors.siteLogo}</Field.ErrorText>
+            </Field.Root>
 
-            <FormControl>
-                <FormLabel>Timezone</FormLabel>
+            <Field.Root>
+                <Field.Label>Timezone</Field.Label>
                 <Input
                     value={formData.timezone}
                     onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
                     placeholder="UTC"
                 />
-                <FormHelperText>
+                <Field.HelperText>
                     Optional - Detected: {Intl.DateTimeFormat().resolvedOptions().timeZone}
-                </FormHelperText>
-            </FormControl>
+                </Field.HelperText>
+            </Field.Root>
 
-            <HStack spacing={4} pt={4}>
+            <HStack gap={4} pt={4}>
                 <Button onClick={onBack} variant="outline" flex={1}>
                     Back
                 </Button>
-                <Button onClick={handleSubmit} colorScheme="blue" flex={1}>
+                <Button onClick={handleSubmit} colorPalette="blue" flex={1}>
                     Continue
                 </Button>
             </HStack>

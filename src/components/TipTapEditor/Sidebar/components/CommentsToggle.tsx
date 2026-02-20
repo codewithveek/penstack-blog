@@ -1,4 +1,5 @@
-import { HStack, Icon, ListItem, Switch, Text } from "@chakra-ui/react";
+import { HStack, Icon, List, Switch, Text } from "@chakra-ui/react";
+
 import { LuMessageSquare } from "react-icons/lu";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { CommentsToggleProps } from "../types";
@@ -9,15 +10,15 @@ export const CommentsToggle = ({
 }: CommentsToggleProps) => {
   return (
     <PermissionGuard requiredPermission="posts:publish">
-      <ListItem>
+      <List.Item>
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon as={LuMessageSquare} mr={1} />
+            <Icon mr={1}><LuMessageSquare /></Icon>
             Allow Comments:
           </Text>
-          <Switch isChecked={allowComments} onChange={onChange} size={"sm"} />
+          <Switch.Root checked={allowComments} onChange={onChange} size={"sm"} />
         </HStack>
-      </ListItem>
+      </List.Item>
     </PermissionGuard>
   );
 };

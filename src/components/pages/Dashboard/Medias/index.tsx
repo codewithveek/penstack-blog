@@ -1,5 +1,7 @@
 "use client";
+
 import { Box } from "@chakra-ui/react";
+
 import Medias from "@/components/Dashboard/Medias";
 import DashHeader from "@/components/Dashboard/Header";
 

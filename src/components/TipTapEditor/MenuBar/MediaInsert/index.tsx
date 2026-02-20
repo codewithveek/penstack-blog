@@ -22,7 +22,7 @@ export const MediaInsert: FC<PropsWithChildren<MediaInsertProps>> = ({
 }) => {
   return (
     <>
-      <MediaModal isOpen={isOpen} onClose={onClose}>
+      <MediaModal open={isOpen} onOpenChange={onClose}>
         <Medias
           maxSelection={maxSelection}
           defaultFilters={defaultFilters}

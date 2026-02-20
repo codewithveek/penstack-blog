@@ -1,20 +1,5 @@
-import {
-  HStack,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-  Box,
-  Input,
-  Button,
-  List,
-  Spinner,
-  Text,
-  InputRightAddon,
-  InputGroup,
-  TagRightIcon,
-  Skeleton,
-  ListItem,
-} from "@chakra-ui/react";
+import { HStack, Tag, Box, Input, Button, List, Spinner, Text, InputAddon, Group, Skeleton } from "@chakra-ui/react";
+
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import { memo, useCallback, useEffect, useState } from "react";
 import axios from "axios";
@@ -136,26 +121,26 @@ export const TagsSection = memo(() => {
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Tag
+                <Tag.Root
                   rounded={"full"}
                   variant="solid"
                   opacity={isRemoving && tagToRemoveId === tag.id ? 0.5 : 1}
                 >
-                  <TagLabel>#{tag.name}</TagLabel>
+                  <Tag.Label>#{tag.name}</Tag.Label>
                   {removeTagFromPostMutation.isPending &&
                   tagToRemoveId === tag.id ? (
-                    <TagRightIcon as={Spinner} />
+                    <Tag.EndElement as={Spinner} />
                   ) : (
-                    <TagCloseButton onClick={() => handleTagRemove(tag.id)} />
+                    <Tag.CloseTrigger onClick={() => handleTagRemove(tag.id)} />
                   )}
-                </Tag>
+                </Tag.Root>
               </motion.div>
             ))}
         </AnimatePresence>
       </HStack>
 
       <Box p={4} position="relative">
-        <InputGroup size={"sm"}>
+        <Group size={"sm"}>
           <Input
             placeholder="Search or create tag"
             size={"sm"}
@@ -167,7 +152,7 @@ export const TagsSection = memo(() => {
             }}
           />
           {searchQuery && (
-            <InputRightAddon roundedRight={"full"}>
+            <InputAddon placement="end" roundedRight={"full"}>
               {isSearching && <Spinner size="sm" />}
               {!isSearching && !searchResults?.length && (
                 <Button
@@ -177,17 +162,17 @@ export const TagsSection = memo(() => {
                   variant={"outline"}
                   fontWeight={500}
                   fontSize={"13px"}
-                  isLoading={createTagMutation.isPending}
+                  loading={createTagMutation.isPending}
                 >
                   Create Tag
                 </Button>
               )}
-            </InputRightAddon>
+            </InputAddon>
           )}
-        </InputGroup>
+        </Group>
 
         {showDropdown && searchQuery && (
-          <List
+          <List.Root
             position="absolute"
             top="100%"
             left={0}
@@ -201,13 +186,13 @@ export const TagsSection = memo(() => {
             zIndex={1}
           >
             {isSearching ? (
-              <ListItem p={2}>
+              <List.Item p={2}>
                 <Skeleton height="15px" mb={1} width="190px" rounded={"xl"} />
                 <Skeleton height="15px" width="140px" rounded={"xl"} />
-              </ListItem>
+              </List.Item>
             ) : searchResults?.length ? (
               searchResults.map((tag: { id: number; name: string }) => (
-                <ListItem
+                <List.Item
                   key={tag.id}
                   p={2}
                   cursor="pointer"
@@ -215,14 +200,14 @@ export const TagsSection = memo(() => {
                   onClick={() => addTagToPostMutation.mutate(tag.id)}
                 >
                   #{tag.name}
-                </ListItem>
+                </List.Item>
               ))
             ) : (
-              <ListItem p={2}>
+              <List.Item p={2}>
                 <Text fontSize="sm">No tags found</Text>
-              </ListItem>
+              </List.Item>
             )}
-          </List>
+          </List.Root>
         )}
       </Box>
     </SectionCard>

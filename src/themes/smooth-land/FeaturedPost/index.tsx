@@ -1,23 +1,11 @@
+import { Box, Grid, Heading, HStack, LinkBox, LinkOverlay, Tag, VStack, Image, Text, Avatar, Card } from "@chakra-ui/react";
 import { useFeaturedPost } from "@/hooks/useFeaturedPost";
-import {
-  Box,
-  Grid,
-  Heading,
-  HStack,
-  LinkBox,
-  LinkOverlay,
-  Tag,
-  useColorModeValue,
-  VStack,
-  Image,
-  Text,
-  Avatar,
-  Card,
-} from "@chakra-ui/react";
+
 import { Suspense } from "react";
 import { FeaturedPostSkeleton } from "./LoadingSkeleton";
 import { generatePostUrl, objectToQueryParams } from "@/utils";
 import { FeaturedPostType } from "@/types";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
   const textColor = useColorModeValue("gray.600", "gray.300");
@@ -35,7 +23,7 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
             Featured
           </Heading>
           <LinkBox mb={8} mt={4}>
-            <Card
+            <Card.Root
               overflow="hidden"
               transition="all 0.2s"
               // _hover={{ boxShadow: "lg" }}
@@ -76,7 +64,7 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
               </Box>
               <VStack
                 align="start"
-                spacing={4}
+                gap={4}
                 p={{ base: 4, md: 5, lg: 6 }}
                 justify="center"
               >
@@ -105,13 +93,13 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
                     {post?.summary}
                   </Text>
                 )}
-                <HStack spacing={4} mt={{ base: 3, md: 4 }}>
-                  <Avatar
+                <HStack gap={4} mt={{ base: 3, md: 4 }}>
+                  <Avatar.Root
                     src={post?.author?.avatar || ""}
                     name={post?.author?.name}
                     className="w-10 h-10 rounded-full"
                   />
-                  <VStack align="start" spacing={0}>
+                  <VStack align="start" gap={0}>
                     <Text fontWeight="bold">{post?.author?.name}</Text>
                     <Text color={textColor} fontSize="sm">
                       {new Date(post?.published_at as Date).toLocaleDateString(
@@ -126,7 +114,7 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
                   </VStack>
                 </HStack>
               </VStack>
-            </Card>
+            </Card.Root>
           </LinkBox>
         </Box>
       )}

@@ -1,6 +1,7 @@
+import { Button, HStack, Icon, List, Text } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { LuTimer } from "react-icons/lu";
-import { Button, HStack, Icon, ListItem, Text } from "@chakra-ui/react";
+
 import { PermissionGuard } from "../../../PermissionGuard";
 import { CalendarPicker } from "../../CalendarPicker";
 import { ScheduleItemProps } from "../types";
@@ -13,11 +14,11 @@ export const ScheduleItem = ({
 }: ScheduleItemProps) => {
   return (
     <PermissionGuard requiredPermission="posts:publish">
-      <ListItem>
+      <List.Item>
         <HStack justify="space-between">
           <HStack>
             <Text as="span" color="gray.500">
-              <Icon as={LuTimer} mr={1} />
+              <Icon mr={1}><LuTimer /></Icon>
               Schedule:
             </Text>
             <Text as="span" fontWeight="semibold" textTransform="capitalize">
@@ -32,8 +33,8 @@ export const ScheduleItem = ({
           </HStack>
           <CalendarPicker
             defaultValue={scheduledAt ? new Date(scheduledAt) : undefined}
-            isOpen={isOpen}
-            onClose={onClose}
+            open={isOpen}
+            onOpenChange={onClose}
             trigger={
               <Button variant="ghost" size="xs" onClick={onToggle}>
                 Edit
@@ -41,7 +42,7 @@ export const ScheduleItem = ({
             }
           />
         </HStack>
-      </ListItem>
+      </List.Item>
     </PermissionGuard>
   );
 };

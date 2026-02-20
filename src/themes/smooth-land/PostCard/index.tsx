@@ -1,3 +1,4 @@
+import { Box, Card, Heading, HStack, Image, LinkBox, LinkOverlay, Text, VStack, Avatar, Stack, GridItem } from "@chakra-ui/react";
 import { PostSelect } from "@/types";
 import {
   generatePostDescription,
@@ -6,23 +7,9 @@ import {
   objectToQueryParams,
 } from "@/utils";
 import Link from "next/link";
-import {
-  Box,
-  Card,
-  CardBody,
-  Heading,
-  HStack,
-  Image,
-  LinkBox,
-  LinkOverlay,
-  Text,
-  useColorModeValue,
-  VStack,
-  Avatar,
-  Stack,
-  GridItem,
-} from "@chakra-ui/react";
+
 import { motion } from "framer-motion";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function PostCard({
   post,
@@ -37,7 +24,7 @@ export default function PostCard({
   const bgColor = "none!important";
   return (
     <GridItem>
-      <Card
+      <Card.Root
         rounded={"none"}
         shadow={"none"}
         as={LinkBox}
@@ -90,9 +77,9 @@ export default function PostCard({
             width="full"
           />
         </Box>
-        <CardBody px={0} pt={3} pb={0} display={"flex"} flexDir={"column"}>
+        <Card.Body px={0} pt={3} pb={0} display={"flex"} flexDir={"column"}>
           <Stack flex={1}>
-            <VStack align={"start"} spacing={2} flex={1}>
+            <VStack align={"start"} gap={2} flex={1}>
               {post?.category && post?.category?.name && (
                 <Text
                   as="span"
@@ -118,7 +105,7 @@ export default function PostCard({
             </VStack>
             {/* {showAuthor && ( */}
             <HStack gap={2} display={"inline-flex"} mt={1}>
-              <Avatar
+              <Avatar.Root
                 src={post?.author?.avatar || ""}
                 name={post?.author?.name}
                 // size="md"
@@ -153,8 +140,8 @@ export default function PostCard({
             </HStack>
             {/* )} */}
           </Stack>
-        </CardBody>
-      </Card>
+        </Card.Body>
+      </Card.Root>
     </GridItem>
   );
 }

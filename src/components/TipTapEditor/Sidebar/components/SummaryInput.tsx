@@ -1,5 +1,6 @@
+import { Field, Textarea } from "@chakra-ui/react";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
-import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
+
 import { sanitizeAndEncodeHtml } from "@/utils";
 
 import React, { ChangeEvent, memo, useCallback, useState } from "react";
@@ -20,8 +21,8 @@ export const SummaryInput = memo(() => {
     [updateField]
   );
   return (
-    <FormControl>
-      <FormLabel>Summary:</FormLabel>
+    <Field.Root>
+      <Field.Label>Summary:</Field.Label>
       <Textarea
         placeholder="summary"
         name="summary"
@@ -30,7 +31,7 @@ export const SummaryInput = memo(() => {
         maxH={150}
         rounded="lg"
       />
-    </FormControl>
+    </Field.Root>
   );
 });
 

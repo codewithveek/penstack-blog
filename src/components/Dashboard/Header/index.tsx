@@ -1,20 +1,13 @@
 "use client";
+
+import { Avatar, Button, Flex, HStack, Menu } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  Avatar,
-  Button,
-  Flex,
-  HStack,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import { signOut } from "@/lib/auth/auth-client";
 import { ReactNode } from "react";
 import { LuChevronDown, LuLogOut } from "react-icons/lu";
 import { UserMenu } from "./UserMenu";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function DashHeader({
   children,

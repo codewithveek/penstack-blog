@@ -1,19 +1,9 @@
 "use client";
 
+import { VStack, Field, Input, Button, Text, HStack, Textarea, Checkbox } from "@chakra-ui/react";
+
 import { useState } from "react";
-import {
-    VStack,
-    FormControl,
-    FormLabel,
-    Input,
-    Button,
-    FormErrorMessage,
-    Text,
-    HStack,
-    FormHelperText,
-    Textarea,
-    Checkbox,
-} from "@chakra-ui/react";
+
 
 interface OrganizationStepProps {
     onNext: (data: { organization?: any }) => void;
@@ -93,23 +83,23 @@ export function OrganizationStep({
     };
 
     return (
-        <VStack spacing={6} align="stretch">
+        <VStack gap={6} align="stretch">
             <Text color="gray.600">
                 Add organization details for structured data and SEO. This step is optional.
             </Text>
 
-            <Checkbox
-                isChecked={skip}
+            <Checkbox.Root
+                checked={skip}
                 onChange={(e) => setSkip(e.target.checked)}
-                colorScheme="blue"
+                colorPalette="blue"
             >
                 Skip this step
-            </Checkbox>
+            </Checkbox.Root>
 
             {!skip && (
                 <>
-                    <FormControl>
-                        <FormLabel>Organization Name</FormLabel>
+                    <Field.Root>
+                        <Field.Label>Organization Name</Field.Label>
                         <Input
                             value={formData.organizationName}
                             onChange={(e) =>
@@ -117,11 +107,11 @@ export function OrganizationStep({
                             }
                             placeholder="Acme Corporation"
                         />
-                        <FormHelperText>Legal name of your organization</FormHelperText>
-                    </FormControl>
+                        <Field.HelperText>Legal name of your organization</Field.HelperText>
+                    </Field.Root>
 
-                    <FormControl isInvalid={!!errors.organizationUrl}>
-                        <FormLabel>Organization Website</FormLabel>
+                    <Field.Root invalid={!!errors.organizationUrl}>
+                        <Field.Label>Organization Website</Field.Label>
                         <Input
                             value={formData.organizationUrl}
                             onChange={(e) =>
@@ -129,11 +119,11 @@ export function OrganizationStep({
                             }
                             placeholder="https://example.com"
                         />
-                        <FormErrorMessage>{errors.organizationUrl}</FormErrorMessage>
-                    </FormControl>
+                        <Field.ErrorText>{errors.organizationUrl}</Field.ErrorText>
+                    </Field.Root>
 
-                    <FormControl isInvalid={!!errors.organizationEmail}>
-                        <FormLabel>Contact Email</FormLabel>
+                    <Field.Root invalid={!!errors.organizationEmail}>
+                        <Field.Label>Contact Email</Field.Label>
                         <Input
                             type="email"
                             value={formData.organizationEmail}
@@ -142,11 +132,11 @@ export function OrganizationStep({
                             }
                             placeholder="contact@example.com"
                         />
-                        <FormErrorMessage>{errors.organizationEmail}</FormErrorMessage>
-                    </FormControl>
+                        <Field.ErrorText>{errors.organizationEmail}</Field.ErrorText>
+                    </Field.Root>
 
-                    <FormControl>
-                        <FormLabel>Phone Number</FormLabel>
+                    <Field.Root>
+                        <Field.Label>Phone Number</Field.Label>
                         <Input
                             value={formData.organizationPhone}
                             onChange={(e) =>
@@ -154,10 +144,10 @@ export function OrganizationStep({
                             }
                             placeholder="+1 (555) 123-4567"
                         />
-                    </FormControl>
+                    </Field.Root>
 
-                    <FormControl>
-                        <FormLabel>Address</FormLabel>
+                    <Field.Root>
+                        <Field.Label>Address</Field.Label>
                         <Textarea
                             value={formData.organizationAddress}
                             onChange={(e) =>
@@ -166,11 +156,11 @@ export function OrganizationStep({
                             placeholder="123 Main St, City, State, ZIP, Country"
                             rows={3}
                         />
-                        <FormHelperText>Full postal address (JSON format supported)</FormHelperText>
-                    </FormControl>
+                        <Field.HelperText>Full postal address (JSON format supported)</Field.HelperText>
+                    </Field.Root>
 
-                    <FormControl>
-                        <FormLabel>Founder Name</FormLabel>
+                    <Field.Root>
+                        <Field.Label>Founder Name</Field.Label>
                         <Input
                             value={formData.organizationFounder}
                             onChange={(e) =>
@@ -178,10 +168,10 @@ export function OrganizationStep({
                             }
                             placeholder="John Doe"
                         />
-                    </FormControl>
+                    </Field.Root>
 
-                    <FormControl>
-                        <FormLabel>Founding Date</FormLabel>
+                    <Field.Root>
+                        <Field.Label>Founding Date</Field.Label>
                         <Input
                             type="date"
                             value={formData.organizationFoundingDate}
@@ -192,15 +182,15 @@ export function OrganizationStep({
                                 })
                             }
                         />
-                    </FormControl>
+                    </Field.Root>
                 </>
             )}
 
-            <HStack spacing={4} pt={4}>
+            <HStack gap={4} pt={4}>
                 <Button onClick={onBack} variant="outline" flex={1}>
                     Back
                 </Button>
-                <Button onClick={handleSubmit} colorScheme="blue" flex={1}>
+                <Button onClick={handleSubmit} colorPalette="blue" flex={1}>
                     Continue
                 </Button>
             </HStack>

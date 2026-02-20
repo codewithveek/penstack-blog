@@ -1,5 +1,6 @@
+import { HStack, Skeleton, Button, Card } from "@chakra-ui/react";
 import { useCategories } from "@/hooks/useCategories";
-import { HStack, Skeleton, Button, Card, CardBody } from "@chakra-ui/react";
+
 import { useQueryState } from "nuqs";
 import { useCallback, useEffect } from "react";
 
@@ -37,9 +38,9 @@ export const CategoryItemList = ({
     setCategoryQuery(initialCategory);
   }, [initialCategory]);
   return (
-    <Card rounded={"sm"}>
-      <CardBody>
-        <HStack overflowX={"auto"} spacing={4} flexShrink={0}>
+    <Card.Root rounded={"sm"}>
+      <Card.Body>
+        <HStack overflowX={"auto"} gap={4} flexShrink={0}>
           {isCategoryLoading && !categories?.length ? (
             Array.from({ length: 5 }).map((_, index) => (
               <Skeleton
@@ -84,7 +85,7 @@ export const CategoryItemList = ({
             </>
           )}
         </HStack>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };

@@ -1,12 +1,8 @@
-import {
-  Box,
-  Input,
-  useColorModeValue,
-  VStack,
-  AspectRatio,
-} from "@chakra-ui/react";
+import { Box, Input, VStack, AspectRatio } from "@chakra-ui/react";
+
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import { ChangeEvent, memo } from "react";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface PenstackYouTubeEmbedProps {
   isEditing?: boolean;
@@ -34,7 +30,7 @@ export const PenstackYouTubeEmbed: React.FC<PenstackYouTubeEmbedProps> = memo(
         border="1px"
         borderColor={borderColor}
       >
-        <VStack align="stretch" spacing={3}>
+        <VStack align="stretch" gap={3}>
           {isEditing && (
             <Input
               border="none"

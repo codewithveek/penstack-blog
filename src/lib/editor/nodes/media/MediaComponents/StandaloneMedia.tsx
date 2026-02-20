@@ -1,4 +1,5 @@
 import { VStack, HStack, IconButton, Input, Box } from "@chakra-ui/react";
+
 import { useState } from "react";
 import { LuPin, LuCheck, LuX } from "react-icons/lu";
 
@@ -79,15 +80,15 @@ export const StandaloneMedia = ({
   };
 
   return (
-    <VStack spacing={2} align="stretch" className={className}>
+    <VStack gap={2} align="stretch" className={className}>
       {/* Media Element */}
       <Box position="relative">{renderMediaElement()}</Box>
 
       {/* Caption Display/Edit */}
       {showControls && (
-        <VStack spacing={2} align="stretch">
+        <VStack gap={2} align="stretch">
           {isEditingCaption ? (
-            <VStack spacing={2}>
+            <VStack gap={2}>
               {type === "image" && (
                 <Input
                   placeholder="Alt text"
@@ -105,18 +106,16 @@ export const StandaloneMedia = ({
               <HStack>
                 <IconButton
                   aria-label="Save"
-                  icon={<LuCheck />}
                   onClick={handleSaveCaption}
                   size="sm"
-                  colorScheme="green"
-                />
+                  colorPalette="green"
+                ><LuCheck /></IconButton>
                 <IconButton
                   aria-label="Cancel"
-                  icon={<LuX />}
                   onClick={handleCancelEdit}
                   size="sm"
                   variant="ghost"
-                />
+                ><LuX /></IconButton>
               </HStack>
             </VStack>
           ) : (
@@ -126,11 +125,12 @@ export const StandaloneMedia = ({
               </Box>
               <IconButton
                 aria-label="Edit caption"
-                icon={<LuPin />}
                 onClick={() => setIsEditingCaption(true)}
                 size="sm"
                 variant="ghost"
-              />
+              >
+                <LuPin />
+              </IconButton>
             </HStack>
           )}
         </VStack>

@@ -7,21 +7,8 @@ import {
   stripHtml,
 } from "@/utils";
 import Link from "next/link";
-import {
-  Avatar,
-  Box,
-  Heading,
-  HStack,
-  IconButton,
-  Image,
-  LinkBox,
-  LinkOverlay,
-  Stack,
-  Tag,
-  Text,
-  useColorModeValue,
-  VStack,
-} from "@chakra-ui/react";
+import { Avatar, Box, Heading, HStack, IconButton, Image, LinkBox, LinkOverlay, Stack, Tag, Text, VStack } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
 import { LuBookmark } from "react-icons/lu";
 
 export default function NewPostCard({
@@ -49,7 +36,7 @@ export default function NewPostCard({
       p={4}
       transition="all 0.2s"
       _hover={{ transform: "translateY(-4px)", boxShadow: "lg" }}
-      spacing={4}
+      gap={4}
       as={LinkBox}
     >
       {post?.featured_image?.url && (
@@ -78,9 +65,9 @@ export default function NewPostCard({
       )}
       {post?.category && post?.category?.name && (
         <Box>
-          <Tag
+          <Tag.Root
             size="md"
-            colorScheme="brand"
+            colorPalette="brand"
             borderRadius="md"
             px={3}
             py={1}
@@ -89,17 +76,17 @@ export default function NewPostCard({
             textTransform={"capitalize"}
           >
             {post?.category.name}
-          </Tag>
+          </Tag.Root>
         </Box>
       )}
-      <VStack align="stretch" flex={1} justify="space-between" spacing={2}>
+      <VStack align="stretch" flex={1} justify="space-between" gap={2}>
         <Box p={2}>
           <LinkOverlay href={generatePostUrl(post)}>
-            <Heading size="md" noOfLines={2} mb={2}>
+            <Heading size="md" lineClamp={2} mb={2}>
               {post?.title}
             </Heading>
           </LinkOverlay>
-          <Text fontSize="sm" color="gray.500" noOfLines={3}>
+          <Text fontSize="sm" color="gray.500" lineClamp={3}>
             {post?.summary ||
               stripHtml(decodeAndSanitizeHtml(post?.content || ""))}
           </Text>
@@ -114,16 +101,16 @@ export default function NewPostCard({
             borderRadius="xl"
           >
             {showAuthor && (
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Link href={`/author/${post?.author?.username}`}>
-                  <Avatar
+                  <Avatar.Root
                     src={post?.author?.avatar || ""}
                     name={post?.author?.name}
                     borderRadius="md"
                     boxSize="32px"
                   />
                 </Link>
-                <VStack spacing={0} align="start">
+                <VStack gap={0} align="start">
                   <Link href={`/author/${post?.author?.username}`}>
                     <Text fontWeight="medium" fontSize="sm">
                       {post?.author?.name}
@@ -139,11 +126,12 @@ export default function NewPostCard({
             )}
             {showBookmark && (
               <IconButton
-                icon={<LuBookmark size={18} />}
                 variant="ghost"
                 aria-label="Bookmark"
                 size="sm"
-              />
+              >
+                <LuBookmark size={18} />
+              </IconButton>
             )}
           </HStack>
         )}

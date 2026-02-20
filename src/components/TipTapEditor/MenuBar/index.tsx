@@ -1,16 +1,7 @@
 "use client";
-import {
-  HStack,
-  IconButton,
-  useDisclosure,
-  Input,
-  useColorModeValue,
-  Tooltip,
-  useOutsideClick,
-  Box,
-  Button,
-  Stack,
-} from "@chakra-ui/react";
+
+import { HStack, IconButton, Input, Tooltip, Box, Button, Stack } from "@chakra-ui/react";
+
 
 import { Editor } from "@tiptap/react";
 import { useFormik } from "formik";
@@ -23,6 +14,7 @@ import { MediaInsert } from "./MediaInsert";
 import { extractContentAndLinkMark } from "@/utils";
 import { MiniPostCardButton } from "@/lib/editor/nodes/MiniPostCard/MiniPostCardButton";
 import { MediaButton } from "@/lib/editor/nodes/media/MediaButton";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
@@ -75,7 +67,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       {nonHeadingOrParagraphActions.map((item, index) =>
         item.label === "Insert Media" ? (
           <Box key={index}>
-            <Tooltip label={item.label} hasArrow placement="top" rounded={"lg"}>
+            <Tooltip.Root content={item.label} hasArrow placement="top" rounded={"lg"}>
               <IconButton
                 aria-label={item.label}
                 {...btnStyles}
@@ -84,15 +76,15 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
               >
                 <item.icon size={20} />
               </IconButton>
-            </Tooltip>
+            </Tooltip.Root>
             <MediaInsert
               editor={editor}
-              isOpen={isMediaModalOpen}
-              onClose={onMediaModalClose}
+              open={isMediaModalOpen}
+              onOpenChange={onMediaModalClose}
             />
           </Box>
         ) : (
-          <Tooltip
+          <Tooltip.Root
             key={index}
             label={item.label}
             hasArrow
@@ -109,11 +101,11 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             >
               <item.icon size={20} />
             </IconButton>
-          </Tooltip>
+          </Tooltip.Root>
         )
       )}
 
-      <Tooltip label="Insert Link" hasArrow placement="top" rounded={"lg"}>
+      <Tooltip.Root content="Insert Link" hasArrow placement="top" rounded={"lg"}>
         <Box pos={"relative"}>
           <IconButton
             aria-label=""
@@ -132,30 +124,30 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             />
           )}
         </Box>
-      </Tooltip>
+      </Tooltip.Root>
 
-      <Tooltip label="Undo" hasArrow placement="top" rounded={"lg"}>
+      <Tooltip.Root content="Undo" hasArrow placement="top" rounded={"lg"}>
         <IconButton
           aria-label=""
           {...btnStyles}
-          isDisabled={!editor.can().undo()}
+          disabled={!editor.can().undo()}
           variant={"ghost"}
           onClick={() => editor.chain().focus().undo().run()}
         >
           <LuUndo2 size={20} />
         </IconButton>
-      </Tooltip>
-      <Tooltip label="Redo" hasArrow placement="top" rounded={"lg"}>
+      </Tooltip.Root>
+      <Tooltip.Root content="Redo" hasArrow placement="top" rounded={"lg"}>
         <IconButton
           aria-label=""
           {...btnStyles}
-          isDisabled={!editor.can().redo()}
+          disabled={!editor.can().redo()}
           variant={"ghost"}
           onClick={() => editor.chain().focus().redo().run()}
         >
           <LuRedo2 size={20} />
         </IconButton>
-      </Tooltip>
+      </Tooltip.Root>
       <MiniPostCardButton editor={editor} />
       <MediaButton editor={editor} />
     </HStack>
@@ -248,7 +240,7 @@ export const LinkInputForm = ({
         type="submit"
         rounded={"full"}
         size="sm"
-        isDisabled={!(formik.values.url && formik.values.text)}
+        disabled={!(formik.values.url && formik.values.text)}
       >
         Insert
       </Button>

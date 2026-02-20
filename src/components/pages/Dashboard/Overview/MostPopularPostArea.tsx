@@ -1,16 +1,6 @@
+import { Avatar, Card, Heading, HStack, Stack, Separator, Text, VStack } from "@chakra-ui/react";
 import { usePosts } from "@/hooks";
-import {
-  Avatar,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  HStack,
-  Stack,
-  StackDivider,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+
 import { LuEye } from "react-icons/lu";
 import Loader from "../../../Loader";
 import { format } from "date-fns";
@@ -23,12 +13,12 @@ export default memo(function MostPopularPosts() {
   const { posts = [], loading } = usePosts({ sortBy: "popular", limit: 5 });
   const siteSettings = useSiteConfig();
   return (
-    <Card minH={200} variant={"outline"}>
-      <CardHeader>
+    <Card.Root minH={200} variant={"outline"}>
+      <Card.Header>
         <Heading size={"md"}>Most Popular Posts</Heading>
-      </CardHeader>
+      </Card.Header>
       {siteSettings?.localPostAnalytics.enabled ? (
-        <CardBody>
+        <Card.Body>
           {loading && (
             <VStack>
               <Loader />
@@ -42,7 +32,7 @@ export default memo(function MostPopularPosts() {
             </VStack>
           )}
           {!loading && posts && posts?.length > 0 && (
-            <Stack gap={1} divider={<StackDivider />}>
+            <Stack gap={1} separator={<Separator />}>
               {posts.map((post, index) => (
                 <HStack key={post?.id} justify={"space-between"}>
                   <Stack key={post?.id} justify={"space-between"}>
@@ -62,12 +52,12 @@ export default memo(function MostPopularPosts() {
                     </HStack>
                   </Stack>
                   <HStack>
-                    <Avatar
+                    <Avatar.Root
                       size={"xs"}
                       src={post?.author?.avatar || ""}
                       name={post?.author?.name}
                     />
-                    <Stack spacing={"2px"}>
+                    <Stack gap={"2px"}>
                       <Text noOfLines={1} fontWeight={500} fontSize={"smaller"}>
                         {post?.author?.name}
                       </Text>
@@ -80,9 +70,9 @@ export default memo(function MostPopularPosts() {
               ))}
             </Stack>
           )}
-        </CardBody>
+        </Card.Body>
       ) : (
-        <CardBody h={300}>
+        <Card.Body h={300}>
           <VStack>
             <Heading size={"md"}> Not available</Heading>
             <Text color={"gray.500"} fontSize={"smaller"}>
@@ -90,8 +80,8 @@ export default memo(function MostPopularPosts() {
               Post Analytics is disabled
             </Text>
           </VStack>
-        </CardBody>
+        </Card.Body>
       )}
-    </Card>
+    </Card.Root>
   );
 });

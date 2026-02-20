@@ -1,14 +1,5 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Stack,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Menu, Stack } from "@chakra-ui/react";
+
 import { NodeViewProps } from "@tiptap/core";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import React, { PropsWithChildren } from "react";
@@ -25,6 +16,7 @@ import {
   LuCircleCheck,
   LuTriangleAlert,
 } from "react-icons/lu";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface PenstackBlockquoteRendererProps {
   isEditing?: boolean;
@@ -79,7 +71,7 @@ const PenstackBlockquoteRenderer: React.FC<
       roundedTop={isEditing ? 0 : "lg"}
       bg={blockquoteStyles[selectedVariant].bg}
     >
-      <HStack align="flex-start" spacing={3} fontWeight={500}>
+      <HStack align="flex-start" gap={3} fontWeight={500}>
         {blockquoteStyles[selectedVariant].icon && (
           <Box color={blockquoteStyles[selectedVariant]?.iconColor} mt={1}>
             {React.createElement(blockquoteStyles[selectedVariant].icon, {
@@ -95,7 +87,7 @@ const PenstackBlockquoteRenderer: React.FC<
     <>
       {isEditing ? (
         <>
-          <Stack spacing={0} my={6}>
+          <Stack gap={0} my={6}>
             <HStack
               justify={"flex-end"}
               roundedTop={"lg"}
@@ -103,19 +95,20 @@ const PenstackBlockquoteRenderer: React.FC<
               border={"1px solid"}
               borderColor={borderColor}
             >
-              <Menu>
-                <MenuButton
-                  variant={"ghost"}
-                  textTransform={"capitalize"}
-                  as={Button}
-                  size={"xs"}
-                  rightIcon={<LuChevronDown />}
-                >
-                  {selectedVariant}
-                </MenuButton>
-                <MenuList>
+              <Menu.Root>
+                <Menu.Trigger asChild>
+                  <Button
+                    variant={"ghost"}
+                    textTransform={"capitalize"}
+                    size={"xs"}
+                  >
+                    {selectedVariant}
+                    <LuChevronDown />
+                  </Button>
+                </Menu.Trigger>
+                <Menu.Content>
                   {blockquoteVariants.map((variant) => (
-                    <MenuItem
+                    <Menu.Item
                       key={variant}
                       onClick={() => {
                         updateAttributes?.({
@@ -125,10 +118,10 @@ const PenstackBlockquoteRenderer: React.FC<
                       }}
                     >
                       {variant}
-                    </MenuItem>
+                    </Menu.Item>
                   ))}
-                </MenuList>
-              </Menu>
+                </Menu.Content>
+              </Menu.Root>
             </HStack>
             {blockquote}
           </Stack>

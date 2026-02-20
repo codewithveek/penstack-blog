@@ -1,13 +1,7 @@
+import { Box, Image, ButtonGroup, IconButton, Tooltip, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { NodeViewWrapper, NodeViewProps, NodeViewContent } from "@tiptap/react";
-import {
-  Box,
-  Image,
-  ButtonGroup,
-  IconButton,
-  Tooltip,
-  Flex,
-} from "@chakra-ui/react";
+
 import { Resizable, ResizableBox } from "react-resizable";
 import { LuAlignLeft, LuAlignCenter, LuAlignRight } from "react-icons/lu";
 
@@ -99,15 +93,16 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
               variant={"outline"}
             >
               {alignments.map(({ icon: Icon, value }) => (
-                <Tooltip key={value} label={`Align ${value}`}>
+                <Tooltip.Root key={value} label={`Align ${value}`}>
                   <IconButton
                     aria-label={`Align ${value}`}
-                    icon={<Icon />}
                     onClick={() => updateAttributes({ align: value })}
                     _active={{ bg: "brand.500", color: "white" }}
                     isActive={node.attrs.align === value}
-                  />
-                </Tooltip>
+                  >
+                    <Icon />
+                  </IconButton>
+                </Tooltip.Root>
               ))}
             </ButtonGroup>
           )}

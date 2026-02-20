@@ -1,20 +1,14 @@
+import { Button, Popover } from "@chakra-ui/react";
 import { ReactNode, useMemo, useRef, useState } from "react";
 import Calendar from "@/components/Calendar";
-import {
-  Button,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-  useOutsideClick,
-  useToast,
-} from "@chakra-ui/react";
+
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { CRON_REQUEST_METHOD, CronJobPayload } from "@/lib/cron";
 import { dateTimeToCronJobSchedule } from "@/lib/cron/helper";
 import { addMinutes } from "date-fns";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
+import { toaster } from "@/components/ui/toaster";
 
 export const CalendarPicker = ({
   defaultValue,
@@ -46,11 +40,7 @@ export const CalendarPicker = ({
   const [dateValue, setDateValue] = useState<Date | undefined>(defaultValue);
   // State to manage the selected timezone
   const [timezone, setTimezone] = useState<string>(defaultTimezone);
-  const toast = useToast({
-    duration: 3000,
-    isClosable: true,
-    position: "top",
-  });
+  
   const { mutateAsync } = useMutation({
     mutationFn: async (bodyData: CronJobPayload) => {
       const { data } = await axios.post("/api/cron", bodyData);
@@ -58,10 +48,10 @@ export const CalendarPicker = ({
       return data?.data;
     },
     onError: (error: any) => {
-      toast({
+      toaster.create({
         title: "Error",
         description: error?.response?.data?.message || "Something went wrong",
-        status: "error",
+        type: "error",
       });
     },
   });
@@ -94,7 +84,7 @@ export const CalendarPicker = ({
     mutateAsync(payload).then((result) => {
       updateField("scheduled_at", date);
       updateField("schedule_id", result?.jobId);
-      toast({ title: "Scheduled successfully" });
+      toaster.create({ title: "Scheduled successfully" });
     });
   }
   function onCancel() {
@@ -102,24 +92,24 @@ export const CalendarPicker = ({
   }
   return (
     <>
-      <Popover
-        isOpen={isOpen}
-        onClose={onClose}
+      <Popover.Root
+        open={isOpen}
+        onOpenChange={onClose}
         onOpen={() => {
           if (!dateValue) {
             setDateValue(new Date());
           }
         }}
       >
-        <PopoverTrigger>{trigger}</PopoverTrigger>
-        <PopoverContent
+        <Popover.Trigger>{trigger}</Popover.Trigger>
+        <Popover.Content
           ref={popRef}
           border={0}
           p={0}
           rounded={"2xl"}
           _dark={{ bg: "#1a202c" }}
         >
-          <PopoverBody>
+          <Popover.Body>
             <Calendar
               onCancel={onCancel}
               onDone={onDone}
@@ -128,9 +118,9 @@ export const CalendarPicker = ({
                 setTimezone(timezone);
               }}
             />
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+          </Popover.Body>
+        </Popover.Content>
+      </Popover.Root>
     </>
   );
 };

@@ -1,4 +1,5 @@
-import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Box, Tabs } from "@chakra-ui/react";
+
 import { SeoPanel } from "./SeoPanel";
 import { PublishPanel } from "./PublishPanel";
 import { BlockPanel } from "./BlockPanel";
@@ -22,32 +23,32 @@ export const EditorSidebarTabPanels = () => {
       overflowY={"auto"}
       className=""
     >
-      <Tabs
+      <Tabs.Root
         onChange={handleTabChange}
         defaultIndex={tabs.indexOf(activeEditorTab)}
         isLazy
       >
-        <TabList
+        <Tabs.List
           bg="white"
           borderBottom="2px solid"
           borderColor="gray.200"
           className="rounded-t-lg "
         >
-          <Tab>Post</Tab>
-          <Tab>SEO</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel px={0} pt={1}>
+          <Tabs.Trigger>Post</Tabs.Trigger>
+          <Tabs.Trigger>SEO</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.ContentGroup>
+          <Tabs.Content px={0} pt={1}>
             <PublishPanel />
-          </TabPanel>
-          {/* <TabPanel px={0} pt={1}>
+          </Tabs.Content>
+          {/* <Tabs.Content px={0} pt={1}>
             <BlockPanel />
-          </TabPanel> */}
-          <TabPanel px={0} pt={1}>
+          </Tabs.Content> */}
+          <Tabs.Content px={0} pt={1}>
             <SeoPanel />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+          </Tabs.Content>
+        </Tabs.ContentGroup>
+      </Tabs.Root>
     </Box>
   );
 };

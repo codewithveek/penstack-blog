@@ -1,23 +1,12 @@
-import {
-  Box,
-  Heading,
-  Text,
-  Flex,
-  FormControl,
-  Input,
-  Button,
-  LightMode,
-  Stack,
-  useColorMode,
-  Alert,
-  AlertTitle,
-} from "@chakra-ui/react";
+import { Box, Heading, Text, Flex, Field, Input, Button, Stack, Alert } from "@chakra-ui/react";
+
 import { useState } from "react";
-import { useColorModeValue } from "@chakra-ui/react";
+
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import isEmpty from "just-is-empty";
 import { cn } from "@/lib/utils";
+import { LightMode, useColorMode, useColorModeValue } from "@/components/ui/color-mode";
 
 export const Newsletter = ({
   title,
@@ -104,7 +93,7 @@ export const Newsletter = ({
       maxW={maxW}
       className={cn("rounded-lg border p-4 w-full", borderColor)}
     >
-      <Stack spacing={2}>
+      <Stack gap={2}>
         {title && (
           <Heading
             size="md"
@@ -133,7 +122,7 @@ export const Newsletter = ({
               rounded={"lg"}
               p={1.5}
             >
-              <FormControl flex={1}>
+              <Field.Root flex={1}>
                 <Input
                   type="email"
                   p={0}
@@ -141,7 +130,7 @@ export const Newsletter = ({
                   rounded={"none"}
                   fontWeight={"normal"}
                   value={email}
-                  colorScheme="brandPurple"
+                  colorPalette="brandPurple"
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
@@ -152,17 +141,17 @@ export const Newsletter = ({
                     borderBottom: "2px solid",
                   }}
                 />
-              </FormControl>
+              </Field.Root>
               {isDark ? (
                 <LightMode>
                   <Button
                     type="submit"
                     loadingText={"Subscribing..."}
-                    isLoading={isPending}
-                    isDisabled={isPending}
+                    loading={isPending}
+                    disabled={isPending}
                     zIndex={2}
                     fontWeight={500}
-                    colorScheme="brandPurple"
+                    colorPalette="brandPurple"
                   >
                     Subscribe
                   </Button>
@@ -171,11 +160,11 @@ export const Newsletter = ({
                 <Button
                   type="submit"
                   loadingText={"Subscribing..."}
-                  isLoading={isPending}
-                  isDisabled={isPending}
+                  loading={isPending}
+                  disabled={isPending}
                   zIndex={2}
                   fontWeight={500}
-                  colorScheme="brandPurple"
+                  colorPalette="brandPurple"
                 >
                   Subscribe
                 </Button>
@@ -184,15 +173,15 @@ export const Newsletter = ({
           </form>
         </Box>
         {status && (
-          <Alert status={status}>
-            <AlertTitle>
+          <Alert.Root status={status}>
+            <Alert.Title>
               {status === "error" && "Something went wrong...please try again."}
               {status === "info" &&
                 "🎉You're already part of the family, thanks."}
               {status === "success" &&
                 " 🎉 Welcome aboard! Check your inbox to confirm subscription."}
-            </AlertTitle>
-          </Alert>
+            </Alert.Title>
+          </Alert.Root>
         )}
       </Stack>
     </Box>

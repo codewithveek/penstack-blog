@@ -5,17 +5,17 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-
+/.vscode
 # testing
 /coverage
 
 # next.js
 /.next/
 /out/
-
+/agent-docs
 # production
 /build
-
+*.txt
 # misc
 .DS_Store
 *.pem

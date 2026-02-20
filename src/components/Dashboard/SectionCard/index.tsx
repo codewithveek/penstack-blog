@@ -1,15 +1,11 @@
 "use client";
 
+import { Box, Card, HStack, IconButton, Text } from "@chakra-ui/react";
+
 import { type ComponentProps, type ReactNode, useState } from "react";
-import {
-  Box,
-  Card,
-  HStack,
-  IconButton,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 type SectionCardProps = {
   title: string;
@@ -33,7 +29,7 @@ export function SectionCard({
   const toggleCard = () => setIsCardOpen(!isCardOpen);
 
   return (
-    <Card {...props}>
+    <Card.Root {...props}>
       {(header || title) && (
         <HStack
           justify={"space-between"}
@@ -53,15 +49,14 @@ export function SectionCard({
               size={"xs"}
               onClick={() => toggleCard()}
               aria-label="toggle card"
-              icon={
-                isCardOpen ? (
-                  <LuChevronUp size={20} />
-                ) : (
-                  <LuChevronDown size={20} />
-                )
-              }
               variant={"ghost"}
-            />
+            >
+              {isCardOpen ? (
+                <LuChevronUp size={20} />
+              ) : (
+                <LuChevronDown size={20} />
+              )}
+            </IconButton>
           </HStack>
         </HStack>
       )}
@@ -69,7 +64,7 @@ export function SectionCard({
 
       {isCardOpen && footer && (
         <HStack
-          spacing={4}
+          gap={4}
           mt={4}
           borderTop={"1px"}
           borderTopColor={borderColor}
@@ -79,6 +74,6 @@ export function SectionCard({
           {footer}
         </HStack>
       )}
-    </Card>
+    </Card.Root>
   );
 }

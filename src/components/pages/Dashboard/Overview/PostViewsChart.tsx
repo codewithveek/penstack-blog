@@ -1,3 +1,4 @@
+import { Card, Heading, HStack, Button, Box, Text, Menu, Icon, VStack } from "@chakra-ui/react";
 import React, { memo, useMemo, useState } from "react";
 import {
   AreaChart,
@@ -9,27 +10,12 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Heading,
-  HStack,
-  Button,
-  useColorModeValue,
-  Box,
-  Text,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Icon,
-  VStack,
-} from "@chakra-ui/react";
+
 import { useQuery } from "@tanstack/react-query";
 import { AggregatedPostViews } from "@/types";
 import { LuChevronDown } from "react-icons/lu";
 import { useSiteConfig } from "@/context/SiteConfig";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const PostViewsChart = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState({
@@ -101,47 +87,46 @@ const PostViewsChart = () => {
     return null;
   };
   return (
-    <Card variant={"outline"}>
-      <CardHeader>
+    <Card.Root variant={"outline"}>
+      <Card.Header>
         <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
           <Heading size={"md"}>Post Views</Heading>
           <HStack wrap={"wrap"} gap={2}>
-            <Menu>
+            <Menu.Root>
               {({ isOpen }) => (
                 <>
-                  <MenuButton
-                    as={Button}
-                    size={"sm"}
-                    variant={"outline"}
-                    rightIcon={
-                      <Icon
-                        as={LuChevronDown}
-                        transition={"0.2s ease-in-out"}
-                        transform={isOpen ? "rotate(-180deg)" : "rotate(0deg)"}
+                  <Menu.Trigger asChild>
+                    <Button
+                      size={"sm"}
+                      variant={"outline"}
+                    >
+                      {selectedTimeRange.label}
+                      <LuChevronDown
+                        style={{
+                          transition: "0.2s ease-in-out",
+                          transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)",
+                        }}
                       />
-                    }
-                  >
-                    {" "}
-                    {selectedTimeRange.label}
-                  </MenuButton>
-                  <MenuList>
+                    </Button>
+                  </Menu.Trigger>
+                  <Menu.Content>
                     {timeRanges.map((range) => (
-                      <MenuItem
+                      <Menu.Item
                         key={range.value}
                         rounded={"lg"}
                         onClick={() => setSelectedTimeRange(range)}
                       >
                         {range.label}
-                      </MenuItem>
+                      </Menu.Item>
                     ))}
-                  </MenuList>
+                  </Menu.Content>
                 </>
               )}
-            </Menu>
+            </Menu.Root>
           </HStack>
         </HStack>
-      </CardHeader>
-      <CardBody>
+      </Card.Header>
+      <Card.Body>
         <ResponsiveContainer width="100%" height={400}>
           {isPending ? (
             <Box
@@ -157,7 +142,7 @@ const PostViewsChart = () => {
               width={undefined}
               height={400}
               data={postViews}
-              margin={{ top: 20, right: 0, left: 0, bottom: 5 }}
+              margopen={{ top: 20, right: 0, left: 0, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis
@@ -168,7 +153,7 @@ const PostViewsChart = () => {
                 fontSize={14}
               />
               <YAxis fontSize={14} width={50} />
-              <Tooltip
+              <Tooltip.Root
                 content={<CustomTooltip />}
                 labelFormatter={formatDate}
               />
@@ -209,8 +194,8 @@ const PostViewsChart = () => {
             </AreaChart>
           )}
         </ResponsiveContainer>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };
 const PostViewChartWrapper = () => {
@@ -234,50 +219,47 @@ const PostViewChartWrapper = () => {
       {siteSettings.localPostAnalytics.enabled ? (
         <PostViewsChart />
       ) : (
-        <Card variant={"outline"}>
-          <CardHeader>
+        <Card.Root variant={"outline"}>
+          <Card.Header>
             <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
               <Heading size={"md"}>Post Views</Heading>
               <HStack wrap={"wrap"} gap={2}>
-                <Menu>
+                <Menu.Root>
                   {({ isOpen }) => (
                     <>
-                      <MenuButton
-                        isDisabled
-                        as={Button}
-                        size={"sm"}
-                        variant={"outline"}
-                        rightIcon={
-                          <Icon
-                            as={LuChevronDown}
-                            transition={"0.2s ease-in-out"}
-                            transform={
-                              isOpen ? "rotate(-180deg)" : "rotate(0deg)"
-                            }
+                      <Menu.Trigger asChild>
+                        <Button
+                          disabled
+                          size={"sm"}
+                          variant={"outline"}
+                        >
+                          {selectedTimeRange.label}
+                          <LuChevronDown
+                            style={{
+                              transition: "0.2s ease-in-out",
+                              transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)",
+                            }}
                           />
-                        }
-                      >
-                        {" "}
-                        {selectedTimeRange.label}
-                      </MenuButton>
-                      <MenuList>
+                        </Button>
+                      </Menu.Trigger>
+                      <Menu.Content>
                         {timeRanges.map((range) => (
-                          <MenuItem
+                          <Menu.Item
                             key={range.value}
                             rounded={"lg"}
                             onClick={() => setSelectedTimeRange(range)}
                           >
                             {range.label}
-                          </MenuItem>
+                          </Menu.Item>
                         ))}
-                      </MenuList>
+                      </Menu.Content>
                     </>
                   )}
-                </Menu>
+                </Menu.Root>
               </HStack>
             </HStack>
-          </CardHeader>
-          <CardBody h={350}>
+          </Card.Header>
+          <Card.Body h={350}>
             <VStack>
               <Heading size={"md"}> Post view not available</Heading>
               <Text color={"gray.500"} fontSize={"smaller"}>
@@ -285,8 +267,8 @@ const PostViewChartWrapper = () => {
                 Post Analytics is disabled
               </Text>
             </VStack>
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
       )}
     </>
   );

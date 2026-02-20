@@ -1,23 +1,11 @@
+import { Box, Container, Flex, Grid, IconButton, Link, Stack, Text, VStack, Heading, GridItem } from "@chakra-ui/react";
 import React, { useMemo } from "react";
-import {
-  Box,
-  Container,
-  Flex,
-  Grid,
-  IconButton,
-  DarkMode,
-  Link,
-  Stack,
-  Text,
-  VStack,
-  useColorModeValue,
-  Heading,
-  GridItem,
-} from "@chakra-ui/react";
+
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
 import { Newsletter } from "../NewsLetter";
 import { AppLogoAndName } from "../AppLogoAndName";
 import { useSiteConfig } from "@/context/SiteConfig";
+import { DarkMode, useColorModeValue } from "@/components/ui/color-mode";
 
 const Footer = () => {
   const bgColor = useColorModeValue("charcoalBlack", "gray.900");
@@ -149,18 +137,19 @@ const Footer = () => {
                 {socialLinks.map((link) => (
                   <DarkMode key={link.label}>
                     <IconButton
-                      as={Link}
+                      asChild
                       aria-label={link.label}
-                      href={link.href}
                       color={textColor}
                       transition="all 0.2s"
                       _hover={{ color: hoverColor, transform: "scale(1.1)" }}
                       display="flex"
                       alignItems="center"
-                      colorScheme="gray"
+                      colorPalette="gray"
                       rounded={"full"}
                     >
-                      <link.icon size={20} />
+                      <Link href={link.href}>
+                        <link.icon size={20} />
+                      </Link>
                     </IconButton>
                   </DarkMode>
                 ))}
@@ -175,7 +164,7 @@ const Footer = () => {
           align={{ md: "center" }}
           gap={{ base: 6, md: 0 }}
         >
-          <VStack align={"start"} spacing={4}>
+          <VStack align={"start"} gap={4}>
             <Text fontSize="sm" color={"white"}>
               &copy; {new Date().getFullYear()} {siteSettings?.siteName?.value}.
               All rights reserved.

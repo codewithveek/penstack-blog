@@ -1,9 +1,12 @@
 "use client";
+
+import { Box } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import Header from "../Header";
 import Footer from "../Footer";
-import { Box, useColorModeValue } from "@chakra-ui/react";
+
 import NetworkAvailabiltyCheck from "../NetworkAvailabiltyCheck";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function PageWrapper({
   children,

@@ -1,13 +1,6 @@
+import { Dialog, Heading } from "@chakra-ui/react";
 import { FilterParams, MediaResponse } from "@/types";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Heading,
-} from "@chakra-ui/react";
+
 import { FC, memo, PropsWithChildren } from "react";
 import Medias from ".";
 
@@ -31,20 +24,20 @@ export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
     onSelect,
   }) => {
     return (
-      <Modal
-        isOpen={isOpen}
+      <Dialog.Root
+        open={isOpen}
         isCentered
-        onClose={onClose}
+        onOpenChange={onClose}
         size={{ base: "md", md: "3xl", lg: "5xl", xl: "6xl" }}
         returnFocusOnClose={false}
       >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
+        <Dialog.Backdrop />
+        <Dialog.Positioner><Dialog.Content>
+          <Dialog.Header>
             <Heading size="md">Select Media</Heading>
-            <ModalCloseButton />
-          </ModalHeader>
-          <ModalBody px={{ base: 0, md: undefined }}>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body px={{ base: 0, md: undefined }}>
             {children ? (
               children
             ) : (
@@ -59,9 +52,9 @@ export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = memo(
                 canSelect={true}
               />
             )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+          </Dialog.Body>
+        </Dialog.Content></Dialog.Positioner>
+      </Dialog.Root>
     );
   }
 );

@@ -1,5 +1,5 @@
 import { getPosts } from "@/lib/queries/posts";
-import ArticlesPage from "../../components/pages/ArticlesPage";
+import ArticlesPage from "@/components/pages/ArticlesPage";
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };

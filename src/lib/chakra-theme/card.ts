@@ -1,5 +1,6 @@
-import { createMultiStyleConfigHelpers } from "@chakra-ui/styled-system";
 import { theme as baseTheme } from "@chakra-ui/react";
+import { createMultiStyleConfigHelpers } from "@chakra-ui/styled-system";
+
 // This function creates a set of function that helps us create multipart component styles.
 const cardHelpers = createMultiStyleConfigHelpers(["container", "body"]);
 const inputHelpers = createMultiStyleConfigHelpers(["field"]);

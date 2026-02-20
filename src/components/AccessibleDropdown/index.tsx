@@ -1,17 +1,11 @@
+import { Box, Button, HStack, List, Text } from "@chakra-ui/react";
 import { EditorActionItem } from "@/types";
-import {
-  Box,
-  Button,
-  HStack,
-  List,
-  ListItem,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import { Editor } from "@tiptap/react";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { IconType } from "react-icons";
 import { LuChevronsUpDown } from "react-icons/lu";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface Option {
   id: number | string;
@@ -160,7 +154,7 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
       </div>
 
       {isOpen && (
-        <List
+        <List.Root
           role="listbox"
           pos={"absolute"}
           zIndex={10}
@@ -168,7 +162,7 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
           py={2}
           minW={"200px"}
           px={2}
-          spacing={2}
+          gap={2}
           bg={bgColor}
           border={"1px"}
           borderColor={borderColor}
@@ -187,7 +181,7 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
               selectedOption?.id === option.id ||
               (option as EditorActionItem)?.active(editor as Editor);
             return (
-              <ListItem
+              <List.Item
                 display={"flex"}
                 key={option.id}
                 ref={(el: HTMLLIElement | null) => {
@@ -219,10 +213,10 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
                     {option.label}
                   </Text>
                 </HStack>
-              </ListItem>
+              </List.Item>
             );
           })}
-        </List>
+        </List.Root>
       )}
     </Box>
   );

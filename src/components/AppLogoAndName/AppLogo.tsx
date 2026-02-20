@@ -1,5 +1,6 @@
 import { Image } from "@chakra-ui/react";
 
+
 export const AppLogo = ({
   size,
   src,

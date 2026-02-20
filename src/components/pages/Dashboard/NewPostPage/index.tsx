@@ -1,5 +1,7 @@
 "use client";
+
 import { Box } from "@chakra-ui/react";
+
 import TipTapEditor from "@/components//TipTapEditor";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/hooks/useAuth";

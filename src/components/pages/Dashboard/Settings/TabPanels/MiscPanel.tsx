@@ -1,16 +1,6 @@
+import { Field, VStack, Input, Switch, HStack, Group, InputElement, IconButton } from "@chakra-ui/react";
 import { SiteSettings } from "@/types";
-import {
-  FormLabel,
-  VStack,
-  FormControl,
-  Input,
-  Switch,
-  FormHelperText,
-  HStack,
-  InputGroup,
-  InputRightElement,
-  IconButton,
-} from "@chakra-ui/react";
+
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { groupSettingsByFolder } from "../utils";
@@ -40,18 +30,18 @@ export function MiscPanel({
   };
 
   return (
-    <VStack spacing={6} align="stretch">
+    <VStack gap={6} align="stretch">
       {miscSettings.map((setting) => (
-        <FormControl key={setting.key}>
+        <Field.Root key={setting.key}>
           <HStack justify="space-between" align="center">
-            <FormLabel mb={0}>{setting.name || setting.key}</FormLabel>
-            <Switch
-              isChecked={setting.enabled}
+            <Field.Label mb={0}>{setting.name || setting.key}</Field.Label>
+            <Switch.Root
+              checked={setting.enabled}
               onChange={() => handleToggle(setting.key)}
             />
           </HStack>
 
-          <InputGroup>
+          <Group>
             <Input
               value={setting.value || ""}
               type={
@@ -60,35 +50,36 @@ export function MiscPanel({
                   : "text"
               }
               onChange={(e) => handleInputChange(setting.key, e.target.value)}
-              isDisabled={!setting.enabled}
+              disabled={!setting.enabled}
               placeholder={setting.description}
             />
             {setting.encrypted && (
-              <InputRightElement>
+              <InputElement placement="end">
                 <IconButton
                   aria-label={
                     showPasswords[setting.key]
                       ? "Hide password"
                       : "Show password"
                   }
-                  icon={showPasswords[setting.key] ? <FaEyeSlash /> : <FaEye />}
                   variant="ghost"
                   size="sm"
                   onClick={() => togglePasswordVisibility(setting.key)}
-                />
-              </InputRightElement>
+                >
+                  {showPasswords[setting.key] ? <FaEyeSlash /> : <FaEye />}
+                </IconButton>
+              </InputElement>
             )}
-          </InputGroup>
+          </Group>
 
           {setting.canEncrypt && (
-            <FormHelperText>
+            <Field.HelperText>
               This field can be encrypted for additional security
-            </FormHelperText>
+            </Field.HelperText>
           )}
           {setting.description && !setting.canEncrypt && (
-            <FormHelperText>{setting.description}</FormHelperText>
+            <Field.HelperText>{setting.description}</Field.HelperText>
           )}
-        </FormControl>
+        </Field.Root>
       ))}
     </VStack>
   );

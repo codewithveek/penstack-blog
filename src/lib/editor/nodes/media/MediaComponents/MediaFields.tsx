@@ -1,13 +1,5 @@
-import {
-  Input,
-  Select,
-  NumberInput,
-  NumberInputField,
-  VStack,
-  HStack,
-  Text,
-  Stack,
-} from "@chakra-ui/react";
+import { Input, NativeSelect, NumberInput, NumberInputField, VStack, HStack, Text, Stack } from "@chakra-ui/react";
+
 import { useCallback } from "react";
 import { useMediaAttrs, useMediaActions } from "../../../stores/mediaStore";
 import { MediaAspectRatios, MediaObjectFits } from "../../../types";
@@ -98,10 +90,10 @@ export const MediaFields = () => {
 
   return (
     <SectionCard title="Image Settings" roundedTop="none">
-      <Stack spacing={3} px={4} py={3}>
+      <Stack gap={3} px={4} py={3}>
         {JSON.stringify(editor?.getAttributes("penstackMedia"), undefined, 2)}
         {/* Source URL */}
-        <VStack align="stretch" spacing={1}>
+        <VStack align="stretch" gap={1}>
           <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Source URL
           </Text>
@@ -114,7 +106,7 @@ export const MediaFields = () => {
         </VStack>
 
         {/* Alt Text */}
-        <VStack align="stretch" spacing={1}>
+        <VStack align="stretch" gap={1}>
           <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Alt Text
           </Text>
@@ -127,7 +119,7 @@ export const MediaFields = () => {
         </VStack>
 
         {/* Caption */}
-        <VStack align="stretch" spacing={1}>
+        <VStack align="stretch" gap={1}>
           <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Caption
           </Text>
@@ -140,15 +132,15 @@ export const MediaFields = () => {
         </VStack>
 
         {/* Width and Height - Side by side */}
-        <HStack spacing={4} width="100%">
-          <VStack align="stretch" spacing={1} flex={1}>
+        <HStack gap={4} width="100%">
+          <VStack align="stretch" gap={1} flex={1}>
             <Text fontSize="xs" fontWeight="medium" color="gray.600">
               Width (px)
             </Text>
             <NumberInput
               size="sm"
               value={width}
-              min={50}
+              mopen={50}
               max={2000}
               onChange={handleWidthChange}
             >
@@ -156,14 +148,14 @@ export const MediaFields = () => {
             </NumberInput>
           </VStack>
 
-          <VStack align="stretch" spacing={1} flex={1}>
+          <VStack align="stretch" gap={1} flex={1}>
             <Text fontSize="xs" fontWeight="medium" color="gray.600">
               Height (px)
             </Text>
             <NumberInput
               size="sm"
               value={height}
-              min={50}
+              mopen={50}
               max={2000}
               onChange={handleHeightChange}
             >
@@ -173,11 +165,11 @@ export const MediaFields = () => {
         </HStack>
 
         {/* Aspect Ratio */}
-        <VStack align="stretch" spacing={1}>
+        <VStack align="stretch" gap={1}>
           <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Aspect Ratio
           </Text>
-          <Select
+          <NativeSelect.Root
             size="sm"
             value={aspectRatio}
             onChange={handleAspectRatioChange}
@@ -187,21 +179,21 @@ export const MediaFields = () => {
                 {option.label}
               </option>
             ))}
-          </Select>
+          </NativeSelect.Root>
         </VStack>
 
         {/* Object Fit */}
-        <VStack align="stretch" spacing={1}>
+        <VStack align="stretch" gap={1}>
           <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Object Fit
           </Text>
-          <Select size="sm" value={objectFit} onChange={handleObjectFitChange}>
+          <NativeSelect.Root size="sm" value={objectFit} onChange={handleObjectFitChange}>
             {OBJECT_FIT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
-          </Select>
+          </NativeSelect.Root>
         </VStack>
       </Stack>
     </SectionCard>

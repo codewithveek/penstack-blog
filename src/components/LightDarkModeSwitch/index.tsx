@@ -1,13 +1,5 @@
-import {
-  Button,
-  ButtonGroup,
-  HStack,
-  IconButton,
-  LightMode,
-  Text,
-  useColorMode,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Button, ButtonGroup, HStack, IconButton, Text } from "@chakra-ui/react";
+import { LightMode, useColorMode, useColorModeValue } from "@/components/ui/color-mode";
 import { LuMoon, LuSun } from "react-icons/lu";
 
 export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
@@ -19,30 +11,28 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
       {!showLabel && (
         <IconButton
           aria-label="Toggle color mode"
-          colorScheme="gray"
-          icon={
-            colorMode === "light" ? <LuMoon size={20} /> : <LuSun size={20} />
-          }
+          colorPalette="gray"
           onClick={toggleColorMode}
           variant="ghost"
           _hover={{ bg: hoverBgColor }}
           rounded={"full"}
-        />
+        >
+          {colorMode === "light" ? <LuMoon size={20} /> : <LuSun size={20} />}
+        </IconButton>
       )}
       {showLabel && (
         <ButtonGroup size={"sm"} rounded={"lg"}>
           {["Light", "Dark"].map((mode, i) => (
             <Button
               key={i}
-              colorScheme={colorMode === mode.toLowerCase() ? "brand" : "gray"}
+              colorPalette={colorMode === mode.toLowerCase() ? "brand" : "gray"}
               fontWeight={400}
-              leftIcon={<LuSun size={16} />}
               onClick={() => setColorMode(mode.toLowerCase())}
               variant={colorMode === mode.toLowerCase() ? "solid" : "ghost"}
               rounded={"lg"}
             >
-              {" "}
-              <Text as="span">{mode}</Text>{" "}
+              <LuSun size={16} />
+              <Text as="span">{mode}</Text>
             </Button>
           ))}
         </ButtonGroup>

@@ -1,11 +1,5 @@
-import {
-  Box,
-  GridItem,
-  HStack,
-  Skeleton,
-  SkeletonCircle,
-  SkeletonText,
-} from "@chakra-ui/react";
+import { Box, GridItem, HStack, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
+
 
 export function NewPostCardLoader() {
   return (
@@ -19,7 +13,7 @@ export function NewPostCardLoader() {
       <Skeleton height="200px" rounded={"lg"} />
       <Box>
         <SkeletonText my={3} w={120} noOfLines={1} rounded={"full"} />
-        <SkeletonText mt="4" noOfLines={4} spacing="3" rounded={"full"} />
+        <SkeletonText mt="4" noOfLines={4} gap="3" rounded={"full"} />
         <HStack mt={4}>
           <SkeletonCircle size="10" rounded={"lg"} />
           <SkeletonText w={24} noOfLines={1} rounded={"lg"} />

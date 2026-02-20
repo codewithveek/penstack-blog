@@ -1,3 +1,4 @@
+import { Box, VStack, Text, Image, Input, HStack, Stack, Button, Skeleton, Separator, Card, IconButton } from "@chakra-ui/react";
 import { SearchPostsComponent } from "@/lib/editor/nodes/MiniPostCard/SearchPostsComponent";
 import { PostSelect } from "@/types";
 import {
@@ -9,27 +10,14 @@ import {
   stripHtml,
 } from "@/utils";
 import Link from "next/link";
-import {
-  Box,
-  useColorModeValue,
-  VStack,
-  Text,
-  Image,
-  Input,
-  HStack,
-  Stack,
-  Button,
-  Skeleton,
-  StackDivider,
-  Card,
-  IconButton,
-} from "@chakra-ui/react";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { NodeViewProps } from "@tiptap/react";
 import axios from "axios";
 
 import { ChangeEvent, memo, useCallback, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface MiniPostCardProps {
   isEditing?: boolean;
@@ -100,15 +88,15 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
           border="1px"
           borderColor={borderColor}
         >
-          <VStack align="stretch" spacing={3}>
+          <VStack align="stretch" gap={3}>
             <Skeleton height="24px" width="200px" />
             {[1, 2].map((i) => (
-              <HStack key={i} spacing={4} align="start">
+              <HStack key={i} gap={4} align="start">
                 <Skeleton
                   boxSize={{ base: "80px", lg: "80px" }}
                   rounded={"lg"}
                 />
-                <Stack align="start" spacing={1} flex={1}>
+                <Stack align="start" gap={1} flex={1}>
                   <Skeleton height="24px" width="80%" rounded={"lg"} />
                   <Skeleton height="20px" width="100%" rounded={"lg"} />
                   <Skeleton height="16px" width="90%" rounded={"lg"} />
@@ -121,7 +109,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
     if (!posts) return null;
 
     return (
-      <Card
+      <Card.Root
         p={3}
         // rounded="md"
         // bg={bgColor}
@@ -129,7 +117,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
         maxW={{ base: "100%", lg: 650 }}
         variant={"outline"}
       >
-        <VStack align="stretch" spacing={3} divider={<StackDivider />}>
+        <VStack align="stretch" gap={3} separator={<Separator />}>
           {!isEditing && node?.attrs?.customTitle && (
             <Text fontSize="medium" className="uppercase font-bold">
               {node.attrs.customTitle}
@@ -167,7 +155,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                   if (isEditing) e.preventDefault();
                 }}
               >
-                <HStack spacing={4} align="start">
+                <HStack gap={4} align="start">
                   {post?.featured_image && (
                     <Image
                       src={post?.featured_image.url}
@@ -178,7 +166,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                       rounded={"lg"}
                     />
                   )}
-                  <Stack align="start" spacing={1}>
+                  <Stack align="start" gap={1}>
                     <HStack>
                       <Text
                         fontSize={{ base: "medium", lg: "large" }}
@@ -188,13 +176,14 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                       </Text>
                       {isEditing && (
                         <IconButton
-                          icon={<FaTrash />}
-                          colorScheme="red"
+                          colorPalette="red"
                           variant="ghost"
                           size={"xs"}
                           aria-label="Remove post"
                           onClick={() => removePost(post?.post_id || "")}
-                        />
+                        >
+                          <FaTrash />
+                        </IconButton>
                       )}
                     </HStack>
                     <Text
@@ -235,7 +224,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
             </>
           )}
         </VStack>
-      </Card>
+      </Card.Root>
     );
   }
 );

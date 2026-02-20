@@ -1,16 +1,10 @@
 "use client";
 
+import { Box, VStack, Heading, Text, Spinner, Alert } from "@chakra-ui/react";
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import {
-  Box,
-  VStack,
-  Heading,
-  Text,
-  Spinner,
-  Alert,
-  AlertIcon,
-} from "@chakra-ui/react";
+
 
 export default function VerifyEmail() {
   const [status, setStatus] = useState("verifying");
@@ -40,7 +34,7 @@ export default function VerifyEmail() {
       justifyContent="center"
     >
       <VStack
-        spacing={6}
+        gap={6}
         p={8}
         maxW="md"
         w="full"
@@ -55,16 +49,16 @@ export default function VerifyEmail() {
           </VStack>
         )}
         {status === "success" && (
-          <Alert status="success">
-            <AlertIcon />
+          <Alert.Root status="success">
+            <Alert.Indicator />
             Email verified successfully! You can now close this window.
-          </Alert>
+          </Alert.Root>
         )}
         {status === "error" && (
-          <Alert status="error">
-            <AlertIcon />
+          <Alert.Root status="error">
+            <Alert.Indicator />
             Invalid or expired verification link.
-          </Alert>
+          </Alert.Root>
         )}
       </VStack>
     </Box>

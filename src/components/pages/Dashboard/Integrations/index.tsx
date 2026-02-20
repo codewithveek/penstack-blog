@@ -1,15 +1,10 @@
 'use client';
 
-import { Box, Card, CardBody, Container } from "@chakra-ui/react";
+import { Box, Card, Container, Tabs } from "@chakra-ui/react";
+
 import DashHeader from "@/components/Dashboard/Header";
 import { PageTitleHeader } from "@/components/Dashboard/PageTitleCard";
-import {
-    Tabs,
-    TabList,
-    TabPanels,
-    TabPanel,
-    Tab,
-} from "@chakra-ui/react";
+
 import { useState } from "react";
 import OAuthProvidersPage from "../Settings/Oauth";
 export default function IntegrationsPage() {
@@ -23,35 +18,35 @@ export default function IntegrationsPage() {
     return <Box>
         <DashHeader />
         <Container maxW="container.2xl" p={{ base: 4, md: 5 }}>
-            <Card>
+            <Card.Root>
 
                 <PageTitleHeader title="Integrations">
                 </PageTitleHeader>
-                <CardBody>
+                <Card.Body>
 
-                    <Tabs
+                    <Tabs.Root
                         defaultIndex={tabs.findIndex((tab) => tab.folder === activeTab)}
                         onChange={(index) => {
                             setActiveTab(tabs[index].folder);
                         }}
                     >
-                        <TabList overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
+                        <Tabs.List overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
                             {tabs.map((tab) => (
-                                <Tab
+                                <Tabs.Trigger
                                     key={tab.folder}
                                     onClick={() => setActiveTab(tab.folder)}
                                 >
                                     {tab.title}
-                                </Tab>
+                                </Tabs.Trigger>
                             ))}
-                        </TabList>
+                        </Tabs.List>
 
-                        <TabPanels py={5}>
-                            <TabPanel px={2}><OAuthProvidersPage /></TabPanel>
-                        </TabPanels>
-                    </Tabs>
-                </CardBody>
-            </Card>
+                        <Tabs.ContentGroup py={5}>
+                            <Tabs.Content px={2}><OAuthProvidersPage /></Tabs.Content>
+                        </Tabs.ContentGroup>
+                    </Tabs.Root>
+                </Card.Body>
+            </Card.Root>
         </Container>
     </Box>
 }

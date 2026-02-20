@@ -1,5 +1,6 @@
-// components/ImageMedia.tsx
 import { VStack } from "@chakra-ui/react";
+// components/ImageMedia.tsx
+
 import { useEffect } from "react";
 import { MediaError } from "./MediaError";
 import { MediaFields } from "./MediaFields";
@@ -61,7 +62,7 @@ export const ImageMedia = ({
   }
 
   return (
-    <VStack spacing={4} align="stretch">
+    <VStack gap={4} align="stretch">
       {/* Editing Controls
       {isEditing && <MediaFields />} */}
 

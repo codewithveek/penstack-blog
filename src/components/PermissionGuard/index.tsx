@@ -1,7 +1,9 @@
 "use client";
+
+import { Spinner } from "@chakra-ui/react";
 import { usePermissions } from "@/hooks/usePermissions";
 import { TPermissions } from "@/types";
-import { Spinner } from "@chakra-ui/react";
+
 import { redirect } from "next/navigation";
 import { memo } from "react";
 

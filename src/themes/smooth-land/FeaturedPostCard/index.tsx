@@ -1,3 +1,4 @@
+import { Avatar, Box, Grid, Heading, HStack, Image, LinkBox, LinkOverlay, Stack, Tag, Text, VStack, Skeleton, SkeletonText } from "@chakra-ui/react";
 import { useFeaturedPost } from "@/hooks/useFeaturedPost";
 import {
   decodeAndSanitizeHtml,
@@ -6,23 +7,8 @@ import {
   objectToQueryParams,
   stripHtml,
 } from "@/utils";
-import {
-  Avatar,
-  Box,
-  Grid,
-  Heading,
-  HStack,
-  Image,
-  LinkBox,
-  LinkOverlay,
-  Stack,
-  Tag,
-  Text,
-  useColorModeValue,
-  VStack,
-  Skeleton,
-  SkeletonText,
-} from "@chakra-ui/react";
+
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function FeaturedPostCard() {
   const { featuredPost, loading } = useFeaturedPost();
@@ -46,7 +32,7 @@ export default function FeaturedPostCard() {
         <Stack
           h={"full"}
           minH={350}
-          spacing={4}
+          gap={4}
           px={{ base: 3, sm: 6, lg: 8 }}
           py={{ base: 3, sm: 6 }}
         >
@@ -90,7 +76,7 @@ export default function FeaturedPostCard() {
             >
               <VStack
                 align="start"
-                spacing={4}
+                gap={4}
                 px={{ base: 3, sm: 6, lg: 8 }}
                 py={{ base: 3, sm: 6, lg: 8 }}
                 justify="space-between"

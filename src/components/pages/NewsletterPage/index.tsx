@@ -1,28 +1,14 @@
 "use client";
-import {
-  Box,
-  VStack,
-  Heading,
-  Text,
-  Flex,
-  FormControl,
-  Input,
-  Button,
-  useColorModeValue,
-  Stack,
-  Icon,
-  Container,
-  Badge,
-  Avatar,
-  HStack,
-  SimpleGrid,
-} from "@chakra-ui/react";
-import { useState } from "react";
+
+import { Box, VStack, Heading, Text, Flex, Field, Input, Button, Stack, Icon, Container, Badge, Avatar, HStack, SimpleGrid } from "@chakra-ui/react";
+
+import React, { useState } from "react";
 import { LuSend, LuCode, LuZap, LuBookOpen, LuQuote } from "react-icons/lu";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import isEmpty from "just-is-empty";
 import { Newsletter } from "../../NewsLetter";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const testimonials = [
   {
@@ -55,8 +41,8 @@ const Feature = ({
   icon: React.ElementType;
   title: string;
 }) => (
-  <Stack direction="row" align="center" spacing={2}>
-    <Icon as={icon} color="brand.500" boxSize={5} />
+  <Stack direction="row" align="center" gap={2}>
+    <Icon color="brand.500" boxSize={5}>{React.createElement(icon)}</Icon>
     <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.300")}>
       {title}
     </Text>
@@ -80,16 +66,16 @@ const Testimonial = ({
     rounded="xl"
     border="1px"
     borderColor={useColorModeValue("gray.100", "gray.700")}
-    spacing={3}
+    gap={3}
     _hover={{ transform: "translateY(-4px)", shadow: "lg" }}
     transition="all 0.3s"
   >
-    <Icon as={LuQuote} color="brand.500" boxSize={6} />
+    <Icon color="brand.500" boxSize={6}><LuQuote /></Icon>
     <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.300")}>
       &apos;{content}&apos;
     </Text>
-    <HStack spacing={3}>
-      <Avatar src={avatar} size="sm" name={name} />
+    <HStack gap={3}>
+      <Avatar.Root src={avatar} size="sm" name={name} />
       <Box>
         <Text fontWeight="bold" fontSize="sm">
           {name}
@@ -117,9 +103,9 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
         borderColor={borderColor}
         p={{ base: 4, md: 6, lg: 8 }}
       >
-        <VStack spacing={8} align="center" textAlign="center">
+        <VStack gap={8} align="center" textAlign="center">
           <Badge
-            colorScheme="brandPurple"
+            colorPalette="brandPurple"
             fontSize="sm"
             px={3}
             py={1}
@@ -140,7 +126,7 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
 
           <Stack
             direction={{ base: "column", md: "row" }}
-            spacing={8}
+            gap={8}
             justify="center"
             w="full"
             maxW="2xl"
@@ -151,7 +137,7 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
             <Feature icon={LuBookOpen} title="Tutorial Collections" />
           </Stack>
 
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} w="full">
+          <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} w="full">
             {testimonials.map((testimonial, idx) => (
               <Testimonial key={idx} {...testimonial} />
             ))}

@@ -1,28 +1,7 @@
 "use client";
-import {
-  Box,
-  Card,
-  CardBody,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Badge,
-  TableContainer,
-  Text,
-  Input,
-  InputGroup,
-  Stack,
-  Center,
-  Tooltip,
-  useColorModeValue,
-  ResponsiveValue,
-  InputLeftElement,
-  HStack,
-  Tag,
-} from "@chakra-ui/react";
+
+import { Box, Card, Table, Badge, Text, Input, Group, Stack, Center, Tooltip, ResponsiveValue, InputElement, HStack, Tag } from "@chakra-ui/react";
+
 import { PermissionGuard } from "../../../PermissionGuard";
 import { LuSearch } from "react-icons/lu";
 import { useQuery } from "@tanstack/react-query";
@@ -35,6 +14,7 @@ import { shortenText } from "@/utils";
 import DashHeader from "../../../Dashboard/Header";
 import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
 import Pagination from "../../../Pagination";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const DashboardNewsletterPage = () => {
   const [newsletters, setNewsletters] = useState<NewsletterSelect[]>([]);
@@ -83,19 +63,19 @@ export const DashboardNewsletterPage = () => {
       <Box>
         <DashHeader />
         <Box p={{ base: 4, md: 5 }}>
-          <Card>
+          <Card.Root>
             <PageTitleHeader title="Newsletter" />
 
-            <CardBody>
+            <Card.Body>
               <Stack
                 direction={{ base: "column", md: "row" }}
-                spacing={4}
+                gap={4}
                 mb={6}
               >
-                <InputGroup>
-                  <InputLeftElement>
+                <Group>
+                  <InputElement placement="start">
                     <LuSearch />
-                  </InputLeftElement>
+                  </InputElement>
                   <Input
                     maxW={{ md: "320px" }}
                     autoComplete="off"
@@ -103,7 +83,7 @@ export const DashboardNewsletterPage = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                </InputGroup>
+                </Group>
               </Stack>
 
               {isFetching && (
@@ -114,9 +94,9 @@ export const DashboardNewsletterPage = () => {
 
               {!isFetching && filteredNewsletters?.length > 0 ? (
                 <>
-                  <TableContainer>
-                    <Table mb={3} style={{ fontVariantNumeric: "normal" }}>
-                      <Thead
+                  <Table.ScrollArea>
+                    <Table.Root mb={3} style={{ fontVariantNumeric: "normal" }}>
+                      <Table.Header
                         px={4}
                         py={4}
                         mb={3}
@@ -126,43 +106,43 @@ export const DashboardNewsletterPage = () => {
                         fontSize="medium"
                         style={{ textTransform: "none" }}
                       >
-                        <Tr>
-                          <Th {...thStyles}>Id</Th>
-                          <Th {...thStyles}>Email</Th>
-                          <Th {...thStyles}>Name</Th>
-                          <Th {...thStyles}>Status</Th>
-                          <Th {...thStyles}>Verification</Th>
-                          <Th {...thStyles}>Referrer</Th>
-                          <Th {...thStyles}>Created At</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody borderColor={headerColor}>
+                        <Table.Row>
+                          <Table.ColumnHeader {...thStyles}>Id</Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>Email</Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>Name</Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>Status</Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>Verification</Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>Referrer</Table.ColumnHeader>
+                          <Table.ColumnHeader {...thStyles}>Created At</Table.ColumnHeader>
+                        </Table.Row>
+                      </Table.Header>
+                      <Table.Body borderColor={headerColor}>
                         {filteredNewsletters &&
                           filteredNewsletters.map((subscriber) => (
-                            <Tr key={subscriber.id}>
-                              <Td color={cellTextColor}>{subscriber.id}</Td>
-                              <Td>{subscriber.email}</Td>
-                              <Td>{subscriber.name || "-"}</Td>
-                              <Td>
-                                <Tag
+                            <Table.Row key={subscriber.id}>
+                              <Table.Cell color={cellTextColor}>{subscriber.id}</Table.Cell>
+                              <Table.Cell>{subscriber.email}</Table.Cell>
+                              <Table.Cell>{subscriber.name || "-"}</Table.Cell>
+                              <Table.Cell>
+                                <Tag.Root
                                   size="sm"
                                   // bg={"transparent"}
                                   textTransform={"capitalize"}
-                                  colorScheme={
+                                  colorPalette={
                                     subscriber.status === "subscribed"
                                       ? "green"
                                       : "red"
                                   }
                                 >
                                   {subscriber.status}
-                                </Tag>
-                              </Td>
-                              <Td>
-                                <Tag
+                                </Tag.Root>
+                              </Table.Cell>
+                              <Table.Cell>
+                                <Tag.Root
                                   size="sm"
                                   textTransform={"capitalize"}
                                   // bg={"transparent"}
-                                  colorScheme={
+                                  colorPalette={
                                     subscriber.verification_status ===
                                     "verified"
                                       ? "green"
@@ -170,10 +150,10 @@ export const DashboardNewsletterPage = () => {
                                   }
                                 >
                                   {subscriber.verification_status}
-                                </Tag>
-                              </Td>
-                              <Td>
-                                <Tooltip
+                                </Tag.Root>
+                              </Table.Cell>
+                              <Table.Cell>
+                                <Tooltip.Root
                                   hasArrow
                                   label={subscriber.referrer}
                                   rounded={"lg"}
@@ -184,9 +164,9 @@ export const DashboardNewsletterPage = () => {
                                       20
                                     )}
                                   </Text>
-                                </Tooltip>
-                              </Td>
-                              <Td>
+                                </Tooltip.Root>
+                              </Table.Cell>
+                              <Table.Cell>
                                 <Text
                                   color={cellTextColor}
                                   textTransform={"lowercase"}
@@ -196,12 +176,12 @@ export const DashboardNewsletterPage = () => {
                                     "dd/MM/yyyy hh:mm a"
                                   )}
                                 </Text>
-                              </Td>
-                            </Tr>
+                              </Table.Cell>
+                            </Table.Row>
                           ))}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
+                      </Table.Body>
+                    </Table.Root>
+                  </Table.ScrollArea>
                   <HStack py={4} justify={"center"}>
                     <Pagination
                       totalPages={data?.meta.totalPages || 0}
@@ -217,8 +197,8 @@ export const DashboardNewsletterPage = () => {
                   </Center>
                 )
               )}
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
         </Box>
       </Box>
     </PermissionGuard>

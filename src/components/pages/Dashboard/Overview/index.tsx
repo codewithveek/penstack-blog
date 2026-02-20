@@ -1,5 +1,7 @@
 "use client";
-import { Box, Grid, Stack, useColorModeValue } from "@chakra-ui/react";
+
+import { Box, Grid, Stack } from "@chakra-ui/react";
+
 import {
   LuFileStack,
   LuMailPlus,
@@ -12,6 +14,7 @@ import DashHeader from "@/components/Dashboard/Header";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { OverviewCard } from "./OverviewCard";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function Overview() {
   const bgColor = useColorModeValue("white", "gray.700");
@@ -77,7 +80,7 @@ export default function Overview() {
           }}
         >
           <OverviewCard
-            isLoading={isUsersLoading}
+            loading={isUsersLoading}
             color="purple"
             link="/dashboard/users"
             label="Users"
@@ -90,7 +93,7 @@ export default function Overview() {
             color="orange"
             label="Subscribers"
             link="/dashboard/newsletter"
-            isLoading={isSubscriberLoading}
+            loading={isSubscriberLoading}
             icon={LuMailPlus}
             value={subscribersOverview?.total || 0}
             isUp={subscribersOverview?.isUp}
@@ -98,7 +101,7 @@ export default function Overview() {
           />
           <OverviewCard
             color="brand"
-            isLoading={isPostsLoading}
+            loading={isPostsLoading}
             label="Posts"
             link="/dashboard/posts"
             icon={LuFileStack}
@@ -108,7 +111,7 @@ export default function Overview() {
           />
           <OverviewCard
             color="green"
-            isLoading={isCommentLoading}
+            loading={isCommentLoading}
             link="/dashboard/comments"
             label="Comments"
             icon={LuMessageCircle}

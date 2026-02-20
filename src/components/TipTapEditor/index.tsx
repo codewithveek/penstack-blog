@@ -1,5 +1,6 @@
+import { Flex, Box } from "@chakra-ui/react";
 import { useEditor } from "@tiptap/react";
-import { Flex, Hide } from "@chakra-ui/react";
+
 
 import { useMemo } from "react";
 
@@ -62,9 +63,9 @@ function TipTapEditor({
             <MenuBar editor={editor} />
           </FloatingMenu> */}
         </EditorWrapper>
-        <Hide below="lg">
+        <Box display={{ base: 'none' }} below="lg">
           <SidebarContent />
-        </Hide>
+        </Box>
         {/* <Box display={{ base: "none", lg: "block" }} maxW={320}></Box> */}
       </Flex>
     </>

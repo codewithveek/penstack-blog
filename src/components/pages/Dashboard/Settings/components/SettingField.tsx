@@ -1,15 +1,5 @@
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  Switch,
-  HStack,
-  FormHelperText,
-  Text,
-  InputGroup,
-  InputRightElement,
-  IconButton,
-} from "@chakra-ui/react";
+import { Field, Input, Switch, HStack, Text, Group, InputElement, IconButton } from "@chakra-ui/react";
+
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -27,20 +17,20 @@ export const SettingField = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <FormControl key={setting.key}>
-      <FormLabel>{setting.name || setting.key}</FormLabel>
+    <Field.Root key={setting.key}>
+      <Field.Label>{setting.name || setting.key}</Field.Label>
       {setting.hasOwnProperty("enabled") && (
         <HStack mb={1}>
           <Text>{setting.enabled ? "Enabled" : "Disabled"}</Text>
-          <Switch
-            isDisabled={!setting.value && setting.key !== "localPostAnalytics"}
-            isChecked={setting.enabled}
+          <Switch.Root
+            disabled={!setting.value && setting.key !== "localPostAnalytics"}
+            checked={setting.enabled}
             onChange={() => handleToggle(setting.key)}
           />
         </HStack>
       )}
       {setting.key !== "localPostAnalytics" && (
-        <InputGroup>
+        <Group>
           <Input
             maxW={600}
             rounded="md"
@@ -50,26 +40,27 @@ export const SettingField = ({
             placeholder={setting.description}
           />
           {setting.encrypted && (
-            <InputRightElement>
+            <InputElement placement="end">
               <IconButton
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                icon={showPassword ? <FaEyeSlash /> : <FaEye />}
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowPassword(!showPassword)}
-              />
-            </InputRightElement>
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </IconButton>
+            </InputElement>
           )}
-        </InputGroup>
+        </Group>
       )}
       {setting.canEncrypt && (
-        <FormHelperText>
+        <Field.HelperText>
           This field can be encrypted for additional security
-        </FormHelperText>
+        </Field.HelperText>
       )}
       {setting.description && !setting.canEncrypt && (
-        <FormHelperText>{setting.description}</FormHelperText>
+        <Field.HelperText>{setting.description}</Field.HelperText>
       )}
-    </FormControl>
+    </Field.Root>
   );
 };

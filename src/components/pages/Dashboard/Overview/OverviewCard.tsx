@@ -1,21 +1,7 @@
+import React from "react";
+import { Card as ChakraCard, Flex, GridItem, HStack, Heading, Image, Text, VStack, Grid, Card, Icon, Skeleton, Button } from "@chakra-ui/react";
 import Link from "next/link";
-import {
-  Card as ChakraCard,
-  Flex,
-  GridItem,
-  HStack,
-  Heading,
-  Image,
-  Text,
-  VStack,
-  Grid,
-  CardBody,
-  useColorModeValue,
-  Icon,
-  Card,
-  Skeleton,
-  Button,
-} from "@chakra-ui/react";
+
 import { IconType } from "react-icons";
 import { LuTrendingDown, LuTrendingUp } from "react-icons/lu";
 
@@ -26,7 +12,7 @@ export const OverviewCard = ({
   value,
   isUp,
   growthCount,
-  isLoading,
+  loading,
   link,
 }: {
   label: string;
@@ -35,15 +21,15 @@ export const OverviewCard = ({
   icon: IconType;
   isUp?: boolean;
   growthCount?: number;
-  isLoading?: boolean;
+  loading?: boolean;
   link?: string;
 }) => {
   const textColor = useColorModeValue("gray.500", "gray.400");
   const borderColor = useColorModeValue("gray.300", "gray.700");
   return (
     <GridItem w={"100%"}>
-      <Card variant={"outline"}>
-        <CardBody>
+      <Card.Root variant={"outline"}>
+        <Card.Body>
           <VStack
             m={0}
             align={"stretch"}
@@ -62,9 +48,9 @@ export const OverviewCard = ({
                 border={"1px"}
                 borderColor={borderColor}
               >
-                <Icon as={icon} size={20} color={color + ".500"} />
+                <Icon size={'md'} color={color + ".500"}>{React.createElement(icon)}</Icon>
               </Flex>
-              {isLoading ? (
+              {loading ? (
                 <Skeleton height={"30px"} width={"60px"} rounded="full" />
               ) : isUp ? (
                 <ChartHighIcon />
@@ -89,7 +75,7 @@ export const OverviewCard = ({
                 fontWeight={"semibold"}
                 color={"secondary"}
               >
-                {isLoading ? (
+                {loading ? (
                   <Skeleton height={"20px"} width={"100px"} rounded="full" />
                 ) : (
                   value
@@ -98,7 +84,7 @@ export const OverviewCard = ({
             </VStack>
             <HStack wrap={"wrap"} justify={"space-between"}>
               <HStack gap={"10px"}>
-                {isLoading ? (
+                {loading ? (
                   <Skeleton height={"20px"} width={"60px"} rounded="full" />
                 ) : (
                   <HStack
@@ -130,13 +116,15 @@ export const OverviewCard = ({
                   vs. previous week
                 </Text>
               </HStack>
-              <Button as={Link} href={link} size={"sm"} variant={"ghost"}>
-                See all
+              <Button asChild size={"sm"} variant={"ghost"}>
+                <Link href={link!}>
+                  See all
+                </Link>
               </Button>
             </HStack>
           </VStack>
-        </CardBody>
-      </Card>
+        </Card.Body>
+      </Card.Root>
     </GridItem>
   );
 };

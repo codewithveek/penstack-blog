@@ -1,18 +1,9 @@
+import { Field, Input, Textarea, Stack, Box, Button, Text } from "@chakra-ui/react";
 import { SectionCard } from "@/components//Dashboard/SectionCard";
 import { PillInput } from "@/components//PillInput";
 import { usePostSeoMetaStore } from "@/state/post-seo-meta";
 import { MediaResponse } from "@/types";
-import {
-  FormControl,
-  Input,
-  FormLabel,
-  Textarea,
-  Stack,
-  FormHelperText,
-  Box,
-  Button,
-  Text,
-} from "@chakra-ui/react";
+
 import { useEffect, useRef } from "react";
 import { ImageCard } from "@/components/TipTapEditor/Sidebar/components/ImageCard";
 
@@ -25,7 +16,7 @@ export const SeoPanel = () => {
   const keywords = usePostSeoMetaStore((state) => state.keywords);
   const setKeyValue = usePostSeoMetaStore((state) => state.setKeyValue);
   const saveSeoMeta = usePostSeoMetaStore((state) => state.saveSeoMeta);
-  const isLoading = usePostSeoMetaStore((state) => state.isLoading);
+  const isLoading = usePostSeoMetaStore((state) => state.loading);
   const isSaving = usePostSeoMetaStore((state) => state.isSaving);
   const hasChanges = usePostSeoMetaStore((state) => state.hasChanges);
   useEffect(() => {
@@ -46,16 +37,16 @@ export const SeoPanel = () => {
         roundedTop={"0"}
       >
         <Stack gap={3} px={4} py={3}>
-          <FormControl>
-            <FormLabel>Meta Title</FormLabel>
+          <Field.Root>
+            <Field.Label>Meta Title</Field.Label>
             <Input
               placeholder="Enter title for SEO"
               value={title}
               onChange={(e) => setKeyValue("title", e.target.value)}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Meta Description</FormLabel>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>Meta Description</Field.Label>
             <Textarea
               placeholder="Enter meta description for SEO"
               maxLength={160}
@@ -63,31 +54,31 @@ export const SeoPanel = () => {
               value={description}
               onChange={(e) => setKeyValue("description", e.target.value)}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Canonical URL</FormLabel>
-            <FormHelperText mb={2}>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>Canonical URL</Field.Label>
+            <Field.HelperText mb={2}>
               If this post is published on a different platform, enter the URL
               of the post.
-            </FormHelperText>
+            </Field.HelperText>
             <Input
               placeholder="https://example.com/post-title"
               value={canonicalUrl}
               onChange={(e) => setKeyValue("canonical_url", e.target.value)}
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Image</FormLabel>
-            <FormHelperText mb={2}>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>Image</Field.Label>
+            <Field.HelperText mb={2}>
               The image will be used as the open graph image for the post.
-            </FormHelperText>
+            </Field.HelperText>
             <ImageUploadAndPreview />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Keywords</FormLabel>
-            <FormHelperText mb={2}>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>Keywords</Field.Label>
+            <Field.HelperText mb={2}>
               Enter keywords for SEO. Separate with commas.
-            </FormHelperText>
+            </Field.HelperText>
             <PillInput
               placeholder="Enter keywords for SEO"
               value={keywords}
@@ -98,11 +89,11 @@ export const SeoPanel = () => {
                 setKeyValue("keywords", allPills);
               }}
             />
-          </FormControl>
+          </Field.Root>
           <Box mt={4}>
             <Button
-              isLoading={isSaving}
-              isDisabled={isLoading || isSaving || !hasChanges}
+              loading={isSaving}
+              disabled={loading || isSaving || !hasChanges}
               loadingText={"Saving changes.."}
               onClick={() => {
                 saveSeoMeta();

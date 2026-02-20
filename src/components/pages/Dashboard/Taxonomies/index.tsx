@@ -1,20 +1,8 @@
 "use client";
+
+import { Card, Tabs, Button, Input, Box, Flex, Group, InputElement } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import {
-  Card,
-  CardBody,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Button,
-  Input,
-  Box,
-  Flex,
-  InputGroup,
-  InputLeftElement,
-} from "@chakra-ui/react";
+
 import { LuSearch, LuPlus } from "react-icons/lu";
 import { PageTitleHeader } from "@/components//Dashboard/PageTitleCard";
 import DashHeader from "@/components//Dashboard/Header";
@@ -55,57 +43,55 @@ const DashboardTaxonomyPage: React.FC = () => {
     <Box>
       <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
-        <Card>
+        <Card.Root>
           <PageTitleHeader title="Taxonomies">
-            <Button onClick={handleModalOpen} leftIcon={<LuPlus />}>
-              Add New
-            </Button>
+            <Button onClick={handleModalOpen}><LuPlus /> Add New</Button>
           </PageTitleHeader>
 
-          <CardBody>
-            <Tabs
+          <Card.Body>
+            <Tabs.Root
               isLazy
               defaultIndex={activeTab === "categories" ? 0 : 1}
               onChange={(index) => {
                 handleTabChange(index);
               }}
             >
-              <TabList>
-                <Tab>Categories</Tab>
-                <Tab>Tags</Tab>
-              </TabList>
+              <Tabs.List>
+                <Tabs.Trigger>Categories</Tabs.Trigger>
+                <Tabs.Trigger>Tags</Tabs.Trigger>
+              </Tabs.List>
 
               <Box my={4}>
                 <Flex align="center" gap={4}>
                   <Box position="relative" flex={1}>
-                    <InputGroup>
-                      <InputLeftElement>
+                    <Group>
+                      <InputElement placement="start">
                         <LuSearch />
-                      </InputLeftElement>
+                      </InputElement>
                       <Input
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={handleSearch}
                         maxW={"300px"}
                       />
-                    </InputGroup>
+                    </Group>
                   </Box>
                 </Flex>
               </Box>
 
-              <TabPanels>
-                <TabPanel>
+              <Tabs.ContentGroup>
+                <Tabs.Content>
                   <CategoriesPanel />
-                </TabPanel>
-                <TabPanel>
+                </Tabs.Content>
+                <Tabs.Content>
                   <TagsPanel />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+                </Tabs.Content>
+              </Tabs.ContentGroup>
+            </Tabs.Root>
 
             <AddEditForm />
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
       </Box>
     </Box>
   );

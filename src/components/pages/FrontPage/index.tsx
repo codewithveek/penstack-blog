@@ -1,12 +1,8 @@
 "use client";
+
+import { Box, Button, Heading, HStack } from "@chakra-ui/react";
 import React, { FC } from "react";
-import {
-  Box,
-  Button,
-  Heading,
-  HStack,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/themes/smooth-land/PostsCards";
 import Link from "next/link";
@@ -14,6 +10,7 @@ import { LuArrowRight } from "react-icons/lu";
 import { FeaturedPost } from "@/themes/smooth-land/FeaturedPost";
 import { FeaturedPostType, PaginatedResponse, PostSelect } from "@/types";
 import isEmpty from "just-is-empty";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface FrontPageProps {
   featuredPost: FeaturedPostType;
@@ -25,7 +22,7 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, postsWithMeta }) => {
   // const {
   //   updateParams,
   //   posts: clientPosts,
-  //   loading: isLoading,
+  //   loading: loading,
   // } = usePosts({ canFetch });
   // const canFetchRef = useRef(false);
   // const searchParams = useSearchParams();
@@ -36,7 +33,7 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, postsWithMeta }) => {
   //   if (category) {
   //     setCanFetch(true);
 
-  //     setLoading(isLoading);
+  //     setLoading(loading);
   //     // setPosts(clientPosts);
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,13 +67,13 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, postsWithMeta }) => {
             {postsWithMeta?.meta && postsWithMeta?.meta.totalPages > 1 && (
               <HStack justify={"center"} my={8}>
                 <Button
-                  as={Link}
-                  href={"/articles"}
+                  asChild
                   px={6}
                   py={2}
-                  rightIcon={<LuArrowRight />}
                 >
-                  View all posts
+                  <Link href="/articles">
+                    View all posts <LuArrowRight />
+                  </Link>
                 </Button>
               </HStack>
             )}

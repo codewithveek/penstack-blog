@@ -1,12 +1,5 @@
-import {
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
-  Button,
-} from "@chakra-ui/react";
+import { Dialog, Button } from "@chakra-ui/react";
+
 import React, { useState } from "react";
 
 export const DeleteConfirmDialog = ({
@@ -32,40 +25,40 @@ export const DeleteConfirmDialog = ({
   }
   return (
     <>
-      <AlertDialog
-        isOpen={isOpen}
+      <Dialog.Root role="alertdialog"
+        open={isOpen}
         motionPreset="slideInBottom"
         leastDestructiveRef={cancelRef}
-        onClose={handleModalClose}
+        onOpenChange={handleModalClose}
       >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+        <AlertDialog.Backdrop>
+          <Dialog.Positioner><Dialog.Content>
+            <Dialog.Header fontSize="lg" fontWeight="bold">
               {title}
-            </AlertDialogHeader>
+            </Dialog.Header>
 
-            <AlertDialogBody>
+            <Dialog.Body>
               Are you sure? You can&apos;t undo this action afterwards.
-            </AlertDialogBody>
+            </Dialog.Body>
 
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose} colorScheme="gray">
+            <Dialog.Footer>
+              <Button ref={cancelRef} onClick={onClose} colorPalette="gray">
                 Cancel
               </Button>
               <Button
-                isDisabled={isDeleting}
-                isLoading={isDeleting}
+                disabled={isDeleting}
+                loading={isDeleting}
                 loadingText={"Deleting..."}
-                colorScheme="red"
+                colorPalette="red"
                 onClick={handleActionConfirm}
                 ml={3}
               >
                 Delete
               </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+            </Dialog.Footer>
+          </Dialog.Content></Dialog.Positioner>
+        </AlertDialog.Backdrop>
+      </Dialog.Root>
     </>
   );
 };

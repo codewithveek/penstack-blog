@@ -1,25 +1,20 @@
 "use client";
 
+import { Container, VStack, Heading, Text, Button, Input } from "@chakra-ui/react";
+
 import { useState, useEffect, useRef } from "react";
-import {
-  Container,
-  VStack,
-  Heading,
-  Text,
-  Button,
-  Input,
-  useToast,
-} from "@chakra-ui/react";
+
 import axios from "axios";
 import { useQueryState } from "nuqs";
 import PageWrapper from "@/components//PageWrapper";
+import { toaster } from "@/components/ui/toaster";
 
 export default function VerifyEmail() {
   const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const [canResend, setCanResend] = useState(true);
   const [countdown, setCountdown] = useState(0);
-  const toast = useToast({ position: "top", duration: 10000 });
+  
   const hasSent = useRef(false);
   const [initialEmail] = useQueryState("email");
   useEffect(() => {
@@ -47,10 +42,10 @@ export default function VerifyEmail() {
         email: (email || initialEmail)?.toLowerCase(),
       });
       if (res.status >= 200 && res.status < 400) {
-        toast({
+        toaster.create({
           title: "Verification email sent",
           description: "Please check your inbox",
-          status: "success",
+          type: "success",
         });
         setCanResend(false);
         setCountdown(60);
@@ -59,10 +54,10 @@ export default function VerifyEmail() {
         hasSent.current = false;
       }
     } catch (error) {
-      toast({
+      toaster.create({
         title: "Error",
         description: "Failed to send verification email",
-        status: "error",
+        type: "error",
       });
     } finally {
       setIsLoading(false);
@@ -73,8 +68,8 @@ export default function VerifyEmail() {
   return (
     <PageWrapper>
       <Container maxW="md" py={{ base: 12, md: 24 }}>
-        <VStack spacing={8}>
-          <VStack spacing={3} textAlign="center">
+        <VStack gap={8}>
+          <VStack gap={3} textAlign="center">
             <Heading size="xl">Verify Your Email</Heading>
             <Text color="gray.500">
               Please verify your email address to continue. Haven&apos;t
@@ -82,18 +77,18 @@ export default function VerifyEmail() {
             </Text>
           </VStack>
 
-          <VStack spacing={4} width="full">
+          <VStack gap={4} width="full">
             <Input
               placeholder="Enter your email"
               value={email || initialEmail || ""}
               onChange={(e) => setEmail(e.target.value)}
               size="lg"
-              isDisabled
+              disabled
             />
             <Button
               onClick={handleResend}
-              isLoading={isLoading}
-              isDisabled={!canResend}
+              loading={loading}
+              disabled={!canResend}
               size="lg"
               width="full"
             >

@@ -1,37 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Card,
-  CardBody,
-  Stack,
-  Text,
-  Button,
-  HStack,
-  Badge,
-  InputGroup,
-  Input,
-  Select,
-  useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  IconButton,
-  Tooltip,
-  VStack,
-  TableContainer,
-  InputLeftElement,
-} from "@chakra-ui/react";
+import { Box, Card, Stack, Text, Button, HStack, Badge, InputGroup, Input, Select, Dialog, Table, IconButton, Tooltip, VStack } from "@chakra-ui/react";
+import { toaster } from "@/components/ui/toaster";
 
 import { format } from "date-fns";
 import Link from "next/link";
@@ -68,7 +38,7 @@ const PostsDashboard = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [open, setOpen] = useState(false);
   const toast = useToast({
     status: "success",
     duration: 3000,
@@ -82,13 +52,13 @@ const PostsDashboard = () => {
   const columns = [
     columnHelper.accessor("title", {
       header: "Title",
-      cell: (info) => <Text noOfLines={2}>{info.getValue()}</Text>,
+      cell: (info) => <Text lineClamp={2}>{info.getValue()}</Text>,
     }),
     columnHelper.accessor("status", {
       header: "Status",
       cell: (info) => (
         <Badge
-          colorScheme={getStatusColor(info.getValue())}
+          colorPalette={getStatusColor(info.getValue())}
           rounded="md"
           px={2}
           textTransform="capitalize"
@@ -113,45 +83,48 @@ const PostsDashboard = () => {
       cell: ({ row }) => {
         const post = row.original;
         return (
-          <HStack spacing={2}>
-            <Tooltip label="Preview">
+          <HStack gap={2}>
+            <Tooltip.Root content="Preview">
               <IconButton
-                icon={<LuExternalLink />}
-                as={Link}
-                isExternal
-                href={"/posts/preview/" + post?.post_id}
+                asChild
                 aria-label="Preview"
                 size="sm"
                 variant="ghost"
-              />
-            </Tooltip>
+              >
+                <Link href={"/posts/preview/" + post?.post_id} target="_blank">
+                  <LuExternalLink />
+                </Link>
+              </IconButton>
+            </Tooltip.Root>
             <PermissionGuard
               requiredPermission="posts:edit"
               isOwner={post?.author?.auth_id === user?.id}
             >
-              <Tooltip label="Edit">
+              <Tooltip.Root content="Edit">
                 <IconButton
-                  icon={<LuFilePen />}
-                  as={Link}
-                  href={`/dashboard/posts/edit/${post?.post_id}`}
+                  asChild
                   aria-label="Edit"
                   size="sm"
                   variant="ghost"
-                  isExternal
-                />
-              </Tooltip>
+                >
+                  <Link href={`/dashboard/posts/edit/${post?.post_id}`} target="_blank">
+                    <LuFilePen />
+                  </Link>
+                </IconButton>
+              </Tooltip.Root>
             </PermissionGuard>
             <PermissionGuard requiredPermission="posts:delete">
-              <Tooltip label="Delete">
+              <Tooltip.Root content="Delete">
                 <IconButton
-                  icon={<LuTrash2 />}
                   aria-label="Delete"
                   size="sm"
                   onClick={() => handleDelete(post)}
-                  colorScheme="red"
+                  colorPalette="red"
                   variant="ghost"
-                />
-              </Tooltip>
+                >
+                  <LuTrash2 />
+                </IconButton>
+              </Tooltip.Root>
             </PermissionGuard>
           </HStack>
         );
@@ -186,9 +159,9 @@ const PostsDashboard = () => {
       const { data } = await axios<PaginatedResponse<PostSelect>>(url);
       return data;
     } catch (error) {
-      toast({
+      toaster.create({
         title: "Error fetching posts",
-        status: "error",
+        type: "error",
       });
     }
   };
@@ -226,22 +199,22 @@ const PostsDashboard = () => {
 
   const handleDelete = (post: PostSelect) => {
     setSelectedPost(post);
-    onOpen();
+    setOpen(true);
   };
 
   const confirmDelete = async () => {
     try {
       await axios.delete(`/api/posts/${selectedPost?.post_id}`);
-      toast({
+      toaster.create({
         title: "Post deleted successfully",
       });
       refetch();
-      onClose();
+      setOpen(false);
     } catch (error: any) {
-      toast({
+      toaster.create({
         title: "Error deleting post",
         description: error?.message,
-        status: "error",
+        type: "error",
       });
     }
   };
@@ -257,28 +230,28 @@ const PostsDashboard = () => {
     <Box>
       <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
-        <Card rounded={"lg"} mb={6}>
+        <Card.Root rounded={"lg"} mb={6}>
           <PageTitleHeader title={"Posts"}>
             <Button
-              leftIcon={<LuPlus />}
               rounded="md"
-              as={Link}
-              href="/dashboard/posts/new"
+              asChild
               _hover={{ textDecoration: "none" }}
-              isLoading={isCreatingPost}
+              loading={isCreatingPost}
               onClick={() => {
                 setCreatingPost(true);
               }}
             >
-              New Post
+              <Link href="/dashboard/posts/new">
+                <LuPlus /> New Post
+              </Link>
             </Button>
           </PageTitleHeader>
-          <CardBody px={{ base: 3, lg: 4 }}>
-            <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
+          <Card.Body px={{ base: 3, lg: 4 }}>
+            <Stack direction={{ base: "column", md: "row" }} gap={4} mb={6}>
               <InputGroup maxW={{ md: "320px" }} rounded={"md"}>
-                <InputLeftElement>
+                <InputElement>
                   <LuSearch />
-                </InputLeftElement>
+                </InputElement>
                 <Input
                   rounded="md"
                   placeholder="Search posts..."
@@ -330,38 +303,38 @@ const PostsDashboard = () => {
 
             {posts && posts.length > 0 && (
               <>
-                <TableContainer>
-                  <Table variant="simple">
-                    <Thead>
+                <Table.ScrollArea>
+                  <Table.Root variant="simple">
+                    <Table.Header>
                       {table.getHeaderGroups().map((headerGroup) => (
-                        <Tr key={headerGroup.id}>
+                        <Table.Row key={headerGroup.id}>
                           {headerGroup.headers.map((header) => (
-                            <Th key={header.id}>
+                            <Table.ColumnHeader key={header.id}>
                               {flexRender(
                                 header.column.columnDef.header,
                                 header.getContext()
                               )}
-                            </Th>
+                            </Table.ColumnHeader>
                           ))}
-                        </Tr>
+                        </Table.Row>
                       ))}
-                    </Thead>
-                    <Tbody>
+                    </Table.Header>
+                    <Table.Body>
                       {table.getRowModel().rows.map((row) => (
-                        <Tr key={row.id}>
+                        <Table.Row key={row.id}>
                           {row.getVisibleCells().map((cell) => (
-                            <Td key={cell.id}>
+                            <Table.Cell key={cell.id}>
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
                               )}
-                            </Td>
+                            </Table.Cell>
                           ))}
-                        </Tr>
+                        </Table.Row>
                       ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+                    </Table.Body>
+                  </Table.Root>
+                </Table.ScrollArea>
                 <Box mx={"auto"} pt={5}>
                   <Pagination
                     currentPage={page}
@@ -381,27 +354,27 @@ const PostsDashboard = () => {
                 </Text>
               </VStack>
             )}
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Delete Post</ModalHeader>
-            <ModalBody>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+          <Dialog.Backdrop />
+          <Dialog.Content>
+            <Dialog.Header>Delete Post</Dialog.Header>
+            <Dialog.Body>
               Are you sure you want to delete &apos;{selectedPost?.title}&apos;?
               This action cannot be undone.
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="ghost" mr={3} onClick={onClose}>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button variant="ghost" mr={3} onClick={onOpenChange}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={confirmDelete}>
+              <Button colorPalette="red" onClick={confirmDelete}>
                 Delete
               </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog>
       </Box>
     </Box>
   );

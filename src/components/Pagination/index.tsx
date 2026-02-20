@@ -1,3 +1,4 @@
+import { Button, HStack, IconButton } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import {
   LuChevronLeft,
@@ -5,7 +6,7 @@ import {
   LuChevronsLeft,
   LuChevronsRight,
 } from "react-icons/lu";
-import { Button, HStack, IconButton } from "@chakra-ui/react";
+
 
 const Pagination = ({
   currentPage,
@@ -16,7 +17,7 @@ const Pagination = ({
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  isLoading?: boolean;
+  loading?: boolean;
 }) => {
   const getPageNumbers = useMemo(() => {
     const delta = 1; // Number of pages to show before and after current page
@@ -53,14 +54,14 @@ const Pagination = ({
 
   return (
     <>
-      {!isLoading && totalPages > 1 ? (
+      {!loading && totalPages > 1 ? (
         <HStack gap={3} justify="center" align="center">
           <IconButton
-            colorScheme="gray"
+            colorPalette="gray"
             size={"sm"}
             variant="outline"
             onClick={() => onPageChange(currentPage - 1)}
-            isDisabled={isLoading || currentPage === 1}
+            disabled={loading || currentPage === 1}
             aria-label="Previous page"
           >
             <LuChevronLeft className="h-4 w-4" />
@@ -74,13 +75,13 @@ const Pagination = ({
             ) : (
               <Button
                 size={"sm"}
-                colorScheme="gray"
+                colorPalette="gray"
                 aria-label={`Page ${page}`}
                 key={page}
                 variant={currentPage === page ? "solid" : "outline"}
                 className="min-w-[40px]"
                 onClick={() => onPageChange(page as number)}
-                isDisabled={isLoading}
+                disabled={loading}
               >
                 {page}
               </Button>
@@ -89,10 +90,10 @@ const Pagination = ({
 
           <IconButton
             size={"sm"}
-            colorScheme="gray"
+            colorPalette="gray"
             variant="outline"
             onClick={() => onPageChange(currentPage + 1)}
-            isDisabled={isLoading || currentPage === totalPages}
+            disabled={loading || currentPage === totalPages}
             aria-label="Next page"
           >
             <LuChevronRight className="h-4 w-4" />

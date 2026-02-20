@@ -1,17 +1,20 @@
 "use client";
 
+import { Box, Container, Heading, Text, VStack, Progress } from "@chakra-ui/react";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Container, Heading, Text, VStack, Progress, useToast } from "@chakra-ui/react";
+
 import { WelcomeStep } from "@/components/setup/WelcomeStep";
 import { AdminAccountStep } from "@/components/setup/AdminAccountStep";
 import { SiteInfoStep } from "@/components/setup/SiteInfoStep";
 import { OrganizationStep } from "@/components/setup/OrganizationStep";
 import { EmailConfigStep } from "@/components/setup/EmailConfigStep";
+import { toaster } from "@/components/ui/toaster";
 
 export default function SetupPage() {
     const router = useRouter();
-    const toast = useToast();
+    
     const [currentStep, setCurrentStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [setupData, setSetupData] = useState<any>({
@@ -57,10 +60,10 @@ export default function SetupPage() {
             });
 
             if (response.ok) {
-                toast({
+                toaster.create({
                     title: "Setup completed!",
                     description: "Your blog is ready. Redirecting to dashboard...",
-                    status: "success",
+                    type: "success",
                     duration: 3000,
                 });
                 setTimeout(() => {
@@ -68,18 +71,18 @@ export default function SetupPage() {
                 }, 1500);
             } else {
                 const error = await response.json();
-                toast({
+                toaster.create({
                     title: "Setup failed",
                     description: error.message || "Please try again",
-                    status: "error",
+                    type: "error",
                     duration: 5000,
                 });
             }
         } catch (error) {
-            toast({
+            toaster.create({
                 title: "Setup error",
                 description: "An unexpected error occurred",
-                status: "error",
+                type: "error",
                 duration: 5000,
             });
         } finally {
@@ -90,7 +93,7 @@ export default function SetupPage() {
     return (
         <Box minH="100vh" bg="gray.50" py={12}>
             <Container maxW="2xl">
-                <VStack spacing={8} align="stretch">
+                <VStack gap={8} align="stretch">
                     <Box textAlign="center">
                         <Heading size="xl" mb={2}>
                             Welcome to Your Blog
@@ -101,9 +104,9 @@ export default function SetupPage() {
                     </Box>
 
                     <Box bg="white" p={8} borderRadius="lg" shadow="md">
-                        <Progress value={progress} mb={8} colorScheme="blue" borderRadius="full" />
+                        <Progress.Root value={progress} mb={8} colorPalette="blue" borderRadius="full" />
 
-                        <VStack spacing={6} align="stretch">
+                        <VStack gap={6} align="stretch">
                             <Box>
                                 <Text fontSize="sm" color="gray.500" mb={1}>
                                     Step {currentStep} of {totalSteps}

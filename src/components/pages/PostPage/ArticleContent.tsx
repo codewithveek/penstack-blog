@@ -1,5 +1,6 @@
-import React from "react";
 import { Box, HStack, Tag, Text } from "@chakra-ui/react";
+import React from "react";
+
 import { PostSelect } from "@/types";
 import { ContentRenderer } from "../../Renderers/ContentRenderer";
 
@@ -37,7 +38,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
             </HStack>
             <HStack wrap="wrap" gap={2}>
               {post?.tags?.map((tag, index) => (
-                <Tag
+                <Tag.Root
                   key={index}
                   rounded={"md"}
                   px={3}
@@ -52,7 +53,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
                   }}
                 >
                   {tag?.name}
-                </Tag>
+                </Tag.Root>
               ))}
             </HStack>
           </HStack>

@@ -1,3 +1,4 @@
+import { Box, Button, Flex, Grid, HStack, Stack, Text } from "@chakra-ui/react";
 import React, { ReactNode, useEffect, useState } from "react";
 import {
   format,
@@ -13,17 +14,9 @@ import {
   extractFullTimeString,
   mergeTimeStringWithDate,
 } from "@/lib/cron/helper";
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  HStack,
-  Stack,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 import TimezonePicker from "./TimezonePicker";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface CalendarDataItem {
   day: number;
@@ -165,7 +158,7 @@ const Calendar: React.FC<CalendarProps> = ({
       >
         <Button
           aria-label="Previous Month"
-          isDisabled={disablePrevBtn}
+          disabled={disablePrevBtn}
           onClick={handlePrevMonth}
           bg={navBtnBg}
           color={navBtnColor}
@@ -188,7 +181,7 @@ const Calendar: React.FC<CalendarProps> = ({
         <Text>{format(currentDate, "MMMM yyyy")}</Text>
         <Button
           aria-label="Next Month"
-          isDisabled={disableNextBtn}
+          disabled={disableNextBtn}
           onClick={handleNextMonth}
           bg={navBtnBg}
           color={navBtnColor}
@@ -294,7 +287,7 @@ const Calendar: React.FC<CalendarProps> = ({
               Cancel
             </Button>
             <Button
-              colorScheme="brand"
+              colorPalette="brand"
               size="sm"
               borderRadius="16px"
               onClick={() => {

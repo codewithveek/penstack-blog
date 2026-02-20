@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  Button,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Image,
-} from "@chakra-ui/react";
+import { Button, Container, Heading, Text, VStack, Image } from "@chakra-ui/react";
+
+
 import { useRouter } from "next/navigation";
 
 export default function GlobalError({
@@ -23,7 +18,7 @@ export default function GlobalError({
     <html>
       <body>
         <Container maxW="container.xl" h="100vh" centerContent>
-          <VStack spacing={8} align="center" justify="center" h="full">
+          <VStack gap={8} align="center" justify="center" h="full">
             <Image
               src="/assets/error.svg"
               alt="Error Illustration"
@@ -37,7 +32,7 @@ export default function GlobalError({
               our team is already on it and working to get things back to
               normal.
             </Text>{" "}
-            <VStack spacing={4}>
+            <VStack gap={4}>
               <Button size="lg" onClick={() => reset()}>
                 Try Again
               </Button>

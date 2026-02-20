@@ -1,11 +1,5 @@
-import {
-  Spinner,
-  Stack,
-  Text,
-  HStack,
-  Switch,
-  StackDivider,
-} from "@chakra-ui/react";
+import { Spinner, Stack, Text, HStack, Switch, Separator } from "@chakra-ui/react";
+
 
 import { SectionCard } from "@/components//Dashboard/SectionCard";
 
@@ -28,13 +22,13 @@ export const PublishPanel = () => {
         title="Appearance"
         roundedTop="none"
         header={
-          <HStack divider={<StackDivider />}>
+          <HStack separator={<Separator />}>
             <HStack>
               <Text as="span" fontSize={"smaller"} color="gray.500">
                 Auto Save:
               </Text>
-              <Switch
-                isChecked={autoSave}
+              <Switch.Root
+                checked={autoSave}
                 onChange={(e) => setAutosave(!autoSave)}
                 size="sm"
               />

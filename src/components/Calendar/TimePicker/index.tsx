@@ -1,5 +1,7 @@
-import { Box, HStack, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, HStack, Stack, Text } from "@chakra-ui/react";
+
 import { TimePicker as ReactTimePicker } from "react-time-picker";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const TimePicker = ({
   value,

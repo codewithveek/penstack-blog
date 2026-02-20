@@ -1,17 +1,6 @@
 import { MediaResponse } from "@/types";
-import {
-  Box,
-  Flex,
-  HStack,
-  IconButton,
-  Image,
-  Stack,
-  Text,
-  useDisclosure,
-  Tooltip,
-  useColorModeValue,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Image, Stack, Text, Tooltip, Button } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
 import isEmpty from "just-is-empty";
 import { useCallback, useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
@@ -31,7 +20,7 @@ export const ImageCard = ({
   const bgColor = useColorModeValue("gray.100", "gray.900");
   const textColor = useColorModeValue("gray.500", "gray.200");
   const [featuredImage, setFeaturedImage] = useState<string | null>(image);
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [open, setOpen] = useState(false);
 
   const onImageSelectCb = useCallback(
     (media: MediaResponse) => {
@@ -84,7 +73,7 @@ export const ImageCard = ({
               w="full"
               objectFit="cover"
             />
-            <Tooltip label="Remove image" hasArrow placement="top" rounded="md">
+            <Tooltip.Root content="Remove image" hasArrow placement="top" rounded="md">
               <IconButton
                 zIndex={9}
                 pos="absolute"
@@ -92,12 +81,12 @@ export const ImageCard = ({
                 right={2}
                 aria-label="Remove featured image"
                 size="sm"
-                colorScheme="red"
+                colorPalette="red"
                 onClick={handleImageRemove}
               >
                 <LuTrash2 />
               </IconButton>
-            </Tooltip>
+            </Tooltip.Root>
           </>
         ) : (
           <Stack justify="center" align="center" h="100%" w="full">
@@ -120,16 +109,16 @@ export const ImageCard = ({
           onClick={onOpen}
           variant={"ghost"}
           rounded="full"
-          leftIcon={!featuredImage ? <LuPlus size={18} /> : undefined}
           // w="full"
         >
+          {!featuredImage && <LuPlus size={18} />}
           <Text as="span">{image ? "Change image" : "Add image"}</Text>
         </Button>
       </HStack>
 
       <MediaModal
-        onClose={onClose}
-        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        open={open}
         maxSelection={1}
         defaultFilters={{ type: "image" }}
         onSelect={handleImageSelect}

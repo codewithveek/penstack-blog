@@ -12,11 +12,11 @@ export const useAuth = () => {
       user: session?.user,
       status: isAuthenticated
         ? "authenticated"
-        : isLoading
+        : loading
           ? "loading"
           : "unauthenticated",
       isAuthenticated,
-      isLoading,
+      loading,
     };
   }, [session, isPending]);
 

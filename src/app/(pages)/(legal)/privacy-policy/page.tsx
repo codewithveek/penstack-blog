@@ -1,15 +1,10 @@
 "use client";
 
+import { Box, Container, Heading, Text, List } from "@chakra-ui/react";
+
 import PageWrapper from "@/components//PageWrapper";
 import Link from "next/link";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  UnorderedList,
-  ListItem,
-} from "@chakra-ui/react";
+
 
 export default function PrivacyPolicy() {
   return (
@@ -31,23 +26,23 @@ export default function PrivacyPolicy() {
           <Text mb={4}>
             We collect information that you provide directly to us, including:
           </Text>
-          <UnorderedList mb={6} spacing={2}>
-            <ListItem>Name and contact information</ListItem>
-            <ListItem>Account credentials</ListItem>
-            <ListItem>Payment information</ListItem>
-            <ListItem>Usage data and preferences</ListItem>
-          </UnorderedList>
+          <List.Root mb={6} gap={2}>
+            <List.Item>Name and contact information</List.Item>
+            <List.Item>Account credentials</List.Item>
+            <List.Item>Payment information</List.Item>
+            <List.Item>Usage data and preferences</List.Item>
+          </List.Root>
 
           <Heading as="h2" size="lg" mb={4}>
             How We Use Your Information
           </Heading>
           <Text mb={4}>We use the collected information to:</Text>
-          <UnorderedList mb={6} spacing={2}>
-            <ListItem>Provide and maintain our services</ListItem>
-            <ListItem>Process your transactions</ListItem>
-            <ListItem>Send you important updates and notifications</ListItem>
-            <ListItem>Improve our services and user experience</ListItem>
-          </UnorderedList>
+          <List.Root mb={6} gap={2}>
+            <List.Item>Provide and maintain our services</List.Item>
+            <List.Item>Process your transactions</List.Item>
+            <List.Item>Send you important updates and notifications</List.Item>
+            <List.Item>Improve our services and user experience</List.Item>
+          </List.Root>
 
           <Heading as="h2" size="lg" mb={4}>
             Data Security
@@ -69,12 +64,12 @@ export default function PrivacyPolicy() {
             Your Rights
           </Heading>
           <Text mb={4}>You have the right to:</Text>
-          <UnorderedList mb={6} spacing={2}>
-            <ListItem>Access your personal data</ListItem>
-            <ListItem>Request corrections to your data</ListItem>
-            <ListItem>Request deletion of your data</ListItem>
-            <ListItem>Opt-out of marketing communications</ListItem>
-          </UnorderedList>
+          <List.Root mb={6} gap={2}>
+            <List.Item>Access your personal data</List.Item>
+            <List.Item>Request corrections to your data</List.Item>
+            <List.Item>Request deletion of your data</List.Item>
+            <List.Item>Opt-out of marketing communications</List.Item>
+          </List.Root>
 
           <Heading as="h2" size="lg" mb={4}>
             Updates to Privacy Policy

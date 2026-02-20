@@ -1,11 +1,13 @@
+import { Card } from "@chakra-ui/react";
 import { PostSelect } from "@/types";
-import { Card, CardBody, useColorModeValue } from "@chakra-ui/react";
+
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import React, { useState } from "react";
 
 import { MiniPostCardRenderer } from "@/components//Renderers/MiniPostCardRenderer";
 
 import { SearchPostsComponent } from "./SearchPostsComponent";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface MiniPostCardProps extends NodeViewProps {
   isRendering?: boolean;
@@ -41,16 +43,16 @@ export const MiniPostCard: React.FC<MiniPostCardProps> = ({
   if (!node.attrs.postIds?.length) {
     return (
       <NodeViewWrapper>
-        <Card my={2}>
-          <CardBody
+        <Card.Root my={2}>
+          <Card.Body
             border="2px"
             borderStyle="dashed"
             borderColor={borderColor}
             rounded="lg"
           >
             <SearchPostsComponent onPostSelect={selectPost} />
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
       </NodeViewWrapper>
     );
   }

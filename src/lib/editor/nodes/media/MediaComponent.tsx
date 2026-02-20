@@ -1,3 +1,4 @@
+import { Image } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import {
@@ -7,7 +8,7 @@ import {
   LuTrash2,
   LuImage,
 } from "react-icons/lu";
-import { Image } from "@chakra-ui/react";
+
 
 interface MediaComponentProps extends NodeViewProps {
   isRendering?: boolean;

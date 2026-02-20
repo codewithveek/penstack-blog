@@ -1,13 +1,7 @@
+import { Field, Group, Input, InputElement, Button } from "@chakra-ui/react";
 import { useEditorPostManagerStore } from "@/state/editor-post-manager";
 import { generateSlug } from "@/utils";
-import {
-  FormControl,
-  FormLabel,
-  InputGroup,
-  Input,
-  InputRightElement,
-  Button,
-} from "@chakra-ui/react";
+
 import { useState, useCallback, ChangeEvent, memo, useEffect } from "react";
 
 export const SlugInput = memo(() => {
@@ -32,22 +26,22 @@ export const SlugInput = memo(() => {
   }, [slug]);
 
   return (
-    <FormControl>
-      <FormLabel>URL friendly title:</FormLabel>
-      <InputGroup>
+    <Field.Root>
+      <Field.Label>URL friendly title:</Field.Label>
+      <Group>
         <Input
           placeholder="Slug"
           name="slug"
           value={field}
           autoComplete="off"
           onChange={handleChange}
-          isDisabled={!isSlugEditable}
+          disabled={!isSlugEditable}
           onBlur={() => setIsSlugEditable(false)}
           rounded="xl"
           pr={1}
         />
         {!isSlugEditable && (
-          <InputRightElement roundedRight="xl">
+          <InputElement placement="end" roundedRight="xl">
             <Button
               size="sm"
               variant="ghost"
@@ -56,10 +50,10 @@ export const SlugInput = memo(() => {
             >
               Edit
             </Button>
-          </InputRightElement>
+          </InputElement>
         )}
-      </InputGroup>
-    </FormControl>
+      </Group>
+    </Field.Root>
   );
 });
 

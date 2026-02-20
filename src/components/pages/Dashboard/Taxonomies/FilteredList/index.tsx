@@ -1,21 +1,7 @@
 import { TaxonomyItem, TaxonomyItemsWithMeta } from "@/types";
-import {
-  useColorModeValue,
-  Flex,
-  Box,
-  Grid,
-  GridItem,
-  Stack,
-  Badge,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Button,
-  useDisclosure,
-  useToast,
-  Checkbox,
-} from "@chakra-ui/react";
+import { Flex, Box, Grid, GridItem, Stack, Badge, Menu, Button, Checkbox } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { toaster } from "@/components/ui/toaster";
 import { useState } from "react";
 import {
   LuArrowUpDown,
@@ -39,7 +25,7 @@ interface FilteredListProps {
   items: TaxonomyItemsWithMeta;
 }
 export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const toast = useToast({
     duration: 5000,
@@ -77,17 +63,17 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
         queryKey: ["taxonomies", type],
         refetchType: "all",
       });
-      toast({
+      toaster.create({
         title: `${selectedItems.length > 1 ? "Items" : "Item"} deleted successfully`,
       });
       setSelectedItems([]);
-      onClose();
+      setOpen(false);
     },
     onError: (error) => {
-      toast({
+      toaster.create({
         title: "Error deleting items",
         description: error.message,
-        status: "error",
+        type: "error",
       });
     },
   });
@@ -118,12 +104,12 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
 
   const handleDelete = (id: number): void => {
     setDeleteItemId(id);
-    onOpen();
+    setOpen(true);
   };
 
   const handleBulkDelete = (): void => {
     if (selectedItems.length > 0) {
-      onOpen();
+      setOpen(true);
     }
   };
 
@@ -144,7 +130,7 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
   async function handleDeleteConfirm() {
     try {
       await mutateAsync();
-      onClose();
+      setOpen(false);
     } catch (error) {
       console.error("Error deleting items:", error);
     }
@@ -166,12 +152,11 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
         <Flex justify="space-between" mb={4}>
           {selectedItems.length > 0 && (
             <Button
-              colorScheme="red"
+              colorPalette="red"
               size="sm"
-              leftIcon={<LuTrash2 />}
               onClick={handleBulkDelete}
             >
-              Delete Selected ({selectedItems.length})
+              <LuTrash2 /> Delete Selected ({selectedItems.length})
             </Button>
           )}
         </Flex>
@@ -188,8 +173,8 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
           fontSize="sm"
         >
           <GridItem colSpan={1}>
-            <Checkbox
-              isChecked={selectedItems.length === filteredItems.length}
+            <Checkbox.Root
+              checked={selectedItems.length === filteredItems.length}
               onChange={toggleAllSelection}
             />
           </GridItem>
@@ -201,9 +186,8 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
               ml={-3}
               size="sm"
               color={"inherit"}
-              rightIcon={<LuArrowUpDown />}
             >
-              Name
+              Name <LuArrowUpDown />
             </Button>
           </GridItem>
           <GridItem colSpan={4}>Slug</GridItem>
@@ -214,9 +198,8 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
               size="sm"
               color={"inherit"}
               ml={-3}
-              rightIcon={<LuArrowUpDown />}
             >
-              Posts Count
+              Posts Count <LuArrowUpDown />
             </Button>
           </GridItem>
           <GridItem colSpan={2}>Actions</GridItem>
@@ -238,8 +221,8 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
               alignItems="center"
             >
               <GridItem colSpan={1}>
-                <Checkbox
-                  isChecked={selectedItems.includes(item.id)}
+                <Checkbox.Root
+                  checked={selectedItems.includes(item.id)}
                   onChange={() => toggleItemSelection(item.id)}
                 />
               </GridItem>
@@ -256,26 +239,26 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
                 <Badge>{item.postCount}</Badge>
               </GridItem>
               <GridItem colSpan={2}>
-                <Menu arrowPadding={10}>
-                  <MenuButton as={Button} variant="ghost" size="sm">
-                    <LuMoreVertical />
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem
-                      icon={<LuFileEdit />}
+                <Menu.Root arrowPadding={10}>
+                  <Menu.Trigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <LuMoreVertical />
+                    </Button>
+                  </Menu.Trigger>
+                  <Menu.Content>
+                    <Menu.Item
                       onClick={() => handleEdit(item)}
                     >
-                      Edit
-                    </MenuItem>
-                    <MenuItem
+                      <LuFileEdit /> Edit
+                    </Menu.Item>
+                    <Menu.Item
                       color="red.600"
-                      icon={<LuTrash2 />}
                       onClick={() => handleDelete(item.id)}
                     >
-                      Delete
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
+                      <LuTrash2 /> Delete
+                    </Menu.Item>
+                  </Menu.Content>
+                </Menu.Root>
               </GridItem>
             </Grid>
           ))}
@@ -283,8 +266,8 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
       </Box>
       <DeleteConfirmDialog
         isDeleting={isDeleting}
-        isOpen={isOpen}
-        onClose={onClose}
+        open={open}
+        onOpenChange={onOpenChange}
         onConfirm={handleDeleteConfirm}
       />
     </Flex>

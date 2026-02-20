@@ -1,6 +1,9 @@
 "use client";
-import { Box, Stack, useColorModeValue } from "@chakra-ui/react";
+
+import { Box, Stack } from "@chakra-ui/react";
+
 import DashHeader from "../../../Dashboard/Header";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function CommentsPage() {
   const bgColor = useColorModeValue("white", "gray.800");
@@ -9,7 +12,7 @@ export default function CommentsPage() {
     <Box>
       <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
-        <Stack spacing={4}></Stack>
+        <Stack gap={4}></Stack>
       </Box>
     </Box>
   );

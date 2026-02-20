@@ -1,4 +1,5 @@
 import { Stack } from "@chakra-ui/react";
+
 import { FC, PropsWithChildren } from "react";
 
 export const SidebarContainer: FC<PropsWithChildren> = ({ children }) => {

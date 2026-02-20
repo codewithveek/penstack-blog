@@ -5,6 +5,6 @@ export default defineConfig({
   dialect: "mysql",
   out: "./src/db/drizzle",
   dbCredentials: {
-    url: connectionUri,
+    url: connectionUri!,
   },
 });

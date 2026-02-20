@@ -1,5 +1,7 @@
 "use client";
+
 import { Grid } from "@chakra-ui/react";
+
 import PostCard from "../PostCard";
 import { PostCardLoader } from "../PostCardLoader";
 import { PostSelect } from "@/types";

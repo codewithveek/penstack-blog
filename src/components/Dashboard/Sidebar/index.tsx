@@ -1,12 +1,7 @@
 "use client";
-import {
-  Box,
-  Flex,
-  VStack,
-  useColorModeValue,
-  Stack,
-  IconButton,
-} from "@chakra-ui/react";
+
+import { Box, Flex, VStack, Stack, IconButton } from "@chakra-ui/react";
+
 import { LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { AppLogo } from "../../AppLogoAndName/AppLogo";
@@ -17,6 +12,7 @@ import { useSiteConfig } from "@/context/SiteConfig";
 import Link from "next/link";
 import { processedNavLinksWithIcons } from "@/lib/dashboard/nav-links";
 import { NavItemWithoutPermission } from "@/types";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export const DashboardSidebar = ({
   onClose,
@@ -89,7 +85,7 @@ export const DashboardSidebar = ({
                 size="sm"
                 variant={"ghost"}
                 alignSelf={"start"}
-                colorScheme="gray"
+                colorPalette="gray"
                 color={siteNameColor}
               // display={{ base: "none", md: "flex" }}
               >
@@ -100,7 +96,7 @@ export const DashboardSidebar = ({
         </Box>
 
         <Stack
-          spacing={2}
+          gap={2}
           flexGrow={1}
           px={isMinimized ? 3 : 4}
           justifyContent={"space-between"}
@@ -124,7 +120,7 @@ export const DashboardSidebar = ({
                   icon={item.icon}
                   href={item.href}
                   isMinimized={isMinimized}
-                  onClose={onClose}
+                  onOpenChange={onClose}
                   navBtnBg={navBtnBg}
                   navBtnActiveColor={navBtnActiveColor}
                   navBtnBgHover={navBtnBgHover}

@@ -1,4 +1,5 @@
 import { VStack } from "@chakra-ui/react";
+
 import { SiteSettings } from "@/types";
 import { SettingField } from "../components/SettingField";
 import { groupSettingsByFolder } from "../utils";
@@ -18,7 +19,7 @@ export const EmailPanel = ({
   const emailSettings = groupedSettings["email"] || [];
 
   return (
-    <VStack spacing={6} align="stretch">
+    <VStack gap={6} align="stretch">
       {emailSettings.map((setting) => (
         <SettingField
           key={setting.key}

@@ -1,23 +1,9 @@
 "use client";
 
+import { Box, Container, Heading, Text, VStack, HStack, Input, Group, InputElement, IconButton, SimpleGrid, NativeSelect, Skeleton, Spinner } from "@chakra-ui/react";
+
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  Input,
-  InputGroup,
-  InputRightElement,
-  IconButton,
-  SimpleGrid,
-  Select,
-  useColorModeValue,
-  Skeleton,
-  Spinner,
-} from "@chakra-ui/react";
+
 import { LuSearch } from "react-icons/lu";
 import { useSearchResults } from "@/hooks/usePostsSearch";
 import PostCard from "../../../../themes/smooth-land/PostCard";
@@ -33,6 +19,7 @@ import {
   useQueryStates,
 } from "nuqs";
 import { PostsCards } from "@/themes/smooth-land/PostsCards";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 const SearchResults = () => {
   const bgColor = useColorModeValue("white", "gray.800");
@@ -53,7 +40,7 @@ const SearchResults = () => {
   );
   const [searchInputValue, setSearchInputValue] = useState(queryParams.q || "");
 
-  const { data, isLoading } = useSearchResults({
+  const { data, loading } = useSearchResults({
     queryParams,
   });
   const searchResults = data?.results || [];
@@ -82,11 +69,11 @@ const SearchResults = () => {
     <Box minH="calc(100vh - 180px)">
       <Container maxW="7xl" py={8}>
         {/* Search Header */}
-        <VStack spacing={6} mb={8}>
+        <VStack gap={6} mb={8}>
           <Heading size="lg" color={textColor}>
             Search Our Blog Collection
           </Heading>
-          <InputGroup size="lg" maxW="600px">
+          <Group size="lg" maxW="600px">
             <Input
               placeholder="Search articles..."
               rounded={"xl"}
@@ -102,21 +89,20 @@ const SearchResults = () => {
                 boxShadow: "0 0 0 2px var(--chakra-colors-brand-500)",
               }}
             />
-            <InputRightElement>
+            <InputElement placement="end">
               <IconButton
                 aria-label="Search"
-                icon={isLoading ? <Spinner size="sm" /> : <LuSearch />}
                 variant="ghost"
-              />
-            </InputRightElement>
-          </InputGroup>
+              >loading ? <Spinner size="sm" /> : <LuSearch /></IconButton>
+            </InputElement>
+          </Group>
         </VStack>
 
         {/* Filters */}
-        <HStack spacing={4} mb={8} wrap="wrap" justify={"center"} mx="auto">
+        <HStack gap={4} mb={8} wrap="wrap" justify={"center"} mx="auto">
           <HStack>
             <Text as={"span"}>Category:</Text>
-            <Select
+            <NativeSelect.Root
               // placeholder="Category"
               rounded={"md"}
               maxW="200px"
@@ -135,13 +121,13 @@ const SearchResults = () => {
                     {category?.name}
                   </option>
                 ))}
-            </Select>
+            </NativeSelect.Root>
           </HStack>
           <HStack>
             <Text as={"span"} whiteSpace={"pre"}>
               Sort by:
             </Text>
-            <Select
+            <NativeSelect.Root
               onChange={handleSortSelect}
               // placeholder="Sort by"
               rounded={"md"}
@@ -153,7 +139,7 @@ const SearchResults = () => {
               <option value="relevant">Most Relevant</option>
               <option value="recent">Most Recent</option>
               <option value="popular">Most Popular</option>
-            </Select>
+            </NativeSelect.Root>
           </HStack>
         </HStack>
 
@@ -170,9 +156,9 @@ const SearchResults = () => {
           )}
         </Box>
 
-        <PostsCards posts={searchResults} loading={isLoading} />
+        <PostsCards posts={searchResults} loading={loading} />
 
-        {!isLoading && !searchResults?.length && searchInputValue && (
+        {!loading && !searchResults?.length && searchInputValue && (
           <VStack>
             <Text color={mutedColor} my={6}>
               No results found for{" "}

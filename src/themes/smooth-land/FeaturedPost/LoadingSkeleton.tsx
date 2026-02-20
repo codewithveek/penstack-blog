@@ -1,13 +1,6 @@
-import {
-  Box,
-  Grid,
-  HStack,
-  LinkBox,
-  Skeleton,
-  SkeletonCircle,
-  useColorModeValue,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Grid, HStack, LinkBox, Skeleton, SkeletonCircle, VStack } from "@chakra-ui/react";
+import { useColorModeValue } from "@/components/ui/color-mode";
+
 
 export const FeaturedPostSkeleton = () => {
   const cardBgColor = useColorModeValue("white", "gray.800");
@@ -33,13 +26,13 @@ export const FeaturedPostSkeleton = () => {
               width="80px"
             />
           </Box>
-          <VStack align="start" spacing={4} p={6} justify="center">
+          <VStack align="start" gap={4} p={6} justify="center">
             <Skeleton height="24px" width="100px" />
             <Skeleton height="60px" width="100%" />
             <Skeleton height="24px" width="100%" />
-            <HStack spacing={4} mt={4} width="100%">
+            <HStack gap={4} mt={4} width="100%">
               <SkeletonCircle size="40px" />
-              <VStack align="start" spacing={1} flex={1}>
+              <VStack align="start" gap={1} flex={1}>
                 <Skeleton height="20px" width="120px" />
                 <Skeleton height="16px" width="150px" />
               </VStack>

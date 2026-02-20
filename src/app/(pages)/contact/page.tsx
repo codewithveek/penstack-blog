@@ -1,26 +1,18 @@
 "use client";
-import { useToast } from "@chakra-ui/react";
+
+import { Container, VStack, Heading, Text, Box, Button, Field, Input, Textarea } from "@chakra-ui/react";
+
 import axios from "axios";
 
 import PageWrapper from "@/components//PageWrapper";
-import {
-  Container,
-  VStack,
-  Heading,
-  Text,
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  useColorModeValue,
-} from "@chakra-ui/react";
+
 
 import { useState } from "react";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { toaster } from "@/components/ui/toaster";
 
 export default function ContactPage() {
-  const toast = useToast({ duration: 5000, isClosable: true, position: "top" });
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,19 +29,19 @@ export default function ContactPage() {
     try {
       await axios.post("/api/contact", formData);
 
-      toast({
+      toaster.create({
         title: "Message sent",
         description: "We'll get back to you soon!",
-        status: "success",
+        type: "success",
       });
 
       // Reset form
       setFormData({ name: "", email: "", message: "" });
     } catch (error: any) {
-      toast({
+      toaster.create({
         title: "Error",
         description: error.response?.data?.error || "Failed to send message",
-        status: "error",
+        type: "error",
       });
     } finally {
       setIsSubmitting(false);
@@ -58,7 +50,7 @@ export default function ContactPage() {
   return (
     <PageWrapper>
       <Container maxW="container.md" py={{ base: 8, md: 16 }}>
-        <VStack spacing={8} align="stretch">
+        <VStack gap={8} align="stretch">
           <Box textAlign="center">
             <Heading as="h1" size="2xl" mb={4}>
               Get in Touch
@@ -80,10 +72,10 @@ export default function ContactPage() {
             shadow="sm"
             borderWidth="1px"
             borderColor={borderColor}
-            spacing={6}
+            gap={6}
           >
-            <FormControl isRequired>
-              <FormLabel>Name</FormLabel>
+            <Field.Root required>
+              <Field.Label>Name</Field.Label>
               <Input
                 type="text"
                 placeholder="Your name"
@@ -92,9 +84,9 @@ export default function ContactPage() {
                   setFormData({ ...formData, name: e.target.value })
                 }
               />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Email</FormLabel>
+            </Field.Root>
+            <Field.Root required>
+              <Field.Label>Email</Field.Label>
               <Input
                 type="email"
                 placeholder="your@email.com"
@@ -103,9 +95,9 @@ export default function ContactPage() {
                   setFormData({ ...formData, email: e.target.value })
                 }
               />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Message</FormLabel>
+            </Field.Root>
+            <Field.Root required>
+              <Field.Label>Message</Field.Label>
               <Textarea
                 placeholder="Your message"
                 value={formData.message}
@@ -114,13 +106,13 @@ export default function ContactPage() {
                 }
                 rows={6}
               />
-            </FormControl>
+            </Field.Root>
             <Button
               onClick={handleSubmit}
               size="lg"
               width="full"
               rounded="full"
-              isLoading={isSubmitting}
+              loading={isSubmitting}
             >
               Send Message
             </Button>

@@ -1,22 +1,11 @@
-import {
-  Button,
-  Input,
-  Modal,
-  Text,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useToast,
-  Stack,
-} from "@chakra-ui/react";
+import { Button, Input, Dialog, Text, Stack } from "@chakra-ui/react";
+
 import { useTaxonomiesStore } from "../state";
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { generateSlug } from "@/utils";
+import { toaster } from "@/components/ui/toaster";
 
 export const AddEditForm: React.FC = () => {
   const activeTab = useTaxonomiesStore((state) => state.type);
@@ -28,12 +17,7 @@ export const AddEditForm: React.FC = () => {
   const setIsItemModalOpen = useTaxonomiesStore(
     (state) => state.setIsItemModalOpen
   );
-  const toast = useToast({
-    position: "top",
-    isClosable: true,
-    duration: 3000,
-    status: "success",
-  });
+  
   function dismissModal() {
     setIsItemModalOpen(false);
     setEditItem(null);
@@ -48,7 +32,7 @@ export const AddEditForm: React.FC = () => {
     onSuccess: (data) => {
       console.log("Success:", data);
       dismissModal();
-      toast({
+      toaster.create({
         title: `${activeTab === "tags" ? "Tag" : "Category"} added successfully`,
       });
       queryClient.invalidateQueries({
@@ -72,19 +56,19 @@ export const AddEditForm: React.FC = () => {
   };
 
   return (
-    <Modal
-      isOpen={isItemModalOpen}
-      onClose={dismissModal}
+    <Dialog.Root
+      open={isItemModalOpen}
+      onOpenChange={dismissModal}
       initialFocusRef={inputRef}
     >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
+      <Dialog.Backdrop />
+      <Dialog.Positioner><Dialog.Content>
+        <Dialog.Header>
           {editItem ? "Edit" : "Add New"}{" "}
           {activeTab === "categories" ? "Category" : "Tag"}
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
+        </Dialog.Header>
+        <Dialog.CloseTrigger />
+        <Dialog.Body>
           <Stack
             as="form"
             onSubmit={(e) => {
@@ -101,18 +85,18 @@ export const AddEditForm: React.FC = () => {
               defaultValue={editItem?.name || ""}
             />
           </Stack>
-        </ModalBody>
-        <ModalFooter>
+        </Dialog.Body>
+        <Dialog.Footer>
           <Button
             loadingText="Saving..."
-            isLoading={isPending}
-            isDisabled={inputRef?.current?.value?.trim() === "" || isPending}
+            loading={isPending}
+            disabled={inputRef?.current?.value?.trim() === "" || isPending}
             onClick={() => handleSave()}
           >
             Save
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </Dialog.Footer>
+      </Dialog.Content></Dialog.Positioner>
+    </Dialog.Root>
   );
 };

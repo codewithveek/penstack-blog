@@ -1,5 +1,7 @@
 "use client";
+
 import { Box, Container, Heading, Text } from "@chakra-ui/react";
+
 
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +20,7 @@ export const CategoryPage = ({
   // const params = useParams();
   // const categoryName = params.slug;
 
-  // const { data: posts, isLoading } = useQuery({
+  // const { data: posts, loading } = useQuery({
   //   queryKey: ["category-posts", categorySlug],
   //   queryFn: async () => {
   //     const { data } = await axios.get<{ data: PostSelect[] }>(

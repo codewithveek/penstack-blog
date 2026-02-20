@@ -1,4 +1,5 @@
-import { Text, ListItem, HStack, Icon } from "@chakra-ui/react";
+import { Text, List, HStack, Icon } from "@chakra-ui/react";
+
 import { LuFileText, LuType } from "react-icons/lu";
 import { usePenstackEditorStore } from "@/state/penstack-editor";
 
@@ -11,28 +12,28 @@ export const MetricsItem = () => {
   );
   return (
     <>
-      <ListItem>
+      <List.Item>
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon as={LuFileText} mr={1} />
+            <Icon mr={1}><LuFileText /></Icon>
             Word count:
           </Text>
           <Text as="span" fontWeight="semibold">
             {wordCount}
           </Text>
         </HStack>
-      </ListItem>
-      <ListItem>
+      </List.Item>
+      <List.Item>
         <HStack>
           <Text as="span" color="gray.500">
-            <Icon as={LuType} mr={1} />
+            <Icon mr={1}><LuType /></Icon>
             Character count:
           </Text>
           <Text as="span" fontWeight="semibold">
             {characterCount}
           </Text>
         </HStack>
-      </ListItem>
+      </List.Item>
     </>
   );
 };

@@ -1,18 +1,6 @@
+import { Box, Text, Heading, HStack, Stack, Avatar, Badge, Separator, Image, useBreakpointValue } from "@chakra-ui/react";
 import React from "react";
-import {
-  Box,
-  Text,
-  Heading,
-  HStack,
-  useColorModeValue,
-  Stack,
-  Avatar,
-  Badge,
-  Divider,
-  Image,
-  useBreakpointValue,
-  StackDivider,
-} from "@chakra-ui/react";
+
 import { PostSelect } from "@/types";
 import Link from "next/link";
 import { ThemedSocialShareGroup } from "../../SocialShares";
@@ -22,6 +10,7 @@ import {
   objectToQueryParams,
 } from "@/utils";
 import { LuBookOpen } from "react-icons/lu";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 interface ArticleHeaderProps {
   post: PostSelect;
@@ -58,7 +47,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         mb={{ base: 2, md: 3 }}
         // maxW={"950px"}
         mx={"auto"}
-        spacing={2}
+        gap={2}
       >
         <Box
           maxW={"1250px"}
@@ -81,7 +70,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
               objectFit="cover"
             />
           </Box>
-          <Stack spacing={5} my={{ base: 6, lg: 10 }}>
+          <Stack gap={5} my={{ base: 6, lg: 10 }}>
             <Heading
               as="h1"
               mb={{ base: 1, md: 2 }}
@@ -95,7 +84,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
 
             {post?.summary && (
               <>
-                {/* <Divider my={1} /> */}
+                {/* <Separator my={1} /> */}
                 <Text
                   fontSize={{ base: "md", md: "lg" }}
                   my={2}
@@ -122,7 +111,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
               <HStack
                 align={"center"}
                 gap={1}
-                divider={
+                Separator={
                   <Box
                     w={1}
                     h={1}
@@ -134,7 +123,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
                 wrap={"wrap"}
               >
                 <HStack gap={2} align={"center"}>
-                  <Avatar
+                  <Avatar.Root
                     src={post?.author.avatar || ""}
                     name={post?.author.name}
                     boxSize={"38px"}
@@ -154,7 +143,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
                   </Link>
                 </HStack>
                 <HStack
-                  divider={
+                  Separator={
                     <Box
                       w={1}
                       h={1}
