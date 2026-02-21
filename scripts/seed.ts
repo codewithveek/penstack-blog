@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../src/db";
 import {
@@ -8,16 +7,139 @@ import {
   permissions,
   rolePermissions,
   users,
+  account,
+  session,
+  verification,
   posts,
   siteSettings,
 } from "../src/db/schemas";
 import { eq, sql } from "drizzle-orm";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { permissionsEnum, rolesEnum } from "@/db/schema-helper";
-import { IdGenerator, isSecretKey } from "@/utils";
+import { isSecretKey } from "@/utils";
 import { updateSettings } from "@/lib/queries/settings";
 import { DEFAULT_SETTINGS } from "@/lib/queries/settings/config";
 import crypto from "crypto";
-import { auth } from "@/lib/auth/auth";
+
+function normalizeEmail(email: string): string {
+  return email.toLowerCase().trim();
+}
+
+const seedAuth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "mysql",
+    schema: {
+      Users: users,
+      Session: session,
+      Account: account,
+      Verification: verification,
+    },
+  }),
+  secret: process.env.BETTER_AUTH_SECRET,
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3025",
+  emailAndPassword: {
+    enabled: true,
+  },
+  user: {
+    fields: {
+      image: "avatar",
+      emailVerified: "email_verified",
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+    },
+    additionalFields: {
+      role_id: {
+        type: "number",
+        required: false,
+        input: false,
+      },
+      auth_type: {
+        type: "string",
+        required: false,
+        defaultValue: "local",
+        input: false,
+      },
+      username: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+      auth_id: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+      account_status: {
+        type: "string",
+        required: false,
+        defaultValue: "active",
+        input: false,
+      },
+    },
+    modelName: "Users",
+  },
+  session: {
+    modelName: "Session",
+  },
+  account: {
+    modelName: "Account",
+    fields: {
+      userId: "userId",
+    },
+  },
+  advanced: {
+    database: {
+      generateId: ({ model, size }: { model: string; size?: number }) => {
+        if (model === "Users" || model === "user") {
+          return false;
+        }
+
+        const idLength = typeof size === "number" && size > 0 ? size : 32;
+        return crypto.randomUUID().replace(/-/g, "").slice(0, idLength);
+      },
+    },
+  } as any,
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user: any) => {
+          const subscriberRole = await db.query.roles.findFirst({
+            where: eq(roles.name, "subscriber"),
+          });
+          const publicRole = await db.query.roles.findFirst({
+            where: eq(roles.name, "public"),
+          });
+          const fallbackRole = await db.query.roles.findFirst({
+            columns: { id: true },
+          });
+
+          const resolvedRoleId =
+            subscriberRole?.id ?? publicRole?.id ?? fallbackRole?.id;
+
+          if (!resolvedRoleId) {
+            throw new Error("No roles found while creating seed user");
+          }
+
+          const email = normalizeEmail(user.email);
+          const username = user.username || email.split("@")[0];
+
+          return {
+            data: {
+              ...user,
+              email,
+              username,
+              role_id: user.role_id ?? resolvedRoleId,
+              auth_type: user.auth_type || "local",
+              account_status: "active",
+            },
+          };
+        },
+      },
+    },
+  },
+});
+
 async function main() {
   try {
     console.log("🌱 Starting seed...");
@@ -452,30 +574,37 @@ async function main() {
     if (!adminPassword || !adminEmail) {
       throw new Error("Admin password or email not provided");
     }
-
-    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    const adminEmailNormalized = adminEmail.toLowerCase().trim();
 
     const existingAdmin = await db
       .select()
       .from(users)
-      .where(eq(users.email, adminEmail))
+      .where(eq(users.email, adminEmailNormalized))
       .limit(1);
 
     if (!existingAdmin.length) {
-      await db.insert(users).values({
-        auth_id: IdGenerator.bigIntId(),
-        name: "Super Admin",
-        email: adminEmail,
-        password: hashedPassword,
-        username: "admin",
-        role_id: adminRole.id,
-        auth_type: "local",
-        title: "Chief Editor",
-        email_verified: true,
-        bio: "I am the Chief Editor of this blog. I am responsible for overseeing the editorial content and ensuring the quality and accuracy of the articles.",
+      await seedAuth.api.signUpEmail({
+        body: {
+          name: "Super Admin",
+          email: adminEmailNormalized,
+          password: adminPassword,
+        },
       });
+
+      await db
+        .update(users)
+        .set({
+          username: "admin",
+          role_id: adminRole.id,
+          auth_type: "local",
+          title: "Chief Editor",
+          email_verified: true,
+          bio: "I am the Chief Editor of this blog. I am responsible for overseeing the editorial content and ensuring the quality and accuracy of the articles.",
+        })
+        .where(eq(users.email, adminEmailNormalized));
+
       const adminUser = await db.query.users.findFirst({
-        where: eq(users.email, adminEmail),
+        where: eq(users.email, adminEmailNormalized),
       });
 
       try {
@@ -495,6 +624,15 @@ async function main() {
       }
     } else {
       console.log("Admin user already exists");
+
+      await db
+        .update(users)
+        .set({
+          role_id: adminRole.id,
+        })
+        .where(eq(users.email, adminEmailNormalized));
+
+      console.log("✅ Existing admin user role enforced");
     }
     try {
       const operations = Object.entries(DEFAULT_SETTINGS).map(
@@ -541,6 +679,7 @@ async function main() {
       console.log("❌ Error creating site settings:", error);
     }
     console.log("✅ Seed completed successfully");
+    process.exit(1);
   } catch (error) {
     console.error("❌ Error during seed:", error);
     throw error;

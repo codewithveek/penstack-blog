@@ -12,7 +12,30 @@ async function getSubscriberRoleId(): Promise<number> {
   const subscriberRole = await db.query.roles.findFirst({
     where: eq(roles.name, "subscriber"),
   });
-  return subscriberRole?.id as number;
+
+  if (subscriberRole?.id) {
+    return subscriberRole.id;
+  }
+
+  const publicRole = await db.query.roles.findFirst({
+    where: eq(roles.name, "public"),
+  });
+
+  if (publicRole?.id) {
+    return publicRole.id;
+  }
+
+  const anyRole = await db.query.roles.findFirst({
+    columns: { id: true },
+  });
+
+  if (anyRole?.id) {
+    return anyRole.id;
+  }
+
+  throw new Error(
+    "No roles found in database. Run `bun run db:seeds` to create default roles."
+  );
 }
 
 function normalizeEmail(email: string): string {
@@ -120,6 +143,9 @@ export const auth = betterAuth({
   },
   account: {
     modelName: "Account",
+    fields: {
+      userId: "userId",
+    },
   },
   advanced: {} as any,
   databaseHooks: {
@@ -144,7 +170,7 @@ export const auth = betterAuth({
               ...user,
               email,
               username: finalUsername,
-              role_id: user.role_id || roleId,
+              role_id: user.role_id ?? roleId,
               auth_id: user.auth_id || IdGenerator.bigIntId(),
               auth_type: user.auth_type || "local",
               account_status: "active",

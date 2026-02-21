@@ -6,6 +6,6 @@ export * from "./posts-analytics.sql";
 export * from "./posts-reactions.sql";
 export * from "./settings.sql";
 export * from "./contact.sql";
-export * from "./verification-tokens.sql";
+// ./verification-tokens.sql is a legacy NextAuth table — kept for data migration only, not exported
 export * from "./setup.sql";
 export * from "./auth.sql";
