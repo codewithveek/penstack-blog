@@ -8,8 +8,22 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { sendEmail } from "@/src/lib/send-email";
 import { getSettings } from "@/src/lib/queries/settings";
+import { getClientIp, rateLimit } from "@/src/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 3 verification emails per IP per 10 minutes
+  const ip = getClientIp(req);
+  const rl = rateLimit(`send-verification:${ip}`, { limit: 3, windowSecs: 600 });
+  if (!rl.success) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Too many requests. Please try again later.",
+      },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
   const { email } = await req.json();
 
   if (!email) {
