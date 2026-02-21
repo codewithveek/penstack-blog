@@ -7,3 +7,4 @@ export * from "./posts-reactions.sql";
 export * from "./settings.sql";
 export * from "./contact.sql";
 export * from "./verification-tokens.sql";
+export * from "./post-revisions.sql";

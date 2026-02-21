@@ -31,4 +31,6 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   emailFromName: { value: "", enabled: true, encrypted: false },
   localPostAnalytics: { value: "", enabled: false, encrypted: false },
   showSiteNameWithLogo: { value: "", enabled: false, encrypted: false },
+  codeInjectionHead: { value: "", enabled: false, encrypted: false },
+  codeInjectionFoot: { value: "", enabled: false, encrypted: false },
 };

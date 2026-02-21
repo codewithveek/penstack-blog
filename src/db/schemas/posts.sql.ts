@@ -37,7 +37,7 @@ export const posts = mysqlTable(
     scheduled_at: timestamp("scheduled_at"),
     schedule_id: varchar("schedule_id", { length: 50 }),
     author_id: varchar("author_id", { length: 100 }).notNull(),
-    visibility: mysqlEnum("visibility", ["public", "private"]).default(
+    visibility: mysqlEnum("visibility", ["public", "members", "private"]).default(
       "public"
     ),
     category_id: int("category_id"),
@@ -46,6 +46,7 @@ export const posts = mysqlTable(
     allow_comments: boolean("allow_comments").default(false),
     send_newsletter: boolean("send_newsletter").default(true),
     newsletter_sent_at: timestamp("newsletter_sent_at"),
+    access_password: varchar("access_password", { length: 255 }),
     featured_image_id: int("featured_image_id"),
     created_at,
     published_at: timestamp("published_at").generatedAlwaysAs(
@@ -118,6 +119,7 @@ export const categories = mysqlTable(
     id,
     name: varchar("name", { length: 100 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
+    description: varchar("description", { length: 500 }),
     created_at,
     updated_at,
   },
@@ -139,6 +141,7 @@ export const tags = mysqlTable(
     id,
     name: varchar("name", { length: 100 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
+    description: varchar("description", { length: 500 }),
     created_at,
     updated_at,
   },
