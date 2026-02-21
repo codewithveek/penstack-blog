@@ -1,5 +1,5 @@
 import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
+import { posts, postRevisions } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
 import {
@@ -68,23 +68,34 @@ export async function PUT(
             { status: 404 }
           );
 
-        await db
-          .update(posts)
-          .set({
-            ...body,
-            scheduled_at: body.scheduled_at
-              ? new Date(body.scheduled_at)
-              : null,
-            reading_time: body?.content
-              ? calculateReadingTime(
-                  stripHtml(decodeAndSanitizeHtml(body?.content || ""))
-                )
-              : oldPost?.reading_time,
-            updated_at: new Date(),
-          })
-          .where(
-            or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
-          );
+        await db.transaction(async (tx) => {
+          // Snapshot the current post state as a revision before overwriting
+          await tx.insert(postRevisions).values({
+            post_id: oldPost.id,
+            title: oldPost.title,
+            content: oldPost.content,
+            summary: oldPost.summary,
+            revised_by: session?.user?.id ?? oldPost.author_id,
+          });
+
+          await tx
+            .update(posts)
+            .set({
+              ...body,
+              scheduled_at: body.scheduled_at
+                ? new Date(body.scheduled_at)
+                : null,
+              reading_time: body?.content
+                ? calculateReadingTime(
+                    stripHtml(decodeAndSanitizeHtml(body?.content || ""))
+                  )
+                : oldPost?.reading_time,
+              updated_at: new Date(),
+            })
+            .where(
+              or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
+            );
+        });
         const post = await getPostForEditing(slugOrPostId);
         revalidateTag("getPostWithCache");
         revalidateTag("getPlainPostWithCache");

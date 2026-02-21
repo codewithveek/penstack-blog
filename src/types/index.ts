@@ -183,6 +183,8 @@ export type SiteSettings = {
   emailFromName: SettingEntry;
   localPostAnalytics: SettingEntry;
   showSiteNameWithLogo: SettingEntry;
+  codeInjectionHead: SettingEntry;
+  codeInjectionFoot: SettingEntry;
   [key: string]: SettingEntry;
 };
 export type ResendWebhookEvent = {

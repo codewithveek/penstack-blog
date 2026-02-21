@@ -54,7 +54,7 @@ export async function PUT(
         }
         await db
           .update(categories)
-          .set({ name: body.name, slug: body.slug })
+          .set({ name: body.name, slug: body.slug, description: body.description })
           .where(eq(categories.id, id));
         revalidateTag("queryCategoriesWithFilters");
         return NextResponse.json({

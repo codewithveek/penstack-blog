@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     { requiredPermission: "posts:create" },
     async () => {
       try {
-        const { name, slug } = await request.json();
+        const { name, slug, description } = await request.json();
 
         if (!name || !slug) {
           return NextResponse.json(
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
         const newCategory = await db
           .insert(tags)
-          .values({ name, slug })
+          .values({ name, slug, description })
           .onDuplicateKeyUpdate({ set: { name: sql`name`, slug: sql`slug` } });
         revalidateTag("queryTagsWithFilters");
 
