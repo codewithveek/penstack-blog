@@ -23,7 +23,11 @@ export function createTagHandler(controller: TagController) {
     try {
       const siteId = c.get("siteId");
       const query = c.req.valid("query");
-      const result = await controller.list(siteId, query);
+      const result = await controller.list(siteId, {
+        page: query.page,
+        limit: query.limit,
+        ...(query.search !== undefined && { search: query.search }),
+      });
       return c.json({ data: result.data, meta: result.meta });
     } catch (err) {
       if (isAppError(err))
@@ -57,7 +61,14 @@ export function createTagHandler(controller: TagController) {
     try {
       const siteId = c.get("siteId");
       const input = c.req.valid("json");
-      const tag = await controller.create(siteId, input);
+      const tag = await controller.create(siteId, {
+        name: input.name,
+        ...(input.slug !== undefined && { slug: input.slug }),
+        ...(input.description != null && { description: input.description }),
+        ...(input.feature_image != null && {
+          featureImage: input.feature_image,
+        }),
+      });
       return c.json({ data: tag }, 201);
     } catch (err) {
       if (isAppError(err))
@@ -82,7 +93,16 @@ export function createTagHandler(controller: TagController) {
         const siteId = c.get("siteId");
         const { id } = c.req.valid("param");
         const input = c.req.valid("json");
-        const tag = await controller.update(siteId, id, input);
+        const tag = await controller.update(siteId, id, {
+          ...(input.name !== undefined && { name: input.name }),
+          ...(input.slug !== undefined && { slug: input.slug }),
+          ...(input.description !== undefined && {
+            description: input.description,
+          }),
+          ...(input.feature_image !== undefined && {
+            featureImage: input.feature_image,
+          }),
+        });
         return c.json({ data: tag });
       } catch (err) {
         if (isAppError(err))

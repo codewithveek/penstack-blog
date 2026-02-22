@@ -64,10 +64,10 @@ export function createNewsletterHandler(controller: NewsletterController) {
       const input = c.req.valid("json");
       const newsletter = await controller.create(siteId, {
         name: input.name,
-        description: input.description ?? undefined,
+        ...(input.description != null && { description: input.description }),
         senderName: input.sender_name ?? input.name,
         senderEmail: input.sender_email ?? "",
-        replyToEmail: input.reply_to_email ?? undefined,
+        ...(input.reply_to_email != null && { replyToEmail: input.reply_to_email }),
       });
       return c.json({ data: newsletter }, 201);
     } catch (err) {
@@ -96,9 +96,9 @@ export function createNewsletterHandler(controller: NewsletterController) {
         const newsletter = await controller.update(siteId, id, {
           ...(input.name !== undefined && { name: input.name }),
           ...(input.description !== undefined && { description: input.description }),
-          ...(input.sender_name !== undefined && { senderName: input.sender_name }),
-          ...(input.sender_email !== undefined && { senderEmail: input.sender_email }),
-          ...(input.reply_to_email !== undefined && { replyToEmail: input.reply_to_email }),
+          ...(input.sender_name != null && { senderName: input.sender_name }),
+          ...(input.sender_email != null && { senderEmail: input.sender_email }),
+          ...(input.reply_to_email != null && { replyToEmail: input.reply_to_email }),
         });
         return c.json({ data: newsletter });
       } catch (err) {

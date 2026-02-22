@@ -66,7 +66,9 @@ export function createSetupHandler(controller: SetupController) {
         admin: { name: admin.name, email: admin.email },
         site: {
           name: site.site_name,
-          description: site.site_description,
+          ...(site.site_description !== undefined && {
+            description: site.site_description,
+          }),
           subdomain: site.site_slug,
         },
         ...(email && email.service_type !== "none"

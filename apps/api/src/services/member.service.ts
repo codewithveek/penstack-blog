@@ -5,6 +5,7 @@
  */
 
 import crypto from "node:crypto";
+import { generateSlug } from "@cms/core/utils/permalink";
 import type { IMemberRepository } from "@cms/core/types/repositories";
 import type {
   IEmailProvider,
@@ -180,6 +181,7 @@ export class MemberService {
       id: crypto.randomUUID(),
       site_id: siteId,
       name: data.name,
+      slug: generateSlug(data.name),
       description: data.description ?? null,
       monthly_price_cents: data.monthlyPrice,
       yearly_price_cents: data.yearlyPrice,
@@ -237,7 +239,8 @@ export class MemberService {
   ): Promise<void> {
     const event = await this.paymentProvider.parseWebhookPayload(
       rawBody,
-      signature
+      signature,
+      ""
     );
 
     switch (event.type) {

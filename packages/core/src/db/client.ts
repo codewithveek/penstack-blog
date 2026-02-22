@@ -8,7 +8,6 @@
  */
 
 import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
 import * as schema from "./schema";
 
 function getConnectionUri(): string {
@@ -39,20 +38,14 @@ function getConnectionUri(): string {
   return `mysql://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}:${port}/${DB_NAME}?ssl=${sslParam}`;
 }
 
-const poolConnection = mysql.createPool({
-  uri: getConnectionUri(),
-  connectionLimit: 10,
-  queueLimit: 0,
-  waitForConnections: true,
-  enableKeepAlive: true,
-});
+const connectionUri = getConnectionUri();
 
 /**
  * The Drizzle ORM db instance.
  * Import path: @cms/core/db/client
  * FORBIDDEN outside of repository files.
  */
-export const db = drizzle(poolConnection, {
+export const db = drizzle(connectionUri, {
   mode: "planetscale",
   schema,
   logger: process.env["NODE_ENV"] === "development",

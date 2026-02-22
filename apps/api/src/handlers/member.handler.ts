@@ -35,7 +35,13 @@ export function createMemberAdminHandler(controller: MemberController) {
     try {
       const siteId = c.get("siteId");
       const query = c.req.valid("query");
-      const result = await controller.list(siteId, query);
+      const result = await controller.list(siteId, {
+        page: query.page,
+        limit: query.limit,
+        ...(query.status !== undefined && { status: query.status }),
+        ...(query.subscribed !== undefined && { subscribed: query.subscribed }),
+        ...(query.search !== undefined && { search: query.search }),
+      });
       return c.json({ data: result.data, meta: result.meta });
     } catch (err) {
       if (isAppError(err))
@@ -77,7 +83,14 @@ export function createMemberAdminHandler(controller: MemberController) {
         const siteId = c.get("siteId");
         const { id } = c.req.valid("param");
         const input = c.req.valid("json");
-        const member = await controller.update(siteId, id, input);
+        const member = await controller.update(siteId, id, {
+          ...(input.name !== undefined && { name: input.name }),
+          ...(input.note !== undefined && { note: input.note }),
+          ...(input.avatar !== undefined && { avatar: input.avatar }),
+          ...(input.subscribed !== undefined && {
+            subscribed: input.subscribed,
+          }),
+        });
         return c.json({ data: member });
       } catch (err) {
         if (isAppError(err))
@@ -136,7 +149,7 @@ export function createMemberAuthHandler(controller: MemberController) {
           input.email,
           input.redirect_to ?? "/",
           siteUrl,
-          siteUrl, // siteName falls back to siteUrl; service enriches if needed
+          siteUrl // siteName falls back to siteUrl; service enriches if needed
         );
         // Always 200 — never confirm whether email exists (anti-enumeration)
         return c.json({
@@ -161,36 +174,32 @@ export function createMemberAuthHandler(controller: MemberController) {
     }
   );
 
-  app.post(
-    "/verify",
-    zValidator("json", magicLinkVerifySchema),
-    async (c) => {
-      try {
-        const siteId = c.get("siteId");
-        const { token } = c.req.valid("json");
-        const session = await controller.verifyMagicLink(siteId, token);
-        // Set HTTP-only session cookie
-        c.header(
-          "Set-Cookie",
-          `cms_member_session=${session.sessionToken}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${60 * 60 * 24 * 7}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`
-        );
-        return c.json({ data: { member: session.member } });
-      } catch (err) {
-        if (isAppError(err))
-          return c.json(
-            { error: err.toJSON() },
-            err.httpStatus as 400 | 401 | 422 | 500
-          );
-        logger.error("MEMBER verify magic-link failed", err);
+  app.post("/verify", zValidator("json", magicLinkVerifySchema), async (c) => {
+    try {
+      const siteId = c.get("siteId");
+      const { token } = c.req.valid("json");
+      const session = await controller.verifyMagicLink(siteId, token);
+      // Set HTTP-only session cookie
+      c.header(
+        "Set-Cookie",
+        `cms_member_session=${session.sessionToken}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${60 * 60 * 24 * 7}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`
+      );
+      return c.json({ data: { member: session.member } });
+    } catch (err) {
+      if (isAppError(err))
         return c.json(
-          {
-            error: { code: "INTERNAL_ERROR", message: "Internal server error" },
-          },
-          500
+          { error: err.toJSON() },
+          err.httpStatus as 400 | 401 | 422 | 500
         );
-      }
+      logger.error("MEMBER verify magic-link failed", err);
+      return c.json(
+        {
+          error: { code: "INTERNAL_ERROR", message: "Internal server error" },
+        },
+        500
+      );
     }
-  );
+  });
 
   app.post("/logout", async (c) => {
     try {

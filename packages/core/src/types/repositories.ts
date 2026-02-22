@@ -357,6 +357,7 @@ export interface IRedirectRepository {
 // ---------------------------------------------------------------------------
 
 export interface IApiKeyRepository {
+  findById(siteId: string, id: string): Promise<ApiKey | null>;
   findByHash(keyHash: string): Promise<ApiKey | null>;
   findMany(
     siteId: string,

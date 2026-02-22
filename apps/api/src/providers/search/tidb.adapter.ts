@@ -11,7 +11,7 @@ import { posts } from "@cms/core/db/schema";
 import type {
   ISearchProvider,
   SearchResult,
-  SearchIndexDocument,
+  SearchDocument,
 } from "@cms/core/types/providers";
 import { RepositoryError } from "@cms/core/errors";
 
@@ -19,7 +19,7 @@ export class TiDBSearchAdapter implements ISearchProvider {
   readonly name = "tidb";
   constructor(private readonly db: DB) {}
 
-  async index(documents: SearchIndexDocument[]): Promise<void> {
+  async index(documents: SearchDocument[]): Promise<void> {
     // TiDB FTS uses a fulltext index on the existing table; no separate indexing needed.
     // This is a no-op but satisfies the interface contract.
     return Promise.resolve();
@@ -68,7 +68,7 @@ export class TiDBSearchAdapter implements ISearchProvider {
         `
       );
 
-      return (rows as Row[]).map((r) => ({
+      return (rows as unknown as Row[]).map((r) => ({
         id: r.id,
         title: r.title,
         slug: r.slug,

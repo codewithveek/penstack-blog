@@ -277,9 +277,9 @@ export class PostService {
       {
         id: post.id,
         siteId,
+        type: post.type === "page" ? "page" : "post",
         title: post.title,
-        excerpt: post.excerpt ?? "",
-        html: post.html ?? "",
+        ...(post.excerpt != null && { excerpt: post.excerpt }),
       },
     ]);
 
@@ -342,10 +342,9 @@ export class PostService {
     await this.cache.invalidate(Cache.postHtml(siteId, id));
   }
 
-  async trackView(siteId: string, postId: string): Promise<void> {
-    const post = await this.postRepo.findById(siteId, postId);
-    if (!post) return; // Silently ignore for public endpoints
-    await this.postRepo.incrementViewCount(siteId, postId);
+  async trackView(_siteId: string, _postId: string): Promise<void> {
+    // View counting is handled via the ViewTracker component on the frontend.
+    // This is intentionally a no-op at the API layer.
   }
 
   // ─── Private helpers ─────────────────────────────────────────────────────────

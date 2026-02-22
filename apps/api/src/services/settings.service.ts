@@ -13,8 +13,7 @@ import type {
   PaginationParams,
 } from "@cms/core/types/repositories";
 import { NotFoundError } from "@cms/core/errors";
-import type { Cache } from "../lib/cache";
-import { TTL } from "../lib/cache";
+import { Cache, TTL } from "../lib/cache";
 
 export class SettingsService {
   constructor(
@@ -29,7 +28,7 @@ export class SettingsService {
     if (cached) return cached;
 
     const settings = await this.settingsRepo.getAllSiteSettings(siteId);
-    await this.cache.set(cacheKey, settings, TTL.FIVE_MINUTES);
+    await this.cache.set(cacheKey, settings, TTL.SITE_RESOLUTION);
     return settings;
   }
 
@@ -44,7 +43,7 @@ export class SettingsService {
     );
 
     // Invalidate cache
-    await this.cache.delete(`settings:site:${siteId}`);
+    await this.cache.invalidate(`settings:site:${siteId}`);
 
     return this.settingsRepo.getAllSiteSettings(siteId);
   }

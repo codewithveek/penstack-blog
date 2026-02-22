@@ -66,8 +66,8 @@ export function createUserHandler(controller: UserController) {
         email: input.email,
         name: input.name,
         role: input.role,
-        avatarUrl: input.avatar ?? undefined,
-        bio: input.bio ?? undefined,
+        ...(input.avatar != null && { avatarUrl: input.avatar }),
+        ...(input.bio != null && { bio: input.bio }),
       });
       return c.json({ data: user }, 201);
     } catch (err) {

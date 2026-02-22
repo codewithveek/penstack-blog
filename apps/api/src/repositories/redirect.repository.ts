@@ -36,12 +36,17 @@ export class RedirectRepository implements IRedirectRepository {
     }
   }
 
-  async findByFromPath(siteId: string, fromPath: string): Promise<Redirect | null> {
+  async findByFromPath(
+    siteId: string,
+    fromPath: string
+  ): Promise<Redirect | null> {
     try {
       const rows = await this.db
         .select()
         .from(redirects)
-        .where(and(eq(redirects.site_id, siteId), eq(redirects.from_path, fromPath)))
+        .where(
+          and(eq(redirects.site_id, siteId), eq(redirects.from_path, fromPath))
+        )
         .limit(1);
       return rows[0] ?? null;
     } catch (err) {
@@ -81,11 +86,7 @@ export class RedirectRepository implements IRedirectRepository {
         meta: { total, page, limit, pages: Math.ceil(total / limit) },
       };
     } catch (err) {
-      throw new RepositoryError(
-        "Failed to list redirects",
-        "findMany",
-        err
-      );
+      throw new RepositoryError("Failed to list redirects", "findMany", err);
     }
   }
 
@@ -124,9 +125,9 @@ export class RedirectRepository implements IRedirectRepository {
   ): Promise<void> {
     if (items.length === 0) return;
     try {
-      await this.db.insert(redirects).values(
-        items.map((item) => ({ ...item, id: crypto.randomUUID() }))
-      );
+      await this.db
+        .insert(redirects)
+        .values(items.map((item) => ({ ...item, id: crypto.randomUUID() })));
     } catch (err) {
       throw new RepositoryError(
         "Failed to bulk create redirects",

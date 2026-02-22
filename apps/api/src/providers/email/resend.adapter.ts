@@ -33,11 +33,11 @@ export class ResendEmailAdapter implements IEmailProvider {
       to: toAddresses.map(formatAddress),
       subject: options.subject,
       html: options.html,
-      text: options.text,
-      replyTo: options.replyTo ? formatAddress(options.replyTo) : undefined,
-      tags: options.tags
-        ? Object.entries(options.tags).map(([name, value]) => ({ name, value }))
-        : undefined,
+      ...(options.text !== undefined && { text: options.text }),
+      ...(options.replyTo !== undefined && { replyTo: formatAddress(options.replyTo) }),
+      ...(options.tags !== undefined && {
+        tags: Object.entries(options.tags).map(([name, value]) => ({ name, value })),
+      }),
     });
 
     if (error) {
@@ -51,27 +51,8 @@ export class ResendEmailAdapter implements IEmailProvider {
   }
 
   async sendBatch(messages: SendEmailOptions[]): Promise<SendEmailResult[]> {
-    const { data, error } = await this.client.batch.send(
-      messages.map((m) => {
-        const toAddresses = Array.isArray(m.to) ? m.to : [m.to];
-        return {
-          from: formatAddress(m.from),
-          to: toAddresses.map(formatAddress),
-          subject: m.subject,
-          html: m.html,
-          text: m.text,
-          replyTo: m.replyTo ? formatAddress(m.replyTo) : undefined,
-        };
-      })
-    );
-
-    if (error) {
-      throw new ProviderError(
-        "resend",
-        `Failed to send batch emails: ${error.message}`
-      );
-    }
-
-    return (data ?? []).map((d) => ({ messageId: d.id ?? "" }));
+    // Send sequentially to avoid rate limits; Resend batch API changes in v4 make
+    // sequential sending the safest approach.
+    return Promise.all(messages.map((m) => this.send(m)));
   }
 }

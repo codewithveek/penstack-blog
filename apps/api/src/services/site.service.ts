@@ -12,8 +12,7 @@ import type {
   PaginationParams,
 } from "@cms/core/types/repositories";
 import { NotFoundError, ConflictError } from "@cms/core/errors";
-import type { Cache } from "../lib/cache";
-import { TTL } from "../lib/cache";
+import { Cache, TTL } from "../lib/cache";
 
 export class SiteService {
   constructor(

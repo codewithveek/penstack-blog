@@ -31,7 +31,7 @@ export class UserService {
     siteId: string,
     pagination: PaginationParams
   ): Promise<PaginatedResult<User>> {
-    return this.userRepo.findMany(siteId, pagination);
+    return this.userRepo.findAll(siteId, pagination);
   }
 
   async createUser(
@@ -60,7 +60,7 @@ export class UserService {
       name: input.name,
       slug,
       role: input.role,
-      avatar_url: input.avatarUrl ?? null,
+      avatar: input.avatarUrl ?? null,
       bio: input.bio ?? null,
       website: input.website ?? null,
       twitter: input.twitter ?? null,

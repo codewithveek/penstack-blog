@@ -27,11 +27,10 @@ export function resolveEmailProvider(): IEmailProvider {
     const port = process.env.SMTP_PORT;
     const user = process.env.SMTP_USER;
     const pass = process.env.SMTP_PASS;
-    const from = process.env.SMTP_FROM;
 
-    if (!host || !port || !user || !pass || !from) {
+    if (!host || !port || !user || !pass) {
       throw new ConfigurationError(
-        "SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM are all required when EMAIL_PROVIDER=smtp"
+        "SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS are all required when EMAIL_PROVIDER=smtp"
       );
     }
 
@@ -41,7 +40,6 @@ export function resolveEmailProvider(): IEmailProvider {
       secure: process.env.SMTP_SECURE === "true",
       user,
       pass,
-      from,
     });
   }
 

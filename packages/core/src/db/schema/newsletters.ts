@@ -176,5 +176,11 @@ export const emailEvents = mysqlTable(
 
 export type Newsletter = typeof newsletters.$inferSelect;
 export type NewNewsletter = typeof newsletters.$inferInsert;
+export type MemberNewsletter = typeof memberNewsletters.$inferSelect;
+export type NewMemberNewsletter = typeof memberNewsletters.$inferInsert;
 export type EmailSend = typeof emailSends.$inferSelect;
+export type NewEmailSend = typeof emailSends.$inferInsert;
 export type EmailSendRecipient = typeof emailSendRecipients.$inferSelect;
+export type NewEmailSendRecipient = typeof emailSendRecipients.$inferInsert;
+export type EmailEvent = typeof emailEvents.$inferSelect;
+export type NewEmailEvent = typeof emailEvents.$inferInsert;

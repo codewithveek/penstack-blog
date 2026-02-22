@@ -9,7 +9,7 @@ import MeiliSearch from "meilisearch";
 import type {
   ISearchProvider,
   SearchResult,
-  SearchIndexDocument,
+  SearchDocument,
 } from "@cms/core/types/providers";
 import { ProviderError } from "@cms/core/errors";
 
@@ -25,7 +25,7 @@ export class MeilisearchAdapter implements ISearchProvider {
     return `posts_${siteId}`;
   }
 
-  async index(documents: SearchIndexDocument[]): Promise<void> {
+  async index(documents: SearchDocument[]): Promise<void> {
     if (documents.length === 0) return;
 
     const siteId = documents[0]!.siteId;
@@ -70,7 +70,7 @@ export class MeilisearchAdapter implements ISearchProvider {
         filter: "status = 'published'",
       });
 
-      return result.hits.map((hit) => ({
+      return result.hits.map((hit: Record<string, unknown>) => ({
         id: hit["id"] as string,
         title: hit["title"] as string,
         slug: hit["slug"] as string,

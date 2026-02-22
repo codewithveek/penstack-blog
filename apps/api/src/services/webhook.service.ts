@@ -49,14 +49,12 @@ export class WebhookService {
     const secret = input.secret ?? crypto.randomBytes(32).toString("hex");
 
     return this.webhookRepo.create({
-      id: crypto.randomUUID(),
       site_id: siteId,
+      name: `Webhook to ${new URL(input.targetUrl).hostname}`,
       target_url: input.targetUrl,
-      events: input.events,
+      event_triggers: input.events.join(","),
       secret,
       active: true,
-      created_at: new Date(),
-      updated_at: new Date(),
     });
   }
 
@@ -149,15 +147,15 @@ export class WebhookService {
     // Log delivery
     await this.webhookRepo
       .createDelivery({
-        id: crypto.randomUUID(),
-        site_id: hook.site_id,
         webhook_id: hook.id,
-        event: payload.event,
-        request_body: body,
-        response_status: status,
+        event_type: payload.event,
+        payload: body,
+        status: status >= 200 && status < 300 ? "success" : "failed",
+        http_status: String(status).slice(0, 4),
         response_body: responseBody.slice(0, 2000),
-        success: status >= 200 && status < 300,
-        created_at: deliveredAt,
+        attempt_count: "1",
+        next_attempt_at: null,
+        delivered_at: deliveredAt,
       })
       .catch((err) => logger.error("Failed to log webhook delivery", err));
   }

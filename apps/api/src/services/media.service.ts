@@ -85,10 +85,8 @@ export class MediaService {
       site_id: siteId,
       type: category,
       url: result.url,
-      // result.id is the provider's canonical file identifier (S3/R2 object key
-      // or Cloudinary public_id) — used for deletion and URL generation.
-      storage_key: result.id,
-      // TODO-GENERATED: wrong column name
+      provider: result.provider,
+      provider_id: result.id,
       original_filename: originalFilename,
       mime_type: detectedMime,
       size_bytes: result.size ?? null,

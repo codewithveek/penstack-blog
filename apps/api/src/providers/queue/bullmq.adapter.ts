@@ -37,12 +37,12 @@ export class BullMQQueueAdapter implements IQueueProvider {
     try {
       const queue = this.getQueue(queueName);
       const job = await queue.add(jobName, data, {
-        delay: options?.delay,
+        ...(options?.delay !== undefined && { delay: options.delay }),
         attempts: options?.attempts ?? 3,
         backoff: options?.backoff ?? { type: "exponential", delay: 2000 },
         removeOnComplete: { count: 100 },
         removeOnFail: { count: 500 },
-        priority: options?.priority,
+        ...(options?.priority !== undefined && { priority: options.priority }),
       });
       return job.id!;
     } catch (err) {

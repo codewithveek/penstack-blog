@@ -164,10 +164,9 @@ export class StripePaymentAdapter implements IPaymentProvider {
       }
       case "invoice.payment_succeeded": {
         const inv = event.data.object as Stripe.Invoice;
+        const subRef = inv.parent?.subscription_details?.subscription;
         const subscriptionId =
-          typeof inv.subscription === "string"
-            ? inv.subscription
-            : (inv.subscription?.id ?? "");
+          typeof subRef === "string" ? subRef : (subRef?.id ?? "");
         return {
           type: "payment.succeeded",
           providerCustomerId: (inv.customer as string) ?? "",
@@ -178,10 +177,9 @@ export class StripePaymentAdapter implements IPaymentProvider {
       }
       case "invoice.payment_failed": {
         const inv = event.data.object as Stripe.Invoice;
+        const subRef = inv.parent?.subscription_details?.subscription;
         const subscriptionId =
-          typeof inv.subscription === "string"
-            ? inv.subscription
-            : (inv.subscription?.id ?? "");
+          typeof subRef === "string" ? subRef : (subRef?.id ?? "");
         return {
           type: "payment.failed",
           providerCustomerId: (inv.customer as string) ?? "",

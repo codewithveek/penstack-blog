@@ -33,6 +33,9 @@ export class PostController {
   ): Promise<PostWithAuthorsAndTags> {
     return this.postService.createPost(siteId, {
       ...input,
+      html: input.html ?? undefined,
+      excerpt: input.excerpt ?? undefined,
+      featureImage: undefined,
       authorId: actorId,
     });
   }

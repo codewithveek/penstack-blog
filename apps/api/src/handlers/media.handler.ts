@@ -52,28 +52,16 @@ export function createMediaHandler(controller: MediaController) {
     try {
       const siteId = c.get("siteId");
       const query = c.req.valid("query");
-      const result = await controller.list(siteId, query);
+      const result = await controller.list(siteId, {
+        page: query.page,
+        limit: query.limit,
+        ...(query.type !== undefined && { type: query.type }),
+      });
       return c.json({ data: result.data, meta: result.meta });
     } catch (err) {
       if (isAppError(err))
         return c.json({ error: err.toJSON() }, err.httpStatus as 500);
       logger.error("MEDIA list failed", err);
-      return c.json(
-        { error: { code: "INTERNAL_ERROR", message: "Internal server error" } },
-        500
-      );
-    }
-  });
-
-  app.get("/storage-usage", async (c) => {
-    try {
-      const siteId = c.get("siteId");
-      const usage = await controller.getStorageUsage(siteId);
-      return c.json({ data: usage });
-    } catch (err) {
-      if (isAppError(err))
-        return c.json({ error: err.toJSON() }, err.httpStatus as 500);
-      logger.error("MEDIA storage-usage failed", err);
       return c.json(
         { error: { code: "INTERNAL_ERROR", message: "Internal server error" } },
         500
@@ -167,7 +155,13 @@ export function createMediaHandler(controller: MediaController) {
 
       const buffer = Buffer.from(await file.arrayBuffer());
       // Pass declared MIME type — service re-validates via magic bytes
-      let asset = await controller.upload(siteId, userId, buffer, file.name, file.type || "application/octet-stream");
+      let asset = await controller.upload(
+        siteId,
+        userId,
+        buffer,
+        file.name,
+        file.type || "application/octet-stream"
+      );
       // Update optional metadata if provided
       if (altText !== undefined || caption !== undefined) {
         asset = await controller.update(siteId, asset.id, {
@@ -199,7 +193,10 @@ export function createMediaHandler(controller: MediaController) {
         const siteId = c.get("siteId");
         const { id } = c.req.valid("param");
         const input = c.req.valid("json");
-        const asset = await controller.update(siteId, id, input);
+        const asset = await controller.update(siteId, id, {
+          ...(input.alt_text !== undefined && { alt_text: input.alt_text }),
+          ...(input.caption !== undefined && { caption: input.caption }),
+        });
         return c.json({ data: asset });
       } catch (err) {
         if (isAppError(err))

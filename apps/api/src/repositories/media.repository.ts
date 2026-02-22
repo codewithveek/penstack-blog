@@ -96,7 +96,10 @@ export class MediaRepository implements IMediaRepository {
         .where(and(eq(mediaAssets.site_id, siteId), eq(mediaAssets.id, id)));
       const updated = await this.findById(siteId, id);
       if (!updated)
-        throw new RepositoryError("MediaAsset not found after update", "update");
+        throw new RepositoryError(
+          "MediaAsset not found after update",
+          "update"
+        );
       return updated;
     } catch (err) {
       if (err instanceof RepositoryError) throw err;
@@ -118,7 +121,7 @@ export class MediaRepository implements IMediaRepository {
     try {
       const [row] = await this.db
         .select({
-          total: sql<number>`COALESCE(SUM(${mediaAssets.byte_size}), 0)`,
+          total: sql<number>`COALESCE(SUM(${mediaAssets.size_bytes}), 0)`,
         })
         .from(mediaAssets)
         .where(eq(mediaAssets.site_id, siteId));

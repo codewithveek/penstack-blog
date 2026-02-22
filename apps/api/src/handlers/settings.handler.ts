@@ -45,7 +45,15 @@ export function createSettingsHandler(controller: SettingsController) {
     try {
       const siteId = c.get("siteId");
       const input = c.req.valid("json");
-      const settings = await controller.updateSiteSettings(siteId, input);
+      // Filter out nulls/undefineds — controller & service expect Record<string, string>
+      const settingsInput: Record<string, string> = {};
+      for (const [k, v] of Object.entries(input)) {
+        if (v != null) settingsInput[k] = String(v);
+      }
+      const settings = await controller.updateSiteSettings(
+        siteId,
+        settingsInput
+      );
       return c.json({ data: settings });
     } catch (err) {
       if (isAppError(err))
