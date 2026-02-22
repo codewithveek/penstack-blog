@@ -1,0 +1,36 @@
+{
+  "name": "@cms/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./db/client": "./src/db/client.ts",
+    "./db/schema": "./src/db/schema/index.ts",
+    "./errors": "./src/errors/index.ts",
+    "./types/*": "./src/types/*.ts",
+    "./validators/*": "./src/validators/*.ts",
+    "./utils/*": "./src/utils/*.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
+    "db:gen": "drizzle-kit generate",
+    "db:seed": "tsx src/db/seed.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.1",
+    "mysql2": "^3.10.3",
+    "zod": "^4.3.5",
+    "bcryptjs": "^2.4.3",
+    "date-fns": "^3.6.0",
+    "uuid": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/uuid": "^10.0.0",
+    "drizzle-kit": "^0.31.8",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}

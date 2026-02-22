@@ -1,0 +1,224 @@
+/**
+ * apps/api/src/repositories/webhook.repository.ts
+ *
+ * Webhooks and delivery log.
+ * Implements IWebhookRepository.
+ * NOTE: webhook `secret` is encrypted before write, decrypted after read.
+ */
+
+import { eq, and, sql, desc } from "drizzle-orm";
+import type { DB } from "@cms/core/db/client";
+import { webhooks, webhookDeliveries } from "@cms/core/db/schema";
+import type {
+  Webhook,
+  NewWebhook,
+  WebhookDelivery,
+  NewWebhookDelivery,
+} from "@cms/core/db/schema";
+import type {
+  IWebhookRepository,
+  PaginatedResult,
+  PaginationParams,
+} from "@cms/core/types/repositories";
+import { NotFoundError, RepositoryError } from "@cms/core/errors";
+import { encrypt, decrypt } from "@cms/core/utils/encryption";
+
+export class WebhookRepository implements IWebhookRepository {
+  constructor(private readonly db: DB) {}
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+  private encryptWebhook(data: NewWebhook): NewWebhook {
+    return {
+      ...data,
+      secret: data.secret ? encrypt(data.secret) : data.secret,
+    };
+  }
+
+  private decryptWebhook(row: Webhook): Webhook {
+    return {
+      ...row,
+      secret: row.secret ? decrypt(row.secret) : row.secret,
+    };
+  }
+
+  // ─── Webhooks ─────────────────────────────────────────────────────────────────
+
+  async findById(siteId: string, id: string): Promise<Webhook | null> {
+    try {
+      const rows = await this.db
+        .select()
+        .from(webhooks)
+        .where(and(eq(webhooks.site_id, siteId), eq(webhooks.id, id)))
+        .limit(1);
+      if (!rows[0]) return null;
+      return this.decryptWebhook(rows[0]);
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to find webhook by id",
+        "findById",
+        err
+      );
+    }
+  }
+
+  async findBySiteId(siteId: string): Promise<Webhook[]> {
+    try {
+      const rows = await this.db
+        .select()
+        .from(webhooks)
+        .where(eq(webhooks.site_id, siteId));
+      return rows.map((r) => this.decryptWebhook(r));
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to find webhooks for site",
+        "findBySiteId",
+        err
+      );
+    }
+  }
+
+  async findByEvent(siteId: string, event: string): Promise<Webhook[]> {
+    try {
+      const rows = await this.db
+        .select()
+        .from(webhooks)
+        .where(
+          and(
+            eq(webhooks.site_id, siteId),
+            eq(webhooks.active, true),
+            sql`JSON_CONTAINS(${webhooks.events}, JSON_QUOTE(${event}))`
+          )
+        );
+      return rows.map((r) => this.decryptWebhook(r));
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to find webhooks by event",
+        "findByEvent",
+        err
+      );
+    }
+  }
+
+  async create(data: NewWebhook): Promise<Webhook> {
+    try {
+      const encrypted = this.encryptWebhook(data);
+      await this.db.insert(webhooks).values(encrypted);
+      const created = await this.findById(data.site_id, data.id);
+      if (!created)
+        throw new RepositoryError("Webhook not found after insert", "create");
+      return created;
+    } catch (err) {
+      if (err instanceof RepositoryError) throw err;
+      throw new RepositoryError("Failed to create webhook", "create", err);
+    }
+  }
+
+  async update(
+    siteId: string,
+    id: string,
+    data: Partial<NewWebhook>
+  ): Promise<Webhook> {
+    try {
+      const toSet: Partial<NewWebhook> = { ...data };
+      if (toSet.secret) toSet.secret = encrypt(toSet.secret);
+
+      await this.db
+        .update(webhooks)
+        .set({ ...toSet, updated_at: new Date() })
+        .where(and(eq(webhooks.site_id, siteId), eq(webhooks.id, id)));
+
+      const updated = await this.findById(siteId, id);
+      if (!updated) throw new NotFoundError("Webhook", id);
+      return updated;
+    } catch (err) {
+      if (err instanceof NotFoundError || err instanceof RepositoryError)
+        throw err;
+      throw new RepositoryError("Failed to update webhook", "update", err);
+    }
+  }
+
+  async delete(siteId: string, id: string): Promise<void> {
+    try {
+      await this.db
+        .delete(webhooks)
+        .where(and(eq(webhooks.site_id, siteId), eq(webhooks.id, id)));
+    } catch (err) {
+      throw new RepositoryError("Failed to delete webhook", "delete", err);
+    }
+  }
+
+  // ─── Delivery log ─────────────────────────────────────────────────────────────
+
+  async createDelivery(data: NewWebhookDelivery): Promise<WebhookDelivery> {
+    try {
+      await this.db.insert(webhookDeliveries).values(data);
+      const rows = await this.db
+        .select()
+        .from(webhookDeliveries)
+        .where(eq(webhookDeliveries.id, data.id))
+        .limit(1);
+      if (!rows[0])
+        throw new RepositoryError(
+          "WebhookDelivery not found after insert",
+          "createDelivery"
+        );
+      return rows[0];
+    } catch (err) {
+      if (err instanceof RepositoryError) throw err;
+      throw new RepositoryError(
+        "Failed to create webhook delivery",
+        "createDelivery",
+        err
+      );
+    }
+  }
+
+  async findDeliveries(
+    siteId: string,
+    webhookId: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResult<WebhookDelivery>> {
+    const page = pagination.page ?? 1;
+    const limit = Math.min(pagination.limit ?? 20, 100);
+    const offset = (page - 1) * limit;
+
+    try {
+      const [rows, [countRow]] = await Promise.all([
+        this.db
+          .select()
+          .from(webhookDeliveries)
+          .where(
+            and(
+              eq(webhookDeliveries.site_id, siteId),
+              eq(webhookDeliveries.webhook_id, webhookId)
+            )
+          )
+          .orderBy(desc(webhookDeliveries.created_at))
+          .limit(limit)
+          .offset(offset),
+        this.db
+          .select({ count: sql<number>`count(*)` })
+          .from(webhookDeliveries)
+          .where(
+            and(
+              eq(webhookDeliveries.site_id, siteId),
+              eq(webhookDeliveries.webhook_id, webhookId)
+            )
+          ),
+      ]);
+
+      const total = countRow?.count ?? 0;
+      return {
+        data: rows,
+        meta: { total, page, limit, pages: Math.ceil(total / limit) },
+      };
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to list webhook deliveries",
+        "findDeliveries",
+        err
+      );
+    }
+  }
+}

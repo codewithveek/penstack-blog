@@ -1,19 +1,24 @@
 {
-  "name": "penstack-blog",
+  "name": "penstack-cms",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev --port=3025",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "db:push": "drizzle-kit push",
-    "db:migrate": "drizzle-kit migrate",
-    "db:gen": "drizzle-kit generate",
-    "db:create": "tsx scripts/create-db.ts",
-    "db:seeds": "tsx scripts/seed.ts",
-    "db:setup": "npm run db:create && npm run db:migrate && npm run db:seeds",
-    "db:init": "node -r dotenv/config scripts/init-db.mjs"
+    "dev": "bun run --filter='@cms/web' dev",
+    "dev:api": "bun run --filter='@cms/api' dev",
+    "dev:all": "bun run --parallel --filter='*' dev",
+    "build": "bun run --filter='@cms/web' build",
+    "build:all": "bun run --parallel --filter='*' build",
+    "lint": "bun run --parallel --filter='*' lint",
+    "typecheck": "bun run --parallel --filter='*' typecheck",
+    "db:push": "bun run --filter='@cms/core' db:push",
+    "db:migrate": "bun run --filter='@cms/core' db:migrate",
+    "db:gen": "bun run --filter='@cms/core' db:gen",
+    "db:seed": "bun run --filter='@cms/core' db:seed",
+    "test": "bun run --parallel --filter='*' test"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.33.0",
