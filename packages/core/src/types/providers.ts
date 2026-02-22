@@ -135,43 +135,14 @@ export interface IQueueProvider {
 }
 
 // ---------------------------------------------------------------------------
-// Storage (media upload) provider
+// Storage (media upload)
 // ---------------------------------------------------------------------------
-
-export interface UploadOptions {
-  folder?: string;
-  filename?: string;
-  contentType?: string;
-  /** Transformations (provider-specific, converted from generic format) */
-  transforms?: {
-    maxWidth?: number;
-    maxHeight?: number;
-    quality?: number;
-    format?: "webp" | "avif" | "jpg" | "png";
-  };
-}
-
-export interface UploadResult {
-  providerId: string;
-  url: string;
-  thumbnailUrl?: string;
-  width?: number;
-  height?: number;
-  sizeBytes?: number;
-  mimeType?: string;
-}
-
-export interface IStorageProvider {
-  readonly name: string;
-  upload(
-    file: Buffer | ReadableStream,
-    filename: string,
-    options?: UploadOptions
-  ): Promise<UploadResult>;
-  delete(providerId: string): Promise<void>;
-  getUrl(providerId: string): string;
-}
-
+//
+// FluxMedia's `MediaUploader` from `@fluxmedia/core` is the storage interface
+// for this codebase (per AGENTS.md §14). No custom IStorageProvider wrapper is
+// needed. `MediaUploader` is constructed once in
+// `apps/api/src/providers/storage/index.ts` and injected into MediaService.
+//
 // ---------------------------------------------------------------------------
 // Search provider
 // ---------------------------------------------------------------------------

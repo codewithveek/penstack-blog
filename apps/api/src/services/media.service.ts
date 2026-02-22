@@ -4,9 +4,8 @@
 
 import crypto from "node:crypto";
 import path from "node:path";
-import { Readable } from "node:stream";
+import { getFileType, type MediaUploader } from "@fluxmedia/core";
 import type { IMediaRepository } from "@cms/core/types/repositories";
-import type { IStorageProvider } from "@cms/core/types/providers";
 import type { MediaAsset } from "@cms/core/db/schema";
 import type {
   PaginatedResult,
@@ -14,7 +13,8 @@ import type {
 } from "@cms/core/types/repositories";
 import { NotFoundError, ValidationError } from "@cms/core/errors";
 
-// Accepted MIME types (server-side enforcement — never trust client Content-Type)
+// Accepted MIME types — business-logic classification for the DB `type` column.
+// The FluxMedia file-validation plugin enforces the same list at the upload layer.
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -36,24 +36,7 @@ const ALLOWED_DOC_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
-// Magic bytes for MIME detection
-const MAGIC: Record<string, string> = {
-  ffd8ff: "image/jpeg",
-  "89504e47": "image/png",
-  "47494638": "image/gif",
-  "52494646": "image/webp", // RIFF/WEBP approximation
-  "25504446": "application/pdf",
-};
-
-function detectMimeFromBuffer(buf: Buffer): string | null {
-  const hex = buf.slice(0, 4).toString("hex").toLowerCase();
-  for (const [magic, mime] of Object.entries(MAGIC)) {
-    if (hex.startsWith(magic)) return mime;
-  }
-  return null;
-}
-
-function getAllCategory(mimeType: string): MediaAsset["type"] | null {
+function classifyMime(mimeType: string): MediaAsset["type"] | null {
   if (ALLOWED_IMAGE_TYPES.has(mimeType)) return "image";
   if (ALLOWED_VIDEO_TYPES.has(mimeType)) return "video";
   if (ALLOWED_AUDIO_TYPES.has(mimeType)) return "audio";
@@ -64,7 +47,7 @@ function getAllCategory(mimeType: string): MediaAsset["type"] | null {
 export class MediaService {
   constructor(
     private readonly mediaRepo: IMediaRepository,
-    private readonly storageProvider: IStorageProvider
+    private readonly storageProvider: MediaUploader
   ) {}
 
   async upload(
@@ -74,9 +57,11 @@ export class MediaService {
     originalFilename: string,
     declaredMimeType: string
   ): Promise<MediaAsset> {
-    // Server-side MIME validation — magic bytes take precedence
-    const detectedMime = detectMimeFromBuffer(fileBuffer) ?? declaredMimeType;
-    const category = getAllCategory(detectedMime);
+    // Server-side MIME detection via magic bytes (FluxMedia utility).
+    // Never trust the client-declared Content-Type — magic bytes take precedence.
+    const detected = await getFileType(fileBuffer);
+    const detectedMime = detected?.mime ?? declaredMimeType;
+    const category = classifyMime(detectedMime);
 
     if (!category) {
       throw new ValidationError({
@@ -85,13 +70,13 @@ export class MediaService {
     }
 
     const ext = path.extname(originalFilename).toLowerCase();
-    const key = `${siteId}/${crypto.randomUUID()}${ext}`;
+    const filename = `${crypto.randomUUID()}${ext}`;
 
-    const result = await this.storageProvider.upload({
-      key,
-      body: fileBuffer,
-      contentType: detectedMime,
-      size: fileBuffer.byteLength,
+    // FluxMedia upload — file-validation and metadata-extraction plugins run
+    // automatically via the hooks registered in resolveStorageProvider().
+    const result = await this.storageProvider.upload(fileBuffer, {
+      folder: siteId,
+      filename,
       metadata: { site_id: siteId, uploaded_by: uploadedById },
     });
 
@@ -100,10 +85,14 @@ export class MediaService {
       site_id: siteId,
       type: category,
       url: result.url,
-      storage_key: key,
+      // result.id is the provider's canonical file identifier (S3/R2 object key
+      // or Cloudinary public_id) — used for deletion and URL generation.
+      storage_key: result.id,
       filename: originalFilename,
       mime_type: detectedMime,
       byte_size: result.size,
+      width: result.width ?? null,
+      height: result.height ?? null,
       alt_text: null,
       uploaded_by_id: uploadedById,
       created_at: new Date(),
@@ -128,7 +117,7 @@ export class MediaService {
     const asset = await this.mediaRepo.findById(siteId, id);
     if (!asset) throw new NotFoundError("MediaAsset", id);
 
-    // Remove from storage first
+    // Remove from provider storage first (uses the provider's canonical ID)
     await this.storageProvider.delete(asset.storage_key);
     await this.mediaRepo.delete(siteId, id);
   }
