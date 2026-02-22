@@ -23,11 +23,11 @@ const idParamSchema = z.object({ id: z.string().uuid() });
 
 /**
  * Admin CRUD handler — mount under /admin/v1/members (behind requireAdminAuth).
+ * Note: member creation goes through the magic-link flow; admins cannot
+ * directly create members with passwords. The create endpoint is intentionally absent.
  */
 export function createMemberAdminHandler(controller: MemberController) {
   const app = new Hono();
-
-  // ── Admin CRUD ─────────────────────────────────────────────────────────────
 
   app.get("/", zValidator("query", listMembersQuerySchema), async (c) => {
     try {
@@ -128,16 +128,28 @@ export function createMemberAdminHandler(controller: MemberController) {
     }
   });
 
-  // ── Member self-service auth (public — no admin auth middleware) ────────────
+  return app;
+}
+
+// ── Member self-service auth (public) ─────────────────────────────────────────
+
+export function createMemberAuthHandler(controller: MemberController) {
+  const app = new Hono();
 
   app.post(
-    "/auth/magic-link",
+    "/magic-link",
     zValidator("json", magicLinkRequestSchema),
     async (c) => {
       try {
         const siteId = c.get("siteId");
         const { email } = c.req.valid("json");
-        await controller.requestMagicLink(siteId, email);
+        await controller.sendMagicLink(
+        siteId,
+        email,
+        input.redirect_to ?? "/",
+        c.req.header("origin") ?? `https://${c.req.header("host") ?? "localhost"}`,
+        "My Site",
+      );
         // Always 200 — never confirm whether email exists (anti-enumeration)
         return c.json({
           data: {
@@ -162,24 +174,13 @@ export function createMemberAdminHandler(controller: MemberController) {
   );
 
   app.post(
-    "/auth/verify",
+    "/verify",
     zValidator("json", magicLinkVerifySchema),
     async (c) => {
       try {
         const siteId = c.get("siteId");
         const { token } = c.req.valid("json");
-        const userAgent = c.req.header("user-agent") ?? undefined;
-        // Extract IP from CF-Connecting-IP (Cloudflare) or X-Forwarded-For, fallback to remote address
-        const ip =
-          c.req.header("cf-connecting-ip") ??
-          c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ??
-          undefined;
-        const session = await controller.verifyMagicLink(
-          siteId,
-          token,
-          ip,
-          userAgent
-        );
+        const session = await controller.verifyMagicLink(siteId, token);
         // Set HTTP-only session cookie
         c.header(
           "Set-Cookie",
@@ -203,14 +204,14 @@ export function createMemberAdminHandler(controller: MemberController) {
     }
   );
 
-  app.post("/auth/logout", async (c) => {
+  app.post("/logout", async (c) => {
     try {
       const siteId = c.get("siteId");
       const cookieHeader = c.req.header("cookie") ?? "";
       const match = cookieHeader.match(/cms_member_session=([^;]+)/);
       const sessionToken = match ? match[1] : undefined;
       if (sessionToken) {
-        await controller.logout(siteId, sessionToken);
+        await controller.logout(sessionToken);
       }
       // Clear cookie regardless
       c.header(

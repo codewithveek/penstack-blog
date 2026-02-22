@@ -141,4 +141,10 @@ export class NewsletterService {
       html,
     });
   }
+
+  async deleteNewsletter(siteId: string, id: string): Promise<void> {
+    const newsletter = await this.newsletterRepo.findById(siteId, id);
+    if (!newsletter) throw new NotFoundError("Newsletter", id);
+    await this.newsletterRepo.delete(siteId, id);
+  }
 }

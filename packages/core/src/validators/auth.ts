@@ -56,7 +56,7 @@ export const updateUserSchema = createUserSchema
   .omit({ password: true })
   .partial()
   .extend({
-    id: z.uuid(),
+    id: z.uuid().optional(),
     new_password: passwordField.optional(),
     current_password: z.string().optional(),
   })

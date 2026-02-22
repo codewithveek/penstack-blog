@@ -15,7 +15,7 @@ export const createMemberSchema = z.object({
 export type CreateMemberInput = z.infer<typeof createMemberSchema>;
 
 export const updateMemberSchema = createMemberSchema.partial().extend({
-  id: z.string().uuid(),
+  id: z.string().uuid().optional(),
   status: z.enum(["active", "inactive", "banned"]).optional(),
 });
 

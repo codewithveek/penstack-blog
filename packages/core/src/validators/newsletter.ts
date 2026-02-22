@@ -31,8 +31,9 @@ export const updateNewsletterSchema = createNewsletterSchema.partial().extend({
 export type UpdateNewsletterInput = z.infer<typeof updateNewsletterSchema>;
 
 export const sendTestEmailSchema = z.object({
-  newsletter_id: z.uuid(),
   to_email: z.string().email(),
+  subject: z.string().min(1).max(500).default("Test Newsletter"),
+  html: z.string().min(1).default("<p>This is a test email from your newsletter.</p>"),
 });
 
 export type SendTestEmailInput = z.infer<typeof sendTestEmailSchema>;

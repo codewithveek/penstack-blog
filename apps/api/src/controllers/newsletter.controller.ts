@@ -89,4 +89,8 @@ export class NewsletterController {
       html
     );
   }
+
+  async delete(siteId: string, id: string): Promise<void> {
+    return this.newsletterService.deleteNewsletter(siteId, id);
+  }
 }

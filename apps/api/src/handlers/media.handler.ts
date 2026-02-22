@@ -23,7 +23,6 @@ const listMediaQuerySchema = z.object({
 const updateMediaSchema = z.object({
   alt_text: z.string().max(500).optional(),
   caption: z.string().max(1000).optional(),
-  title: z.string().max(255).optional(),
 });
 
 // Accepted MIME types — server enforces via magic-byte validation inside MediaService,
@@ -165,17 +164,17 @@ export function createMediaHandler(controller: MediaController) {
         typeof formData.get("caption") === "string"
           ? (formData.get("caption") as string)
           : undefined;
-      const title =
-        typeof formData.get("title") === "string"
-          ? (formData.get("title") as string)
-          : (file.name ?? undefined);
 
       const buffer = Buffer.from(await file.arrayBuffer());
-      const asset = await controller.upload(siteId, userId, buffer, file.name, {
-        altText,
-        caption,
-        title,
-      });
+      // Pass declared MIME type — service re-validates via magic bytes
+      let asset = await controller.upload(siteId, userId, buffer, file.name, file.type || "application/octet-stream");
+      // Update optional metadata if provided
+      if (altText !== undefined || caption !== undefined) {
+        asset = await controller.update(siteId, asset.id, {
+          ...(altText !== undefined && { alt_text: altText }),
+          ...(caption !== undefined && { caption }),
+        });
+      }
       return c.json({ data: asset }, 201);
     } catch (err) {
       if (isAppError(err))

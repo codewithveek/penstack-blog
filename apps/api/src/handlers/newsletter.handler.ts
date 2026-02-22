@@ -16,14 +16,20 @@ import type { NewsletterController } from "../controllers/newsletter.controller"
 
 const idParamSchema = z.object({ id: z.string().uuid() });
 
+const listQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(15),
+});
+
 export function createNewsletterHandler(controller: NewsletterController) {
   const app = new Hono();
 
-  app.get("/", async (c) => {
+  app.get("/", zValidator("query", listQuerySchema), async (c) => {
     try {
       const siteId = c.get("siteId");
-      const result = await controller.list(siteId);
-      return c.json({ data: result });
+      const { page, limit } = c.req.valid("query");
+      const result = await controller.list(siteId, { page, limit });
+      return c.json({ data: result.data, meta: result.meta });
     } catch (err) {
       if (isAppError(err))
         return c.json({ error: err.toJSON() }, err.httpStatus as 500);
@@ -56,7 +62,13 @@ export function createNewsletterHandler(controller: NewsletterController) {
     try {
       const siteId = c.get("siteId");
       const input = c.req.valid("json");
-      const newsletter = await controller.create(siteId, input);
+      const newsletter = await controller.create(siteId, {
+        name: input.name,
+        description: input.description ?? undefined,
+        senderName: input.sender_name ?? input.name,
+        senderEmail: input.sender_email ?? "",
+        replyToEmail: input.reply_to_email ?? undefined,
+      });
       return c.json({ data: newsletter }, 201);
     } catch (err) {
       if (isAppError(err))
@@ -81,7 +93,13 @@ export function createNewsletterHandler(controller: NewsletterController) {
         const siteId = c.get("siteId");
         const { id } = c.req.valid("param");
         const input = c.req.valid("json");
-        const newsletter = await controller.update(siteId, id, input);
+        const newsletter = await controller.update(siteId, id, {
+          ...(input.name !== undefined && { name: input.name }),
+          ...(input.description !== undefined && { description: input.description }),
+          ...(input.sender_name !== undefined && { senderName: input.sender_name }),
+          ...(input.sender_email !== undefined && { senderEmail: input.sender_email }),
+          ...(input.reply_to_email !== undefined && { replyToEmail: input.reply_to_email }),
+        });
         return c.json({ data: newsletter });
       } catch (err) {
         if (isAppError(err))
@@ -126,8 +144,8 @@ export function createNewsletterHandler(controller: NewsletterController) {
       try {
         const siteId = c.get("siteId");
         const { id } = c.req.valid("param");
-        const { email } = c.req.valid("json");
-        await controller.sendTestEmail(siteId, id, email);
+      const { to_email, subject, html } = c.req.valid("json");
+      await controller.sendTest(siteId, id, to_email, subject, html);
         return c.json({ data: { message: "Test email queued" } });
       } catch (err) {
         if (isAppError(err))

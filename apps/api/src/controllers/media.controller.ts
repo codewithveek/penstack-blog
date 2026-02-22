@@ -43,6 +43,14 @@ export class MediaController {
     return this.mediaService.deleteMedia(siteId, id);
   }
 
+  async update(
+    siteId: string,
+    id: string,
+    data: Partial<{ alt_text: string; caption: string }>
+  ): Promise<MediaAsset> {
+    return this.mediaService.updateMedia(siteId, id, data);
+  }
+
   async getStorageUsage(
     siteId: string
   ): Promise<{ bytes: number; mb: number }> {

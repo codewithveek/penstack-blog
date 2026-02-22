@@ -106,6 +106,16 @@ export class MediaService {
     return asset;
   }
 
+  async updateMedia(
+    siteId: string,
+    id: string,
+    data: Partial<Pick<MediaAsset, "alt_text" | "caption">>
+  ): Promise<MediaAsset> {
+    const asset = await this.mediaRepo.findById(siteId, id);
+    if (!asset) throw new NotFoundError("MediaAsset", id);
+    return this.mediaRepo.update(siteId, id, data);
+  }
+
   async listMedia(
     siteId: string,
     pagination: PaginationParams & { type?: MediaAsset["type"] }

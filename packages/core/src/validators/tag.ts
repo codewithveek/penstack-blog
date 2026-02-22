@@ -26,7 +26,7 @@ export const createTagSchema = z.object({
 export type CreateTagInput = z.infer<typeof createTagSchema>;
 
 export const updateTagSchema = createTagSchema.partial().extend({
-  id: z.string().uuid(),
+  id: z.string().uuid().optional(),
 });
 
 export type UpdateTagInput = z.infer<typeof updateTagSchema>;
