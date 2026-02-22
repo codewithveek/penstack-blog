@@ -32,8 +32,7 @@ import {
   appendSlugSuffix,
   resolvePermalink,
 } from "@cms/core/utils/permalink";
-import type { Cache } from "../lib/cache";
-import { TTL } from "../lib/cache";
+import { Cache, TTL } from "../lib/cache";
 import type { ISettingsRepository } from "@cms/core/types/repositories";
 
 const POST_QUEUE = "posts";
@@ -95,7 +94,7 @@ export class PostService {
       title: string;
       type?: "post" | "page";
       slug?: string | undefined;
-      lexical?: string | undefined;
+      lexical?: Record<string, unknown> | null | undefined;
       html?: string | undefined;
       excerpt?: string | undefined;
       featureImage?: string | undefined;
@@ -130,8 +129,8 @@ export class PostService {
     });
 
     // Set primary author
-    await this.postRepo.setAuthors(siteId, id, [
-      { userId: input.authorId, isPrimary: true, order: 0 },
+    await this.postRepo.setAuthors(id, [
+      { user_id: input.authorId, role: "primary", sort_order: 0 },
     ]);
 
     return this.postRepo.findById(
@@ -143,21 +142,21 @@ export class PostService {
   async updatePost(
     siteId: string,
     id: string,
-    input: Partial<{
-      title: string;
-      slug: string;
-      lexical: string;
-      html: string;
-      excerpt: string;
-      featureImage: string | null;
-      visibility: NewPost["visibility"];
-      codeInjectionHead: string | null;
-      codeInjectionFoot: string | null;
-      metaTitle: string | null;
-      metaDescription: string | null;
-      ogImage: string | null;
-      twitterImage: string | null;
-    }>
+    input: {
+      title?: string | undefined;
+      slug?: string | undefined;
+      lexical?: Record<string, unknown> | null | undefined;
+      html?: string | null | undefined;
+      excerpt?: string | null | undefined;
+      featureImage?: string | null | undefined;
+      visibility?: NewPost["visibility"] | undefined;
+      codeInjectionHead?: string | null | undefined;
+      codeInjectionFoot?: string | null | undefined;
+      metaTitle?: string | null | undefined;
+      metaDescription?: string | null | undefined;
+      ogImage?: string | null | undefined;
+      twitterImage?: string | null | undefined;
+    }
   ): Promise<PostWithAuthorsAndTags> {
     const post = await this.postRepo.findById(siteId, id);
     if (!post) throw new NotFoundError("Post", id);
@@ -178,25 +177,26 @@ export class PostService {
       }),
       ...(input.visibility && { visibility: input.visibility }),
       ...(input.codeInjectionHead !== undefined && {
-        code_injection_head: input.codeInjectionHead,
+        custom_head_code: input.codeInjectionHead,
       }),
       ...(input.codeInjectionFoot !== undefined && {
-        code_injection_foot: input.codeInjectionFoot,
+        custom_foot_code: input.codeInjectionFoot,
       }),
-      ...(input.metaTitle !== undefined && { meta_title: input.metaTitle }),
+      ...(input.metaTitle !== undefined && { og_title: input.metaTitle }),
       ...(input.metaDescription !== undefined && {
-        meta_description: input.metaDescription,
+        og_description: input.metaDescription,
       }),
       ...(input.ogImage !== undefined && { og_image: input.ogImage }),
       ...(input.twitterImage !== undefined && {
         twitter_image: input.twitterImage,
       }),
     });
+    void updated; // used for the DB write; hydrated version fetched below
 
     // Bust HTML cache
     await this.cache.invalidate(Cache.postHtml(siteId, id));
 
-    return updated;
+    return this.postRepo.findById(siteId, id) as Promise<PostWithAuthorsAndTags>;
   }
 
   async updatePostAuthors(
@@ -207,14 +207,14 @@ export class PostService {
     const post = await this.postRepo.findById(siteId, postId);
     if (!post) throw new NotFoundError("Post", postId);
 
-    const hasPrimary = authors.some((a) => a.isPrimary);
+    const hasPrimary = authors.some((a) => a.role === "primary");
     if (!hasPrimary) {
-      throw new ValidationError({
-        authors: ["At least one primary author is required"],
-      });
+      throw new ValidationError(
+        "At least one primary author is required"
+      );
     }
 
-    await this.postRepo.setAuthors(siteId, postId, authors);
+    await this.postRepo.setAuthors(postId, authors);
   }
 
   async updatePostTags(
@@ -251,31 +251,26 @@ export class PostService {
       );
     }
 
-    const hasPrimary = post.authors.some((_, i) => {
-      // primaryAuthor is always the one with is_primary flag
-      return post.primaryAuthor?.id === post.authors[i]?.id;
-    });
-
-    if (!post.primaryAuthor) {
+    const primaryAuthor = post.authors.find((a) => a.role === "primary");
+    if (!primaryAuthor) {
       throw new UnprocessableError(
         "Post must have a primary author before publishing"
       );
     }
 
     // Resolve permalink using site settings
-    const settings = await this.settingsRepo.findBySiteId(siteId);
-    const permalinkPattern = settings?.permalink_format ?? "/{slug}/";
-    const primaryTagSlug = post.primaryTag?.slug;
+    const permalinkPattern =
+      (await this.settingsRepo.getSiteSetting(siteId, "permalink_pattern")) ??
+      "/{slug}/";
+    const primaryTagSlug = post.tags[0]?.slug;
     const permalink = resolvePermalink(
       { slug: post.slug, published_at: new Date() },
       permalinkPattern,
       primaryTagSlug
     );
 
-    const published = await this.postRepo.publish(siteId, id, new Date());
-
-    // Update permalink
-    await this.postRepo.updateAllPermalinks(siteId, [{ id, permalink }]);
+    // publish sets status, permalink, and published_at atomically
+    await this.postRepo.publish(siteId, id, permalink);
 
     // Index in search
     await this.searchProvider.index([
@@ -283,7 +278,6 @@ export class PostService {
         id: post.id,
         siteId,
         title: post.title,
-        slug: post.slug,
         excerpt: post.excerpt ?? "",
         html: post.html ?? "",
       },
@@ -306,9 +300,7 @@ export class PostService {
     if (!post) throw new NotFoundError("Post", id);
 
     if (scheduledAt <= new Date()) {
-      throw new ValidationError({
-        scheduled_at: ["Scheduled time must be in the future"],
-      });
+      throw new ValidationError("Scheduled time must be in the future");
     }
 
     await this.postRepo.update(siteId, id, {
@@ -332,14 +324,14 @@ export class PostService {
     const post = await this.postRepo.findById(siteId, id);
     if (!post) throw new NotFoundError("Post", id);
 
-    const updated = await this.postRepo.update(siteId, id, {
+    await this.postRepo.update(siteId, id, {
       status: "draft",
       published_at: null,
     });
 
     await this.searchProvider.delete(id, siteId);
     await this.cache.invalidate(Cache.postHtml(siteId, id));
-    return updated;
+    return this.postRepo.findById(siteId, id) as Promise<PostWithAuthorsAndTags>;
   }
 
   async deletePost(siteId: string, id: string): Promise<void> {

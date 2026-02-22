@@ -7,7 +7,7 @@ import type {
   ISettingsRepository,
   IApiKeyRepository,
 } from "@cms/core/types/repositories";
-import type { SiteSettings, ApiKey } from "@cms/core/db/schema";
+import type { ApiKey } from "@cms/core/db/schema";
 import type {
   PaginatedResult,
   PaginationParams,
@@ -23,52 +23,60 @@ export class SettingsService {
     private readonly cache: Cache
   ) {}
 
-  async getSiteSettings(siteId: string): Promise<SiteSettings | null> {
-    return this.settingsRepo.findBySiteId(siteId);
+  async getSiteSettings(siteId: string): Promise<Record<string, string>> {
+    const cacheKey = `settings:site:${siteId}`;
+    const cached = await this.cache.get<Record<string, string>>(cacheKey);
+    if (cached) return cached;
+
+    const settings = await this.settingsRepo.getAllSiteSettings(siteId);
+    await this.cache.set(cacheKey, settings, TTL.FIVE_MINUTES);
+    return settings;
   }
 
   async updateSiteSettings(
     siteId: string,
-    data: Partial<SiteSettings>
-  ): Promise<SiteSettings> {
-    const existing = await this.settingsRepo.findBySiteId(siteId);
+    data: Record<string, string>
+  ): Promise<Record<string, string>> {
+    await Promise.all(
+      Object.entries(data).map(([key, value]) =>
+        this.settingsRepo.setSiteSetting(siteId, key, value)
+      )
+    );
 
-    const result = await this.settingsRepo.upsertSiteSettings({
-      id: existing?.id ?? crypto.randomUUID(),
-      site_id: siteId,
-      ...(existing ?? {}),
-      ...data,
-      updated_at: new Date(),
-    } as Parameters<typeof this.settingsRepo.upsertSiteSettings>[0]);
+    // Invalidate cache
+    await this.cache.delete(`settings:site:${siteId}`);
 
-    return result;
+    return this.settingsRepo.getAllSiteSettings(siteId);
+  }
+
+  async getSecitonSetting(siteId: string, key: string): Promise<string | null> {
+    return this.settingsRepo.getSiteSetting(siteId, key);
   }
 
   // ─── API Keys ─────────────────────────────────────────────────────────────────
 
   async createApiKey(
     siteId: string,
-    label: string,
+    name: string,
     role: ApiKey["role"]
   ): Promise<{ apiKey: ApiKey; rawKey: string }> {
+    // 256-bit random key — sufficient entropy.
+    // key_hash = SHA256(rawKey) — stored for constant-time lookup.
+    // The raw key is returned ONCE and never stored.
     const rawKey = crypto.randomBytes(32).toString("hex");
-    const salt = crypto.randomBytes(16).toString("hex");
-    const keyHash = crypto
-      .createHash("sha256")
-      .update(rawKey + salt)
-      .digest("hex");
+    const keyHash = crypto.createHash("sha256").update(rawKey).digest("hex");
+    const keyPrefix = rawKey.slice(0, 8);
+    const keySalt = crypto.randomBytes(16).toString("hex");
 
     const apiKey = await this.apiKeyRepo.create({
-      id: crypto.randomUUID(),
       site_id: siteId,
-      label,
+      name,
       role,
+      key_prefix: keyPrefix,
       key_hash: keyHash,
-      key_salt: salt,
-      active: true,
+      key_salt: keySalt,
       last_used_at: null,
-      created_at: new Date(),
-      updated_at: new Date(),
+      revoked_at: null,
     });
 
     // Raw key is shown ONCE — never stored
@@ -79,7 +87,7 @@ export class SettingsService {
     siteId: string,
     pagination: PaginationParams
   ): Promise<PaginatedResult<ApiKey>> {
-    return this.apiKeyRepo.findManyBySiteId(siteId, pagination);
+    return this.apiKeyRepo.findMany(siteId, pagination);
   }
 
   async revokeApiKey(siteId: string, id: string): Promise<void> {
@@ -88,16 +96,13 @@ export class SettingsService {
     await this.apiKeyRepo.revoke(siteId, id);
   }
 
-  async validateApiKey(rawKey: string, salt: string): Promise<ApiKey | null> {
-    const keyHash = crypto
-      .createHash("sha256")
-      .update(rawKey + salt)
-      .digest("hex");
-    const apiKey = await this.apiKeyRepo.findByKeyHash(keyHash);
+  async validateApiKey(rawKey: string): Promise<ApiKey | null> {
+    const keyHash = crypto.createHash("sha256").update(rawKey).digest("hex");
+    const apiKey = await this.apiKeyRepo.findByHash(keyHash);
     if (!apiKey) return null;
 
     // Record last used time (fire-and-forget)
-    this.apiKeyRepo.recordLastUsed(apiKey.id).catch(() => {});
+    this.apiKeyRepo.updateLastUsed(apiKey.id).catch(() => {});
     return apiKey;
   }
 }

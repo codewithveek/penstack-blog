@@ -8,7 +8,7 @@
 import { eq, and, sql } from "drizzle-orm";
 import type { DB } from "@cms/core/db/client";
 import { redirects } from "@cms/core/db/schema";
-import type { Redirect, NewRedirect } from "@cms/core/db/schema";
+import type { Redirect } from "@cms/core/db/schema";
 import type {
   IRedirectRepository,
   PaginatedResult,
@@ -36,24 +36,24 @@ export class RedirectRepository implements IRedirectRepository {
     }
   }
 
-  async findByFrom(siteId: string, from: string): Promise<Redirect | null> {
+  async findByFromPath(siteId: string, fromPath: string): Promise<Redirect | null> {
     try {
       const rows = await this.db
         .select()
         .from(redirects)
-        .where(and(eq(redirects.site_id, siteId), eq(redirects.from_url, from)))
+        .where(and(eq(redirects.site_id, siteId), eq(redirects.from_path, fromPath)))
         .limit(1);
       return rows[0] ?? null;
     } catch (err) {
       throw new RepositoryError(
-        "Failed to find redirect by from URL",
-        "findByFrom",
+        "Failed to find redirect by from path",
+        "findByFromPath",
         err
       );
     }
   }
 
-  async findManyBySiteId(
+  async findMany(
     siteId: string,
     pagination: PaginationParams
   ): Promise<PaginatedResult<Redirect>> {
@@ -83,7 +83,7 @@ export class RedirectRepository implements IRedirectRepository {
     } catch (err) {
       throw new RepositoryError(
         "Failed to list redirects",
-        "findManyBySiteId",
+        "findMany",
         err
       );
     }
@@ -105,10 +105,11 @@ export class RedirectRepository implements IRedirectRepository {
     }
   }
 
-  async create(data: NewRedirect): Promise<Redirect> {
+  async create(data: Omit<Redirect, "id" | "created_at">): Promise<Redirect> {
+    const id = crypto.randomUUID();
     try {
-      await this.db.insert(redirects).values(data);
-      const created = await this.findById(data.site_id, data.id);
+      await this.db.insert(redirects).values({ ...data, id });
+      const created = await this.findById(data.site_id, id);
       if (!created)
         throw new RepositoryError("Redirect not found after insert", "create");
       return created;
@@ -118,15 +119,32 @@ export class RedirectRepository implements IRedirectRepository {
     }
   }
 
+  async bulkCreate(
+    items: Array<Omit<Redirect, "id" | "created_at">>
+  ): Promise<void> {
+    if (items.length === 0) return;
+    try {
+      await this.db.insert(redirects).values(
+        items.map((item) => ({ ...item, id: crypto.randomUUID() }))
+      );
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to bulk create redirects",
+        "bulkCreate",
+        err
+      );
+    }
+  }
+
   async update(
     siteId: string,
     id: string,
-    data: Partial<NewRedirect>
+    data: Omit<Partial<Redirect>, "id" | "site_id" | "created_at">
   ): Promise<Redirect> {
     try {
       await this.db
         .update(redirects)
-        .set({ ...data, updated_at: new Date() })
+        .set(data)
         .where(and(eq(redirects.site_id, siteId), eq(redirects.id, id)));
 
       const updated = await this.findById(siteId, id);

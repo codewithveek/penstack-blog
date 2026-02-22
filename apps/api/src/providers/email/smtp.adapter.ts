@@ -8,10 +8,11 @@
 import nodemailer from "nodemailer";
 import type {
   IEmailProvider,
-  EmailMessage,
-  BatchEmailMessage,
+  SendEmailOptions,
+  SendEmailResult,
+  EmailAddress,
 } from "@cms/core/types/providers";
-import { ProviderError, ConfigurationError } from "@cms/core/errors";
+import { ProviderError } from "@cms/core/errors";
 
 export interface SmtpConfig {
   host: string;
@@ -19,10 +20,16 @@ export interface SmtpConfig {
   secure: boolean;
   user: string;
   pass: string;
-  from: string;
+}
+
+function toNodemailerAddress(
+  addr: EmailAddress
+): { name: string; address: string } {
+  return { name: addr.name ?? "", address: addr.email };
 }
 
 export class SmtpEmailAdapter implements IEmailProvider {
+  readonly name = "smtp";
   private readonly transporter: nodemailer.Transporter;
 
   constructor(config: SmtpConfig) {
@@ -37,30 +44,42 @@ export class SmtpEmailAdapter implements IEmailProvider {
     });
   }
 
-  async send(message: EmailMessage): Promise<void> {
+  async send(options: SendEmailOptions): Promise<SendEmailResult> {
+    const toAddresses = Array.isArray(options.to) ? options.to : [options.to];
     try {
-      await this.transporter.sendMail({
-        from: message.from,
-        to: Array.isArray(message.to) ? message.to.join(",") : message.to,
-        subject: message.subject,
-        html: message.html,
-        text: message.text,
-        replyTo: message.replyTo,
+      const info = await this.transporter.sendMail({
+        from: toNodemailerAddress(options.from),
+        to: toAddresses.map(toNodemailerAddress),
+        subject: options.subject,
+        html: options.html,
+        text: options.text,
+        replyTo: options.replyTo
+          ? toNodemailerAddress(options.replyTo)
+          : undefined,
       });
+      return { messageId: info.messageId };
     } catch (err) {
       throw new ProviderError("smtp", `Failed to send email: ${String(err)}`);
     }
   }
 
-  async sendBatch(messages: BatchEmailMessage[]): Promise<void> {
+  async sendBatch(messages: SendEmailOptions[]): Promise<SendEmailResult[]> {
     // SMTP does not have native batch — send sequentially
-    const results = await Promise.allSettled(messages.map((m) => this.send(m)));
-    const failed = results.filter((r) => r.status === "rejected");
-    if (failed.length > 0) {
+    const results: SendEmailResult[] = [];
+    const errors: unknown[] = [];
+    for (const m of messages) {
+      try {
+        results.push(await this.send(m));
+      } catch (err) {
+        errors.push(err);
+      }
+    }
+    if (errors.length > 0) {
       throw new ProviderError(
         "smtp",
-        `Batch send failed for ${failed.length} of ${messages.length} messages`
+        `Batch send failed for ${errors.length} of ${messages.length} messages`
       );
     }
+    return results;
   }
 }

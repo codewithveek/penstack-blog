@@ -10,12 +10,9 @@ import {
   and,
   sql,
   inArray,
-  or,
   lt,
-  gte,
   desc,
   asc,
-  like,
   isNull,
 } from "drizzle-orm";
 import type { DB } from "@cms/core/db/client";
@@ -31,9 +28,7 @@ import type {
   Post,
   NewPost,
   Tag,
-  PostAuthor,
-  NewPostAuthor,
-  PostTag,
+  User,
 } from "@cms/core/db/schema";
 import type {
   IPostRepository,
@@ -43,7 +38,6 @@ import type {
   PaginatedResult,
 } from "@cms/core/types/repositories";
 import { NotFoundError, RepositoryError } from "@cms/core/errors";
-import { User } from "@cms/core/db/schema";
 
 export class PostRepository implements IPostRepository {
   constructor(private readonly db: DB) {}
@@ -51,64 +45,71 @@ export class PostRepository implements IPostRepository {
   // ─── Private helpers ─────────────────────────────────────────────────────────
 
   private async hydratePost(
-    siteId: string,
+    _siteId: string,
     post: Post
   ): Promise<PostWithAuthorsAndTags> {
     // Load authors with their user data
     const authorRows = await this.db
       .select({
-        order: postAuthors.order,
-        is_primary: postAuthors.is_primary,
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        avatar_url: users.avatar_url,
-        bio: users.bio,
-        slug: users.slug,
-        twitter: users.twitter,
-        website: users.website,
+        role: postAuthors.role,
+        sort_order: postAuthors.sort_order,
+        user: {
+          id: users.id,
+          site_id: users.site_id,
+          name: users.name,
+          email: users.email,
+          password_hash: users.password_hash,
+          slug: users.slug,
+          role: users.role,
+          bio: users.bio,
+          avatar: users.avatar,
+          cover_image: users.cover_image,
+          website: users.website,
+          twitter: users.twitter,
+          facebook: users.facebook,
+          location: users.location,
+          email_verified: users.email_verified,
+          is_super_admin: users.is_super_admin,
+          last_login_at: users.last_login_at,
+          created_at: users.created_at,
+          updated_at: users.updated_at,
+          deleted_at: users.deleted_at,
+        },
       })
       .from(postAuthors)
       .innerJoin(users, eq(postAuthors.user_id, users.id))
-      .where(
-        and(eq(postAuthors.post_id, post.id), eq(postAuthors.site_id, siteId))
-      )
-      .orderBy(asc(postAuthors.order));
+      .where(eq(postAuthors.post_id, post.id))
+      .orderBy(asc(postAuthors.sort_order));
 
     // Load tags
     const tagRows = await this.db
       .select({
         id: tags.id,
+        site_id: tags.site_id,
         name: tags.name,
         slug: tags.slug,
         description: tags.description,
         feature_image: tags.feature_image,
         visibility: tags.visibility,
-        site_id: tags.site_id,
+        og_title: tags.og_title,
+        og_description: tags.og_description,
+        og_image: tags.og_image,
         created_at: tags.created_at,
         updated_at: tags.updated_at,
       })
       .from(postTags)
-      .innerJoin(
-        tags,
-        and(eq(postTags.tag_id, tags.id), eq(postTags.site_id, tags.site_id))
-      )
-      .where(and(eq(postTags.post_id, post.id), eq(postTags.site_id, siteId)))
-      .orderBy(asc(postTags.order));
-
-    const primaryAuthor = authorRows.find((a) => a.is_primary) ?? authorRows[0];
+      .innerJoin(tags, eq(postTags.tag_id, tags.id))
+      .where(eq(postTags.post_id, post.id))
+      .orderBy(asc(postTags.sort_order));
 
     return {
       ...post,
-      authors: authorRows.map(({ order, is_primary, ...user }) => user as User),
-      primaryAuthor: (primaryAuthor
-        ? ({
-            ...primaryAuthor,
-            is_primary: primaryAuthor.is_primary,
-          } as unknown as User)
-        : null)!,
-      tags: tagRows,
-      primaryTag: tagRows[0] ?? null,
+      authors: authorRows.map((row) => ({
+        user: row.user as User,
+        role: row.role,
+        sort_order: row.sort_order,
+      })),
+      tags: tagRows as Tag[],
     };
   }
 
@@ -217,12 +218,7 @@ export class PostRepository implements IPostRepository {
           const postIdsWithTag = await this.db
             .select({ post_id: postTags.post_id })
             .from(postTags)
-            .where(
-              and(
-                eq(postTags.site_id, siteId),
-                eq(postTags.tag_id, tagIds[0].id)
-              )
-            );
+            .where(eq(postTags.tag_id, tagIds[0].id));
           conditions.push(
             inArray(
               posts.id,
@@ -231,38 +227,24 @@ export class PostRepository implements IPostRepository {
           );
         }
       }
-      if (params.authorSlug) {
-        const authorIds = await this.db
-          .select({ id: users.id })
-          .from(users)
-          .where(
-            and(eq(users.site_id, siteId), eq(users.slug, params.authorSlug))
+      if (params.authorId) {
+        const postIdsWithAuthor = await this.db
+          .select({ post_id: postAuthors.post_id })
+          .from(postAuthors)
+          .where(eq(postAuthors.user_id, params.authorId));
+        conditions.push(
+          inArray(
+            posts.id,
+            postIdsWithAuthor.map((r) => r.post_id)
           )
-          .limit(1);
-        if (authorIds[0]) {
-          const postIdsWithAuthor = await this.db
-            .select({ post_id: postAuthors.post_id })
-            .from(postAuthors)
-            .where(
-              and(
-                eq(postAuthors.site_id, siteId),
-                eq(postAuthors.user_id, authorIds[0].id)
-              )
-            );
-          conditions.push(
-            inArray(
-              posts.id,
-              postIdsWithAuthor.map((r) => r.post_id)
-            )
-          );
-        }
+        );
       }
 
-      const sortOrder = params.orderDirection === "asc" ? asc : desc;
+      const sortDir = params.sortOrder === "asc" ? asc : desc;
       const sortColumn =
-        params.orderBy === "published_at"
+        params.sortBy === "published_at"
           ? posts.published_at
-          : params.orderBy === "updated_at"
+          : params.sortBy === "updated_at"
             ? posts.updated_at
             : posts.created_at;
 
@@ -271,7 +253,7 @@ export class PostRepository implements IPostRepository {
           .select()
           .from(posts)
           .where(and(...conditions))
-          .orderBy(sortOrder(sortColumn))
+          .orderBy(sortDir(sortColumn))
           .limit(limit)
           .offset(offset),
         this.db
@@ -294,17 +276,16 @@ export class PostRepository implements IPostRepository {
     }
   }
 
-  async findScheduledReady(siteId: string): Promise<Post[]> {
+  async findScheduledReady(now: Date): Promise<Post[]> {
     try {
       return this.db
         .select()
         .from(posts)
         .where(
           and(
-            eq(posts.site_id, siteId),
             eq(posts.status, "scheduled"),
             isNull(posts.deleted_at),
-            lt(posts.published_at, new Date())
+            lt(posts.scheduled_at, now)
           )
         );
     } catch (err) {
@@ -318,13 +299,17 @@ export class PostRepository implements IPostRepository {
 
   // ─── Mutations ────────────────────────────────────────────────────────────────
 
-  async create(data: NewPost): Promise<PostWithAuthorsAndTags> {
+  async create(data: NewPost): Promise<Post> {
     try {
       await this.db.insert(posts).values(data);
-      const created = await this.findById(data.site_id, data.id);
-      if (!created)
+      const rows = await this.db
+        .select()
+        .from(posts)
+        .where(eq(posts.id, data.id!))
+        .limit(1);
+      if (!rows[0])
         throw new RepositoryError("Post not found after insert", "create");
-      return created;
+      return rows[0];
     } catch (err) {
       if (err instanceof RepositoryError) throw err;
       throw new RepositoryError("Failed to create post", "create", err);
@@ -335,16 +320,20 @@ export class PostRepository implements IPostRepository {
     siteId: string,
     id: string,
     data: Partial<NewPost>
-  ): Promise<PostWithAuthorsAndTags> {
+  ): Promise<Post> {
     try {
       await this.db
         .update(posts)
         .set({ ...data, updated_at: new Date() })
         .where(and(eq(posts.site_id, siteId), eq(posts.id, id)));
 
-      const updated = await this.findById(siteId, id);
-      if (!updated) throw new NotFoundError("Post", id);
-      return updated;
+      const rows = await this.db
+        .select()
+        .from(posts)
+        .where(and(eq(posts.site_id, siteId), eq(posts.id, id)))
+        .limit(1);
+      if (!rows[0]) throw new NotFoundError("Post", id);
+      return rows[0];
     } catch (err) {
       if (err instanceof NotFoundError || err instanceof RepositoryError)
         throw err;
@@ -364,24 +353,25 @@ export class PostRepository implements IPostRepository {
     }
   }
 
-  async publish(
-    siteId: string,
-    id: string,
-    publishedAt: Date
-  ): Promise<PostWithAuthorsAndTags> {
+  async publish(siteId: string, id: string, permalink: string): Promise<Post> {
     try {
       await this.db
         .update(posts)
         .set({
           status: "published",
-          published_at: publishedAt,
+          permalink,
+          published_at: new Date(),
           updated_at: new Date(),
         })
         .where(and(eq(posts.site_id, siteId), eq(posts.id, id)));
 
-      const published = await this.findById(siteId, id);
-      if (!published) throw new NotFoundError("Post", id);
-      return published;
+      const rows = await this.db
+        .select()
+        .from(posts)
+        .where(and(eq(posts.site_id, siteId), eq(posts.id, id)))
+        .limit(1);
+      if (!rows[0]) throw new NotFoundError("Post", id);
+      return rows[0];
     } catch (err) {
       if (err instanceof NotFoundError || err instanceof RepositoryError)
         throw err;
@@ -391,14 +381,14 @@ export class PostRepository implements IPostRepository {
 
   async updateAllPermalinks(
     siteId: string,
-    updates: Array<{ id: string; permalink: string }>
+    updates: Array<{ id: string; oldPermalink: string; newPermalink: string }>
   ): Promise<void> {
     try {
       await Promise.all(
-        updates.map(({ id, permalink }) =>
+        updates.map(({ id, newPermalink }) =>
           this.db
             .update(posts)
-            .set({ permalink })
+            .set({ permalink: newPermalink })
             .where(and(eq(posts.site_id, siteId), eq(posts.id, id)))
         )
       );
@@ -413,28 +403,21 @@ export class PostRepository implements IPostRepository {
 
   // ─── Relations ────────────────────────────────────────────────────────────────
 
-  async setAuthors(
-    siteId: string,
-    postId: string,
-    authors: PostAuthorInput[]
-  ): Promise<void> {
+  async setAuthors(postId: string, authors: PostAuthorInput[]): Promise<void> {
     try {
       await this.db
         .delete(postAuthors)
-        .where(
-          and(eq(postAuthors.site_id, siteId), eq(postAuthors.post_id, postId))
-        );
+        .where(eq(postAuthors.post_id, postId));
 
       if (authors.length > 0) {
-        const values: NewPostAuthor[] = authors.map((a, i) => ({
-          id: crypto.randomUUID(),
-          site_id: siteId,
-          post_id: postId,
-          user_id: a.userId,
-          is_primary: a.isPrimary,
-          order: a.order ?? i,
-        }));
-        await this.db.insert(postAuthors).values(values);
+        await this.db.insert(postAuthors).values(
+          authors.map((a, i) => ({
+            post_id: postId,
+            user_id: a.user_id,
+            role: a.role,
+            sort_order: a.sort_order ?? i,
+          }))
+        );
       }
     } catch (err) {
       throw new RepositoryError(
@@ -453,17 +436,16 @@ export class PostRepository implements IPostRepository {
     try {
       await this.db
         .delete(postTags)
-        .where(and(eq(postTags.site_id, siteId), eq(postTags.post_id, postId)));
+        .where(eq(postTags.post_id, postId));
 
       if (tagIds.length > 0) {
-        const values = tagIds.map((tagId, i) => ({
-          id: crypto.randomUUID(),
-          site_id: siteId,
-          post_id: postId,
-          tag_id: tagId,
-          order: i,
-        }));
-        await this.db.insert(postTags).values(values);
+        await this.db.insert(postTags).values(
+          tagIds.map((tagId, i) => ({
+            post_id: postId,
+            tag_id: tagId,
+            sort_order: i,
+          }))
+        );
       }
     } catch (err) {
       throw new RepositoryError("Failed to set post tags", "setTags", err);

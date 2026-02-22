@@ -21,6 +21,7 @@ import type {
   NewMember,
   MemberAuthToken,
   Tier,
+  NewTier,
   Subscription,
   Newsletter,
   EmailSend,
@@ -210,6 +211,23 @@ export interface IMemberRepository {
   ): Promise<{ id: string; member_id: string; expires_at: Date } | null>;
   /** Delete a session (logout). */
   deleteMemberSession(token: string): Promise<void>;
+  /** List all active tiers for a site. */
+  findTiers(siteId: string): Promise<Tier[]>;
+  /** Create a membership tier. */
+  createTier(data: NewTier): Promise<Tier>;
+  /** Find a subscription by its provider subscription ID (e.g. Stripe sub ID). */
+  findSubscriptionByProviderId(
+    providerSubscriptionId: string
+  ): Promise<Subscription | null>;
+  /** Update a subscription record. */
+  updateSubscription(
+    id: string,
+    data: Partial<Omit<Subscription, "id" | "site_id" | "created_at">>
+  ): Promise<Subscription>;
+  /** Create a new subscription record. */
+  createSubscription(
+    data: Omit<Subscription, "id" | "created_at" | "updated_at">
+  ): Promise<Subscription>;
 }
 
 // ---------------------------------------------------------------------------

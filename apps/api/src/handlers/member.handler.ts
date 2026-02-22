@@ -1,8 +1,11 @@
 /**
  * apps/api/src/handlers/member.handler.ts
  *
- * Admin routes: GET /, GET /:id, POST /, PATCH /:id, DELETE /:id  (under admin auth)
- * Public auth routes: POST /auth/magic-link, POST /auth/verify, POST /auth/logout
+ * Admin routes: GET /, GET /:id, PATCH /:id, DELETE /:id  (under admin auth)
+ * Public auth routes: POST /magic-link, POST /verify, POST /logout
+ *
+ * NOTE: Members are created via the magic-link auth flow only.
+ * Direct admin creation is intentionally excluded.
  */
 
 import { Hono } from "hono";
@@ -10,7 +13,6 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { isAppError } from "@cms/core/errors";
 import {
-  createMemberSchema,
   updateMemberSchema,
   listMembersQuerySchema,
   magicLinkRequestSchema,
@@ -63,25 +65,8 @@ export function createMemberAdminHandler(controller: MemberController) {
     }
   });
 
-  app.post("/", zValidator("json", createMemberSchema), async (c) => {
-    try {
-      const siteId = c.get("siteId");
-      const input = c.req.valid("json");
-      const member = await controller.create(siteId, input);
-      return c.json({ data: member }, 201);
-    } catch (err) {
-      if (isAppError(err))
-        return c.json(
-          { error: err.toJSON() },
-          err.httpStatus as 400 | 409 | 422 | 500
-        );
-      logger.error("MEMBER create failed", err);
-      return c.json(
-        { error: { code: "INTERNAL_ERROR", message: "Internal server error" } },
-        500
-      );
-    }
-  });
+  // NOTE: Members are created via the magic-link auth flow — direct admin
+  // creation is intentionally excluded. Use POST /member/auth/magic-link.
 
   app.patch(
     "/:id",
@@ -142,14 +127,17 @@ export function createMemberAuthHandler(controller: MemberController) {
     async (c) => {
       try {
         const siteId = c.get("siteId");
-        const { email } = c.req.valid("json");
+        const input = c.req.valid("json");
+        const siteUrl =
+          c.req.header("origin") ??
+          `https://${c.req.header("host") ?? "localhost"}`;
         await controller.sendMagicLink(
-        siteId,
-        email,
-        input.redirect_to ?? "/",
-        c.req.header("origin") ?? `https://${c.req.header("host") ?? "localhost"}`,
-        "My Site",
-      );
+          siteId,
+          input.email,
+          input.redirect_to ?? "/",
+          siteUrl,
+          siteUrl, // siteName falls back to siteUrl; service enriches if needed
+        );
         // Always 200 — never confirm whether email exists (anti-enumeration)
         return c.json({
           data: {

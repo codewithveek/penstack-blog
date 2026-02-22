@@ -38,9 +38,9 @@ import {
   siteResolverMiddleware,
   requireAdminAuth,
   optionalMemberAuth,
-  authRateLimiter,
-  publicApiRateLimiter,
-  adminApiRateLimiter,
+  authRateLimiterMw,
+  publicApiRateLimiterMw,
+  adminApiRateLimiterMw,
 } from "../container";
 
 // ── Handler instances ─────────────────────────────────────────────────────────
@@ -70,7 +70,7 @@ router.use("*", siteResolverMiddleware);
 router.route("/setup", setupApp);
 
 // ── Member auth (public, rate-limited) ────────────────────────────────────────
-router.use("/member/auth/*", authRateLimiter);
+router.use("/member/auth/*", authRateLimiterMw);
 router.route("/member/auth", memberAuthApp);
 
 // ── Admin API ─────────────────────────────────────────────────────────────────
@@ -78,7 +78,7 @@ router.route("/member/auth", memberAuthApp);
 const adminRouter = new Hono<{ Variables: { siteId: string; userId: string; role: string } }>();
 
 // All admin routes: admin rate limit + admin auth
-adminRouter.use("*", adminApiRateLimiter);
+adminRouter.use("*", adminApiRateLimiterMw);
 adminRouter.use("*", requireAdminAuth);
 
 // Posts
@@ -123,7 +123,7 @@ router.route("/admin/v1", adminRouter);
 
 const contentRouter = new Hono<{ Variables: { siteId: string } }>();
 
-contentRouter.use("*", publicApiRateLimiter);
+contentRouter.use("*", publicApiRateLimiterMw);
 contentRouter.use("*", optionalMemberAuth);
 
 // Public post reading (returns only published posts at service layer)

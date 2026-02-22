@@ -114,14 +114,14 @@ const userService = new UserService(userRepo);
 const tagService = new TagService(tagRepo);
 const webhookService = new WebhookService(webhookRepo);
 const settingsService = new SettingsService(settingsRepo, apiKeyRepo, cache);
-const newsletterService = new NewsletterService(newsletterRepo, email);
-const memberService = new MemberService(memberRepo, email, payment, queue);
+const newsletterService = new NewsletterService(newsletterRepo, memberRepo, email);
+const memberService = new MemberService(memberRepo, email, payment);
 const postService = new PostService(
   postRepo,
   tagRepo,
-  webhookService,
-  search,
+  settingsRepo,
   queue,
+  search,
   cache
 );
 
@@ -132,11 +132,11 @@ async function getMediaService() {
 }
 
 const setupService = new SetupService(
-  siteRepo,
-  userRepo,
-  newsletterRepo,
-  settingsRepo,
-  cache
+  siteService,
+  userService,
+  newsletterService,
+  settingsService,
+  email
 );
 
 // Controllers
@@ -160,6 +160,11 @@ const siteResolverMiddleware = createSiteResolverMiddleware(siteService);
 const requireAdminAuth = createRequireAdminAuth(apiKeyRepo);
 const requireMemberAuth = createRequireMemberAuth(memberRepo);
 const optionalMemberAuth = createOptionalMemberAuth(memberRepo);
+
+// Rate-limiter middleware instances (bound to the shared Redis connection)
+const authRateLimiterMw = authRateLimiter(redis);
+const publicApiRateLimiterMw = publicApiRateLimiter(redis);
+const adminApiRateLimiterMw = adminApiRateLimiter(redis);
 
 export {
   // Infrastructure
@@ -200,7 +205,8 @@ export {
   requireMemberAuth,
   optionalMemberAuth,
   requireRole,
-  authRateLimiter,
-  publicApiRateLimiter,
-  adminApiRateLimiter,
+  // Rate limiters — ready-to-use MiddlewareHandler instances (not the factories)
+  authRateLimiterMw,
+  publicApiRateLimiterMw,
+  adminApiRateLimiterMw,
 };

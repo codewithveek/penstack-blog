@@ -8,7 +8,7 @@
 import { eq, and, sql, like } from "drizzle-orm";
 import type { DB } from "@cms/core/db/client";
 import { users, sessions } from "@cms/core/db/schema";
-import type { User, NewUser, Session, NewSession } from "@cms/core/db/schema";
+import type { User, NewUser, Session } from "@cms/core/db/schema";
 import type {
   IUserRepository,
   PaginatedResult,
@@ -49,26 +49,46 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findMany(
+  async findBySlug(siteId: string, slug: string): Promise<User | null> {
+    try {
+      const rows = await this.db
+        .select()
+        .from(users)
+        .where(and(eq(users.site_id, siteId), eq(users.slug, slug)))
+        .limit(1);
+      return rows[0] ?? null;
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to find user by slug",
+        "findBySlug",
+        err
+      );
+    }
+  }
+
+  async findAll(
     siteId: string,
-    pagination: PaginationParams
+    params: PaginationParams & { role?: string }
   ): Promise<PaginatedResult<User>> {
-    const page = pagination.page ?? 1;
-    const limit = Math.min(pagination.limit ?? 20, 100);
+    const page = params.page ?? 1;
+    const limit = Math.min(params.limit ?? 20, 100);
     const offset = (page - 1) * limit;
+
+    const conditions = [eq(users.site_id, siteId)];
+    if (params.role) conditions.push(eq(users.role, params.role as typeof users.role._.data));
 
     try {
       const [rows, [countRow]] = await Promise.all([
         this.db
           .select()
           .from(users)
-          .where(eq(users.site_id, siteId))
+          .where(and(...conditions))
           .limit(limit)
           .offset(offset),
         this.db
           .select({ count: sql<number>`count(*)` })
           .from(users)
-          .where(eq(users.site_id, siteId)),
+          .where(and(...conditions)),
       ]);
 
       const total = countRow?.count ?? 0;
@@ -77,7 +97,26 @@ export class UserRepository implements IUserRepository {
         meta: { total, page, limit, pages: Math.ceil(total / limit) },
       };
     } catch (err) {
-      throw new RepositoryError("Failed to list users", "findMany", err);
+      throw new RepositoryError("Failed to list users", "findAll", err);
+    }
+  }
+
+  async findSuperAdmin(email: string): Promise<User | null> {
+    try {
+      const rows = await this.db
+        .select()
+        .from(users)
+        .where(
+          and(eq(users.email, email), eq(users.is_super_admin, true))
+        )
+        .limit(1);
+      return rows[0] ?? null;
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to find super admin",
+        "findSuperAdmin",
+        err
+      );
     }
   }
 
@@ -127,7 +166,7 @@ export class UserRepository implements IUserRepository {
 
   // ─── Session management ─────────────────────────────────────────────────────
 
-  async createSession(data: NewSession): Promise<Session> {
+  async createSession(data: typeof sessions.$inferInsert): Promise<Session> {
     try {
       await this.db.insert(sessions).values(data);
       const rows = await this.db

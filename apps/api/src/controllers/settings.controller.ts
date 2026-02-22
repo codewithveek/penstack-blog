@@ -3,7 +3,7 @@
  */
 
 import type { SettingsService } from "../services/settings.service";
-import type { SiteSettings, ApiKey } from "@cms/core/db/schema";
+import type { ApiKey } from "@cms/core/db/schema";
 import type {
   PaginatedResult,
   PaginationParams,
@@ -12,23 +12,23 @@ import type {
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
-  async getSiteSettings(siteId: string): Promise<SiteSettings | null> {
+  async getSiteSettings(siteId: string): Promise<Record<string, string>> {
     return this.settingsService.getSiteSettings(siteId);
   }
 
   async updateSiteSettings(
     siteId: string,
-    data: Partial<SiteSettings>
-  ): Promise<SiteSettings> {
+    data: Record<string, string>
+  ): Promise<Record<string, string>> {
     return this.settingsService.updateSiteSettings(siteId, data);
   }
 
   async createApiKey(
     siteId: string,
-    label: string,
+    name: string,
     role: ApiKey["role"]
   ): Promise<{ apiKey: ApiKey; rawKey: string }> {
-    return this.settingsService.createApiKey(siteId, label, role);
+    return this.settingsService.createApiKey(siteId, name, role);
   }
 
   async listApiKeys(

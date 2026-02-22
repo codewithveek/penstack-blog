@@ -29,7 +29,9 @@ export function resolveQueueProvider(): IQueueProvider {
   const provider = process.env.QUEUE_PROVIDER ?? "bullmq";
 
   if (provider === "bullmq") {
-    return new BullMQQueueAdapter(getRedisConnection());
+    const url = process.env.REDIS_URL;
+    if (!url) throw new ConfigurationError("REDIS_URL is required");
+    return new BullMQQueueAdapter(url);
   }
 
   throw new ConfigurationError(

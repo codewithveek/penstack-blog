@@ -11,9 +11,7 @@ import type { DB } from "@cms/core/db/client";
 import { webhooks, webhookDeliveries } from "@cms/core/db/schema";
 import type {
   Webhook,
-  NewWebhook,
   WebhookDelivery,
-  NewWebhookDelivery,
 } from "@cms/core/db/schema";
 import type {
   IWebhookRepository,
@@ -28,7 +26,7 @@ export class WebhookRepository implements IWebhookRepository {
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-  private encryptWebhook(data: NewWebhook): NewWebhook {
+  private encryptWebhook(data: Omit<Webhook, "id" | "created_at">): Omit<Webhook, "id" | "created_at"> {
     return {
       ...data,
       secret: data.secret ? encrypt(data.secret) : data.secret,
@@ -113,6 +111,7 @@ export class WebhookRepository implements IWebhookRepository {
 
   async findByEvent(siteId: string, event: string): Promise<Webhook[]> {
     try {
+      // event_triggers is a comma-separated string: "post.published,member.created"
       const rows = await this.db
         .select()
         .from(webhooks)
@@ -120,7 +119,7 @@ export class WebhookRepository implements IWebhookRepository {
           and(
             eq(webhooks.site_id, siteId),
             eq(webhooks.active, true),
-            sql`JSON_CONTAINS(${webhooks.events}, JSON_QUOTE(${event}))`
+            sql`FIND_IN_SET(${event}, ${webhooks.event_triggers}) > 0`
           )
         );
       return rows.map((r) => this.decryptWebhook(r));
@@ -133,11 +132,12 @@ export class WebhookRepository implements IWebhookRepository {
     }
   }
 
-  async create(data: NewWebhook): Promise<Webhook> {
+  async create(data: Omit<Webhook, "id" | "created_at">): Promise<Webhook> {
+    const id = crypto.randomUUID();
     try {
       const encrypted = this.encryptWebhook(data);
-      await this.db.insert(webhooks).values(encrypted);
-      const created = await this.findById(data.site_id, data.id);
+      await this.db.insert(webhooks).values({ ...encrypted, id });
+      const created = await this.findById(data.site_id, id);
       if (!created)
         throw new RepositoryError("Webhook not found after insert", "create");
       return created;
@@ -150,15 +150,15 @@ export class WebhookRepository implements IWebhookRepository {
   async update(
     siteId: string,
     id: string,
-    data: Partial<NewWebhook>
+    data: Partial<Omit<Webhook, "id" | "site_id" | "created_at">>
   ): Promise<Webhook> {
     try {
-      const toSet: Partial<NewWebhook> = { ...data };
+      const toSet = { ...data } as Partial<Webhook>;
       if (toSet.secret) toSet.secret = encrypt(toSet.secret);
 
       await this.db
         .update(webhooks)
-        .set({ ...toSet, updated_at: new Date() })
+        .set(toSet)
         .where(and(eq(webhooks.site_id, siteId), eq(webhooks.id, id)));
 
       const updated = await this.findById(siteId, id);
@@ -183,13 +183,14 @@ export class WebhookRepository implements IWebhookRepository {
 
   // ─── Delivery log ─────────────────────────────────────────────────────────────
 
-  async createDelivery(data: NewWebhookDelivery): Promise<WebhookDelivery> {
+  async createDelivery(data: Omit<WebhookDelivery, "id" | "created_at">): Promise<WebhookDelivery> {
+    const id = crypto.randomUUID();
     try {
-      await this.db.insert(webhookDeliveries).values(data);
+      await this.db.insert(webhookDeliveries).values({ ...data, id });
       const rows = await this.db
         .select()
         .from(webhookDeliveries)
-        .where(eq(webhookDeliveries.id, data.id))
+        .where(eq(webhookDeliveries.id, id))
         .limit(1);
       if (!rows[0])
         throw new RepositoryError(
@@ -221,24 +222,14 @@ export class WebhookRepository implements IWebhookRepository {
         this.db
           .select()
           .from(webhookDeliveries)
-          .where(
-            and(
-              eq(webhookDeliveries.site_id, siteId),
-              eq(webhookDeliveries.webhook_id, webhookId)
-            )
-          )
+          .where(eq(webhookDeliveries.webhook_id, webhookId))
           .orderBy(desc(webhookDeliveries.created_at))
           .limit(limit)
           .offset(offset),
         this.db
           .select({ count: sql<number>`count(*)` })
           .from(webhookDeliveries)
-          .where(
-            and(
-              eq(webhookDeliveries.site_id, siteId),
-              eq(webhookDeliveries.webhook_id, webhookId)
-            )
-          ),
+          .where(eq(webhookDeliveries.webhook_id, webhookId)),
       ]);
 
       const total = countRow?.count ?? 0;

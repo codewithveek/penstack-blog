@@ -5,12 +5,13 @@
  * Implements IMemberRepository.
  */
 
-import { eq, and, sql, gt, desc, asc, isNull, like } from "drizzle-orm";
+import { eq, and, sql, gt, desc, asc, isNull, lt } from "drizzle-orm";
 import type { DB } from "@cms/core/db/client";
 import {
   members,
   memberAuthTokens,
   memberSessions,
+  memberNewsletters,
   tiers,
   subscriptions,
 } from "@cms/core/db/schema";
@@ -20,11 +21,9 @@ import type {
   MemberAuthToken,
   NewMemberAuthToken,
   MemberSession,
-  NewMemberSession,
   Tier,
   NewTier,
   Subscription,
-  NewSubscription,
 } from "@cms/core/db/schema";
 import type {
   IMemberRepository,
@@ -61,31 +60,6 @@ export class MemberRepository implements IMemberRepository {
       throw new RepositoryError(
         "Failed to find member by email",
         "findByEmail",
-        err
-      );
-    }
-  }
-
-  async findByStripeCustomer(
-    siteId: string,
-    stripeCustomerId: string
-  ): Promise<Member | null> {
-    try {
-      const rows = await this.db
-        .select()
-        .from(members)
-        .where(
-          and(
-            eq(members.site_id, siteId),
-            eq(members.stripe_customer_id, stripeCustomerId)
-          )
-        )
-        .limit(1);
-      return rows[0] ?? null;
-    } catch (err) {
-      throw new RepositoryError(
-        "Failed to find member by stripe customer",
-        "findByStripeCustomer",
         err
       );
     }
@@ -182,13 +156,24 @@ export class MemberRepository implements IMemberRepository {
 
   // ─── Auth tokens ──────────────────────────────────────────────────────────────
 
-  async createAuthToken(data: NewMemberAuthToken): Promise<MemberAuthToken> {
+  async createAuthToken(
+    memberId: string,
+    tokenHash: string,
+    expiresAt: Date
+  ): Promise<MemberAuthToken> {
+    const id = crypto.randomUUID();
     try {
-      await this.db.insert(memberAuthTokens).values(data);
+      await this.db.insert(memberAuthTokens).values({
+        id,
+        member_id: memberId,
+        token_hash: tokenHash,
+        expires_at: expiresAt,
+        created_at: new Date(),
+      });
       const rows = await this.db
         .select()
         .from(memberAuthTokens)
-        .where(eq(memberAuthTokens.id, data.id))
+        .where(eq(memberAuthTokens.id, id))
         .limit(1);
       if (!rows[0])
         throw new RepositoryError(
@@ -206,19 +191,15 @@ export class MemberRepository implements IMemberRepository {
     }
   }
 
-  async findValidAuthToken(
-    siteId: string,
-    tokenHash: string
-  ): Promise<MemberAuthToken | null> {
+  async findValidAuthToken(tokenHash: string): Promise<MemberAuthToken | null> {
     try {
       const rows = await this.db
         .select()
         .from(memberAuthTokens)
         .where(
           and(
-            eq(memberAuthTokens.site_id, siteId),
             eq(memberAuthTokens.token_hash, tokenHash),
-            eq(memberAuthTokens.used, false),
+            isNull(memberAuthTokens.used_at),
             gt(memberAuthTokens.expires_at, new Date())
           )
         )
@@ -237,7 +218,7 @@ export class MemberRepository implements IMemberRepository {
     try {
       await this.db
         .update(memberAuthTokens)
-        .set({ used: true })
+        .set({ used_at: new Date() })
         .where(eq(memberAuthTokens.id, id));
     } catch (err) {
       throw new RepositoryError(
@@ -248,22 +229,89 @@ export class MemberRepository implements IMemberRepository {
     }
   }
 
-  // ─── Member sessions ─────────────────────────────────────────────────────────
-
-  async createMemberSession(data: NewMemberSession): Promise<MemberSession> {
+  async deleteExpiredTokens(): Promise<void> {
     try {
-      await this.db.insert(memberSessions).values(data);
+      await this.db
+        .delete(memberAuthTokens)
+        .where(lt(memberAuthTokens.expires_at, new Date()));
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to delete expired tokens",
+        "deleteExpiredTokens",
+        err
+      );
+    }
+  }
+
+  async upsertMemberNewsletterSubscription(
+    memberId: string,
+    newsletterId: string,
+    subscribed: boolean
+  ): Promise<void> {
+    try {
+      if (subscribed) {
+        await this.db
+          .insert(memberNewsletters)
+          .values({
+            member_id: memberId,
+            newsletter_id: newsletterId,
+            subscribed_at: new Date(),
+          })
+          .onDuplicateKeyUpdate({ set: { subscribed_at: new Date() } });
+      } else {
+        await this.db
+          .delete(memberNewsletters)
+          .where(
+            and(
+              eq(memberNewsletters.member_id, memberId),
+              eq(memberNewsletters.newsletter_id, newsletterId)
+            )
+          );
+      }
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to upsert member newsletter subscription",
+        "upsertMemberNewsletterSubscription",
+        err
+      );
+    }
+  }
+
+  async getMemberNewsletterSubscriptions(memberId: string): Promise<string[]> {
+    try {
       const rows = await this.db
-        .select()
-        .from(memberSessions)
-        .where(eq(memberSessions.id, data.id))
-        .limit(1);
-      if (!rows[0])
-        throw new RepositoryError(
-          "MemberSession not found after insert",
-          "createMemberSession"
-        );
-      return rows[0];
+        .select({ newsletter_id: memberNewsletters.newsletter_id })
+        .from(memberNewsletters)
+        .where(eq(memberNewsletters.member_id, memberId));
+      return rows.map((r) => r.newsletter_id);
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to get member newsletter subscriptions",
+        "getMemberNewsletterSubscriptions",
+        err
+      );
+    }
+  }  // ─── Member sessions ─────────────────────────────────────────────────────────
+
+  async createMemberSession(
+    memberId: string,
+    sessionToken: string,
+    expiresAt: Date,
+    ipAddress?: string,
+    userAgent?: string
+  ): Promise<{ id: string; session_token: string; expires_at: Date }> {
+    const id = crypto.randomUUID();
+    try {
+      await this.db.insert(memberSessions).values({
+        id,
+        member_id: memberId,
+        token: sessionToken,
+        expires_at: expiresAt,
+        ip_address: ipAddress ?? null,
+        user_agent: userAgent ?? null,
+        created_at: new Date(),
+      });
+      return { id, session_token: sessionToken, expires_at: expiresAt };
     } catch (err) {
       if (err instanceof RepositoryError) throw err;
       throw new RepositoryError(
@@ -274,19 +322,26 @@ export class MemberRepository implements IMemberRepository {
     }
   }
 
-  async findMemberSession(token: string): Promise<MemberSession | null> {
+  async findMemberSession(
+    token: string
+  ): Promise<{ id: string; member_id: string; expires_at: Date } | null> {
     try {
       const rows = await this.db
         .select()
         .from(memberSessions)
         .where(
           and(
-            eq(memberSessions.session_token, token),
+            eq(memberSessions.token, token),
             gt(memberSessions.expires_at, new Date())
           )
         )
         .limit(1);
-      return rows[0] ?? null;
+      if (!rows[0]) return null;
+      return {
+        id: rows[0].id,
+        member_id: rows[0].member_id,
+        expires_at: rows[0].expires_at,
+      };
     } catch (err) {
       throw new RepositoryError(
         "Failed to find member session",
@@ -300,7 +355,7 @@ export class MemberRepository implements IMemberRepository {
     try {
       await this.db
         .delete(memberSessions)
-        .where(eq(memberSessions.session_token, token));
+        .where(eq(memberSessions.token, token));
     } catch (err) {
       throw new RepositoryError(
         "Failed to delete member session",
@@ -312,30 +367,13 @@ export class MemberRepository implements IMemberRepository {
 
   // ─── Tiers ────────────────────────────────────────────────────────────────────
 
-  async findTierById(siteId: string, id: string): Promise<Tier | null> {
-    try {
-      const rows = await this.db
-        .select()
-        .from(tiers)
-        .where(and(eq(tiers.site_id, siteId), eq(tiers.id, id)))
-        .limit(1);
-      return rows[0] ?? null;
-    } catch (err) {
-      throw new RepositoryError(
-        "Failed to find tier by id",
-        "findTierById",
-        err
-      );
-    }
-  }
-
   async findTiers(siteId: string): Promise<Tier[]> {
     try {
       return this.db
         .select()
         .from(tiers)
         .where(and(eq(tiers.site_id, siteId), eq(tiers.active, true)))
-        .orderBy(asc(tiers.monthly_price));
+        .orderBy(asc(tiers.monthly_price_cents));
     } catch (err) {
       throw new RepositoryError("Failed to list tiers", "findTiers", err);
     }
@@ -344,91 +382,54 @@ export class MemberRepository implements IMemberRepository {
   async createTier(data: NewTier): Promise<Tier> {
     try {
       await this.db.insert(tiers).values(data);
-      const created = await this.findTierById(data.site_id, data.id);
-      if (!created)
+      const rows = await this.db
+        .select()
+        .from(tiers)
+        .where(eq(tiers.id, data.id!))
+        .limit(1);
+      if (!rows[0])
         throw new RepositoryError("Tier not found after insert", "createTier");
-      return created;
+      return rows[0];
     } catch (err) {
       if (err instanceof RepositoryError) throw err;
       throw new RepositoryError("Failed to create tier", "createTier", err);
     }
   }
 
-  async updateTier(
-    siteId: string,
-    id: string,
-    data: Partial<NewTier>
-  ): Promise<Tier> {
-    try {
-      await this.db
-        .update(tiers)
-        .set({ ...data, updated_at: new Date() })
-        .where(and(eq(tiers.site_id, siteId), eq(tiers.id, id)));
-
-      const updated = await this.findTierById(siteId, id);
-      if (!updated) throw new NotFoundError("Tier", id);
-      return updated;
-    } catch (err) {
-      if (err instanceof NotFoundError || err instanceof RepositoryError)
-        throw err;
-      throw new RepositoryError("Failed to update tier", "updateTier", err);
-    }
-  }
-
   // ─── Subscriptions ────────────────────────────────────────────────────────────
 
-  async findSubscriptionByMember(
-    siteId: string,
-    memberId: string
+  async findSubscriptionByProviderId(
+    providerSubscriptionId: string
   ): Promise<Subscription | null> {
     try {
       const rows = await this.db
         .select()
         .from(subscriptions)
         .where(
-          and(
-            eq(subscriptions.site_id, siteId),
-            eq(subscriptions.member_id, memberId),
-            eq(subscriptions.status, "active")
-          )
+          eq(subscriptions.provider_subscription_id, providerSubscriptionId)
         )
         .limit(1);
       return rows[0] ?? null;
     } catch (err) {
       throw new RepositoryError(
-        "Failed to find subscription by member",
-        "findSubscriptionByMember",
+        "Failed to find subscription by provider id",
+        "findSubscriptionByProviderId",
         err
       );
     }
   }
 
-  async findSubscriptionByStripeId(
-    stripeSubscriptionId: string
-  ): Promise<Subscription | null> {
+  async createSubscription(
+    data: Omit<Subscription, "id" | "created_at" | "updated_at">
+  ): Promise<Subscription> {
+    const id = crypto.randomUUID();
+    const now = new Date();
     try {
+      await this.db.insert(subscriptions).values({ ...data, id, created_at: now, updated_at: now });
       const rows = await this.db
         .select()
         .from(subscriptions)
-        .where(eq(subscriptions.stripe_subscription_id, stripeSubscriptionId))
-        .limit(1);
-      return rows[0] ?? null;
-    } catch (err) {
-      throw new RepositoryError(
-        "Failed to find subscription by stripe id",
-        "findSubscriptionByStripeId",
-        err
-      );
-    }
-  }
-
-  async createSubscription(data: NewSubscription): Promise<Subscription> {
-    try {
-      await this.db.insert(subscriptions).values(data);
-      const rows = await this.db
-        .select()
-        .from(subscriptions)
-        .where(eq(subscriptions.id, data.id))
+        .where(eq(subscriptions.id, id))
         .limit(1);
       if (!rows[0])
         throw new RepositoryError(
@@ -448,7 +449,7 @@ export class MemberRepository implements IMemberRepository {
 
   async updateSubscription(
     id: string,
-    data: Partial<NewSubscription>
+    data: Partial<Omit<Subscription, "id" | "site_id" | "created_at">>
   ): Promise<Subscription> {
     try {
       await this.db

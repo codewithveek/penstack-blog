@@ -7,7 +7,7 @@
 
 import { eq, and, sql, like } from "drizzle-orm";
 import type { DB } from "@cms/core/db/client";
-import { tags } from "@cms/core/db/schema";
+import { tags, postTags } from "@cms/core/db/schema";
 import type { Tag, NewTag } from "@cms/core/db/schema";
 import type {
   ITagRepository,
@@ -126,6 +126,33 @@ export class TagRepository implements ITagRepository {
         .where(and(eq(tags.site_id, siteId), eq(tags.id, id)));
     } catch (err) {
       throw new RepositoryError("Failed to delete tag", "delete", err);
+    }
+  }
+
+  async findByPost(postId: string): Promise<Tag[]> {
+    try {
+      const rows = await this.db
+        .select({
+          id: tags.id,
+          site_id: tags.site_id,
+          name: tags.name,
+          slug: tags.slug,
+          description: tags.description,
+          feature_image: tags.feature_image,
+          visibility: tags.visibility,
+          og_title: tags.og_title,
+          og_description: tags.og_description,
+          og_image: tags.og_image,
+          created_at: tags.created_at,
+          updated_at: tags.updated_at,
+        })
+        .from(postTags)
+        .innerJoin(tags, eq(postTags.tag_id, tags.id))
+        .where(eq(postTags.post_id, postId))
+        .orderBy(postTags.sort_order);
+      return rows as Tag[];
+    } catch (err) {
+      throw new RepositoryError("Failed to find tags by post", "findByPost", err);
     }
   }
 }

@@ -44,32 +44,22 @@ export function createRequireAdminAuth(
       const rawKey = authHeader.slice(7).trim();
       if (rawKey.length > 0) {
         try {
-          // findByHash requires us to locate the salt first — we do a
-          // constant-time two-phase lookup: first find the record by a
-          // SHA-256 preliminary hash, then re-verify with the stored salt.
-          // Phase 1: SHA-256(rawKey) without salt (for initial index lookup)
-          const prelimHash = crypto
+          // API keys are stored as SHA-256(rawKey) — 256-bit random keys have
+          // sufficient entropy without a salt. constant-time comparison prevents
+          // timing attacks per AGENTS.md §11.
+          const keyHash = crypto
             .createHash("sha256")
             .update(rawKey)
             .digest("hex");
-          const apiKey = await apiKeyRepo.findByHash(prelimHash);
+          const apiKey = await apiKeyRepo.findByHash(keyHash);
 
-          if (apiKey && apiKey.active) {
-            // Phase 2: constant-time re-verification with salt
-            const expectedHash = Buffer.from(
-              crypto
-                .createHash("sha256")
-                .update(rawKey + apiKey.key_salt)
-                .digest("hex")
-            );
-            const actualHash = Buffer.from(apiKey.key_hash);
-            const len = Math.min(expectedHash.length, actualHash.length);
-            const safeExpected = expectedHash.subarray(0, len);
-            const safeActual = actualHash.subarray(0, len);
-
+          if (apiKey && !apiKey.revoked_at) {
+            // Constant-time comparison as required by AGENTS.md §11
+            const expected = Buffer.from(keyHash, "hex");
+            const actual = Buffer.from(apiKey.key_hash, "hex");
             if (
-              safeExpected.length === safeActual.length &&
-              crypto.timingSafeEqual(safeExpected, safeActual)
+              expected.length === actual.length &&
+              crypto.timingSafeEqual(expected, actual)
             ) {
               c.set("userId", `api-key:${apiKey.id}`);
               c.set("role", apiKey.role as typeof c.var.role);

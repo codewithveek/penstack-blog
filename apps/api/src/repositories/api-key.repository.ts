@@ -6,10 +6,11 @@
  * Implements IApiKeyRepository.
  */
 
-import { eq, and, sql, desc } from "drizzle-orm";
+import crypto from "node:crypto";
+import { eq, and, sql, desc, isNull } from "drizzle-orm";
 import type { DB } from "@cms/core/db/client";
 import { apiKeys } from "@cms/core/db/schema";
-import type { ApiKey, NewApiKey } from "@cms/core/db/schema";
+import type { ApiKey } from "@cms/core/db/schema";
 import type {
   IApiKeyRepository,
   PaginatedResult,
@@ -37,24 +38,24 @@ export class ApiKeyRepository implements IApiKeyRepository {
     }
   }
 
-  async findByKeyHash(keyHash: string): Promise<ApiKey | null> {
+  async findByHash(keyHash: string): Promise<ApiKey | null> {
     try {
       const rows = await this.db
         .select()
         .from(apiKeys)
-        .where(and(eq(apiKeys.key_hash, keyHash), eq(apiKeys.active, true)))
+        .where(and(eq(apiKeys.key_hash, keyHash), isNull(apiKeys.revoked_at)))
         .limit(1);
       return rows[0] ?? null;
     } catch (err) {
       throw new RepositoryError(
         "Failed to find API key by hash",
-        "findByKeyHash",
+        "findByHash",
         err
       );
     }
   }
 
-  async findManyBySiteId(
+  async findMany(
     siteId: string,
     pagination: PaginationParams
   ): Promise<PaginatedResult<ApiKey>> {
@@ -85,16 +86,17 @@ export class ApiKeyRepository implements IApiKeyRepository {
     } catch (err) {
       throw new RepositoryError(
         "Failed to list API keys",
-        "findManyBySiteId",
+        "findMany",
         err
       );
     }
   }
 
-  async create(data: NewApiKey): Promise<ApiKey> {
+  async create(data: Omit<ApiKey, "id" | "created_at">): Promise<ApiKey> {
+    const id = crypto.randomUUID();
     try {
-      await this.db.insert(apiKeys).values(data);
-      const created = await this.findById(data.site_id, data.id);
+      await this.db.insert(apiKeys).values({ ...data, id } as typeof apiKeys.$inferInsert);
+      const created = await this.findById(data.site_id, id);
       if (!created)
         throw new RepositoryError("ApiKey not found after insert", "create");
       return created;
@@ -108,14 +110,14 @@ export class ApiKeyRepository implements IApiKeyRepository {
     try {
       await this.db
         .update(apiKeys)
-        .set({ active: false })
+        .set({ revoked_at: new Date() })
         .where(and(eq(apiKeys.site_id, siteId), eq(apiKeys.id, id)));
     } catch (err) {
       throw new RepositoryError("Failed to revoke API key", "revoke", err);
     }
   }
 
-  async recordLastUsed(id: string): Promise<void> {
+  async updateLastUsed(id: string): Promise<void> {
     try {
       await this.db
         .update(apiKeys)
@@ -123,8 +125,8 @@ export class ApiKeyRepository implements IApiKeyRepository {
         .where(eq(apiKeys.id, id));
     } catch (err) {
       throw new RepositoryError(
-        "Failed to record API key last used",
-        "recordLastUsed",
+        "Failed to update API key last used",
+        "updateLastUsed",
         err
       );
     }

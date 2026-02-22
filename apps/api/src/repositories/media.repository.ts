@@ -84,6 +84,26 @@ export class MediaRepository implements IMediaRepository {
     }
   }
 
+  async update(
+    siteId: string,
+    id: string,
+    data: Partial<NewMediaAsset>
+  ): Promise<MediaAsset> {
+    try {
+      await this.db
+        .update(mediaAssets)
+        .set(data)
+        .where(and(eq(mediaAssets.site_id, siteId), eq(mediaAssets.id, id)));
+      const updated = await this.findById(siteId, id);
+      if (!updated)
+        throw new RepositoryError("MediaAsset not found after update", "update");
+      return updated;
+    } catch (err) {
+      if (err instanceof RepositoryError) throw err;
+      throw new RepositoryError("Failed to update media asset", "update", err);
+    }
+  }
+
   async delete(siteId: string, id: string): Promise<void> {
     try {
       await this.db

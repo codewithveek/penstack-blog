@@ -57,7 +57,7 @@ export class MemberController {
     siteId: string,
     id: string,
     data: Partial<
-      Pick<Member, "name" | "bio" | "avatar_url" | "subscribed_to_emails">
+      Pick<Member, "name" | "note" | "avatar" | "subscribed">
     >
   ): Promise<Member> {
     return this.memberService.updateMember(siteId, id, data);
@@ -74,14 +74,16 @@ export class MemberController {
   async createCheckoutSession(
     siteId: string,
     memberId: string,
-    priceId: string,
+    tierId: string,
+    interval: "monthly" | "yearly",
     successUrl: string,
     cancelUrl: string
   ): Promise<{ url: string }> {
     return this.memberService.createCheckoutSession(
       siteId,
       memberId,
-      priceId,
+      tierId,
+      interval,
       successUrl,
       cancelUrl
     );

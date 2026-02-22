@@ -16,6 +16,7 @@ import type {
 import { RepositoryError } from "@cms/core/errors";
 
 export class TiDBSearchAdapter implements ISearchProvider {
+  readonly name = "tidb";
   constructor(private readonly db: DB) {}
 
   async index(documents: SearchIndexDocument[]): Promise<void> {

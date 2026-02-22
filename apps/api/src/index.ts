@@ -22,6 +22,7 @@ import { serve } from "@hono/node-server";
 import { loggerMiddleware } from "./middleware/logger.middleware";
 import { router } from "./routes/index";
 import { logger } from "./lib/logger";
+import { isAppError } from "@cms/core/errors";
 
 // ── App ───────────────────────────────────────────────────────────────────────
 
@@ -100,6 +101,14 @@ app.notFound((c) => {
 // ── Error handler ─────────────────────────────────────────────────────────────
 
 app.onError((err, c) => {
+  // Typed AppErrors (rate-limit, auth, validation, etc.) carry their own HTTP
+  // status — honour it here so they don't get swallowed as 500s.
+  if (isAppError(err)) {
+    return c.json(
+      { error: err.toJSON() },
+      err.httpStatus as 400 | 401 | 403 | 404 | 409 | 422 | 429 | 500
+    );
+  }
   logger.error("Unhandled error reached top-level handler", {
     method: c.req.method,
     path: c.req.path,

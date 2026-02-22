@@ -31,7 +31,7 @@ function writeLog(
     level,
     message,
     timestamp: new Date().toISOString(),
-    context,
+    ...(context !== undefined && { context }),
   };
 
   if (err != null) {
@@ -39,7 +39,7 @@ function writeLog(
     entry.error = {
       name: e.name,
       message: e.message,
-      stack: isDev ? e.stack : undefined,
+      ...(isDev && e.stack !== undefined ? { stack: e.stack } : {}),
     };
   }
 

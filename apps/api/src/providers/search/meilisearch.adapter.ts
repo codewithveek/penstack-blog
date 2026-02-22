@@ -14,6 +14,7 @@ import type {
 import { ProviderError } from "@cms/core/errors";
 
 export class MeilisearchAdapter implements ISearchProvider {
+  readonly name = "meilisearch";
   private readonly client: MeiliSearch;
 
   constructor(host: string, apiKey: string) {

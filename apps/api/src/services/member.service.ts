@@ -27,7 +27,6 @@ import {
   ValidationError,
   ForbiddenError,
 } from "@cms/core/errors";
-import { generateSlug } from "@cms/core/utils/permalink";
 
 const MAGIC_LINK_EXPIRY_MINUTES = 15;
 
@@ -55,13 +54,7 @@ export class MemberService {
         site_id: siteId,
         email,
         name: email.split("@")[0] ?? email,
-        slug: await this.generateUniqueSlug(
-          siteId,
-          email.split("@")[0] ?? "member"
-        ),
-        status: "free",
-        email_count: 0,
-        email_opened_count: 0,
+        status: "active",
         created_at: new Date(),
         updated_at: new Date(),
       });
@@ -77,21 +70,13 @@ export class MemberService {
       Date.now() + MAGIC_LINK_EXPIRY_MINUTES * 60 * 1000
     );
 
-    await this.memberRepo.createAuthToken({
-      id: crypto.randomUUID(),
-      site_id: siteId,
-      member_id: member.id,
-      token_hash: tokenHash,
-      expires_at: expiresAt,
-      used: false,
-      created_at: new Date(),
-    });
+    await this.memberRepo.createAuthToken(member.id, tokenHash, expiresAt);
 
     const magicLinkUrl = `${siteUrl}/members/auth?token=${rawToken}&redirect=${encodeURIComponent(redirectUrl)}`;
 
     await this.emailProvider.send({
-      from: `${siteName} <noreply@${new URL(siteUrl).hostname}>`,
-      to: email,
+      from: { email: `noreply@${new URL(siteUrl).hostname}`, name: siteName },
+      to: { email },
       subject: `Sign in to ${siteName}`,
       html: `
         <p>Click the link below to sign in to ${siteName}. This link expires in ${MAGIC_LINK_EXPIRY_MINUTES} minutes.</p>
@@ -110,10 +95,7 @@ export class MemberService {
       .createHash("sha256")
       .update(rawToken)
       .digest("hex");
-    const authToken = await this.memberRepo.findValidAuthToken(
-      siteId,
-      tokenHash
-    );
+    const authToken = await this.memberRepo.findValidAuthToken(tokenHash);
 
     if (!authToken) {
       throw new UnauthenticatedError("Invalid or expired magic link");
@@ -129,14 +111,11 @@ export class MemberService {
     const sessionToken = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
-    await this.memberRepo.createMemberSession({
-      id: crypto.randomUUID(),
-      site_id: siteId,
-      member_id: member.id,
-      session_token: sessionToken,
-      expires_at: expiresAt,
-      created_at: new Date(),
-    });
+    await this.memberRepo.createMemberSession(
+      member.id,
+      sessionToken,
+      expiresAt
+    );
 
     return { member, sessionToken };
   }
@@ -166,9 +145,7 @@ export class MemberService {
   async updateMember(
     siteId: string,
     id: string,
-    data: Partial<
-      Pick<NewMember, "name" | "bio" | "avatar_url" | "subscribed_to_emails">
-    >
+    data: Partial<Pick<NewMember, "name" | "note" | "avatar" | "subscribed">>
   ): Promise<Member> {
     const member = await this.memberRepo.findById(siteId, id);
     if (!member) throw new NotFoundError("Member", id);
@@ -204,11 +181,11 @@ export class MemberService {
       site_id: siteId,
       name: data.name,
       description: data.description ?? null,
-      monthly_price: data.monthlyPrice,
-      yearly_price: data.yearlyPrice,
+      monthly_price_cents: data.monthlyPrice,
+      yearly_price_cents: data.yearlyPrice,
       currency: data.currency,
-      stripe_price_id_monthly: data.stripePriceIdMonthly,
-      stripe_price_id_yearly: data.stripePriceIdYearly,
+      stripe_monthly_price_id: data.stripePriceIdMonthly,
+      stripe_yearly_price_id: data.stripePriceIdYearly,
       active: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -220,20 +197,34 @@ export class MemberService {
   async createCheckoutSession(
     siteId: string,
     memberId: string,
-    priceId: string,
+    tierId: string,
+    interval: "monthly" | "yearly",
     successUrl: string,
     cancelUrl: string
   ): Promise<{ url: string }> {
     const member = await this.memberRepo.findById(siteId, memberId);
     if (!member) throw new NotFoundError("Member", memberId);
 
+    const tierList = await this.memberRepo.findTiers(siteId);
+    const tier = tierList.find((t) => t.id === tierId);
+    if (!tier) throw new NotFoundError("Tier", tierId);
+
+    const priceId =
+      interval === "monthly"
+        ? tier.stripe_monthly_price_id
+        : tier.stripe_yearly_price_id;
+    if (!priceId)
+      throw new ValidationError("Tier does not have a price configured for this interval");
+
     const session = await this.paymentProvider.createCheckoutSession({
-      customerId: member.stripe_customer_id ?? undefined,
-      customerEmail: member.stripe_customer_id ? undefined : member.email,
+      siteId,
+      memberId,
+      memberEmail: member.email,
+      tierId,
+      tierName: tier.name,
       priceId,
       successUrl,
       cancelUrl,
-      metadata: { site_id: siteId, member_id: memberId },
     });
 
     return { url: session.url };
@@ -250,40 +241,31 @@ export class MemberService {
     );
 
     switch (event.type) {
-      case "checkout.completed": {
-        // Link stripe customer to member
-        const memberId = event.metadata["member_id"];
-        if (memberId && event.customerId) {
-          await this.memberRepo.update(siteId, memberId, {
-            stripe_customer_id: event.customerId,
-            status: "paid",
-          });
-        }
-        break;
-      }
+      case "subscription.created":
       case "subscription.updated": {
-        const sub = await this.memberRepo.findSubscriptionByStripeId(
-          event.subscriptionId ?? ""
+        const sub = await this.memberRepo.findSubscriptionByProviderId(
+          event.providerSubscriptionId
         );
         if (sub) {
           await this.memberRepo.updateSubscription(sub.id, {
             status: event.status as Subscription["status"],
             current_period_end: event.currentPeriodEnd ?? null,
+            cancel_at_period_end: event.cancelAtPeriodEnd ?? false,
           });
         }
         break;
       }
-      case "subscription.cancelled": {
-        const sub = await this.memberRepo.findSubscriptionByStripeId(
-          event.subscriptionId ?? ""
+      case "subscription.deleted": {
+        const sub = await this.memberRepo.findSubscriptionByProviderId(
+          event.providerSubscriptionId
         );
         if (sub) {
           await this.memberRepo.updateSubscription(sub.id, {
             status: "canceled",
+            canceled_at: new Date(),
           });
-          // Downgrade member to free
           await this.memberRepo.update(siteId, sub.member_id, {
-            status: "free",
+            status: "inactive",
           });
         }
         break;
@@ -291,21 +273,4 @@ export class MemberService {
     }
   }
 
-  // ─── Private helpers ─────────────────────────────────────────────────────────
-
-  private async generateUniqueSlug(
-    siteId: string,
-    base: string
-  ): Promise<string> {
-    let candidate = generateSlug(base);
-    let attempt = 0;
-    while (true) {
-      const existing = await this.memberRepo
-        .findMemberSession(candidate)
-        .catch(() => null);
-      if (!existing) return candidate;
-      attempt++;
-      candidate = `${generateSlug(base)}-${attempt}`;
-    }
-  }
 }

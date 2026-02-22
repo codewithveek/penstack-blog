@@ -64,9 +64,9 @@ export class MediaService {
     const category = classifyMime(detectedMime);
 
     if (!category) {
-      throw new ValidationError({
-        file: [`File type ${detectedMime} is not allowed`],
-      });
+      throw new ValidationError(
+        `File type ${detectedMime} is not allowed`
+      );
     }
 
     const ext = path.extname(originalFilename).toLowerCase();
@@ -88,9 +88,10 @@ export class MediaService {
       // result.id is the provider's canonical file identifier (S3/R2 object key
       // or Cloudinary public_id) — used for deletion and URL generation.
       storage_key: result.id,
-      filename: originalFilename,
+      // TODO-GENERATED: wrong column name
+      original_filename: originalFilename,
       mime_type: detectedMime,
-      byte_size: result.size,
+      size_bytes: result.size ?? null,
       width: result.width ?? null,
       height: result.height ?? null,
       alt_text: null,
@@ -128,14 +129,8 @@ export class MediaService {
     if (!asset) throw new NotFoundError("MediaAsset", id);
 
     // Remove from provider storage first (uses the provider's canonical ID)
-    await this.storageProvider.delete(asset.storage_key);
+    await this.storageProvider.delete(asset.provider_id ?? "");
     await this.mediaRepo.delete(siteId, id);
   }
 
-  async getStorageUsage(
-    siteId: string
-  ): Promise<{ bytes: number; mb: number }> {
-    const bytes = await this.mediaRepo.getTotalStorageBytes(siteId);
-    return { bytes, mb: Math.round((bytes / 1024 / 1024) * 100) / 100 };
-  }
 }

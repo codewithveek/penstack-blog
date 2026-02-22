@@ -8,27 +8,36 @@
 import { Resend } from "resend";
 import type {
   IEmailProvider,
-  EmailMessage,
-  BatchEmailMessage,
+  SendEmailOptions,
+  SendEmailResult,
+  EmailAddress,
 } from "@cms/core/types/providers";
 import { ProviderError } from "@cms/core/errors";
 
+function formatAddress(addr: EmailAddress): string {
+  return addr.name ? `${addr.name} <${addr.email}>` : addr.email;
+}
+
 export class ResendEmailAdapter implements IEmailProvider {
+  readonly name = "resend";
   private readonly client: Resend;
 
   constructor(apiKey: string) {
     this.client = new Resend(apiKey);
   }
 
-  async send(message: EmailMessage): Promise<void> {
-    const { error } = await this.client.emails.send({
-      from: message.from,
-      to: Array.isArray(message.to) ? message.to : [message.to],
-      subject: message.subject,
-      html: message.html,
-      text: message.text,
-      reply_to: message.replyTo,
-      tags: message.tags?.map((t) => ({ name: t.name, value: t.value })),
+  async send(options: SendEmailOptions): Promise<SendEmailResult> {
+    const toAddresses = Array.isArray(options.to) ? options.to : [options.to];
+    const { data, error } = await this.client.emails.send({
+      from: formatAddress(options.from),
+      to: toAddresses.map(formatAddress),
+      subject: options.subject,
+      html: options.html,
+      text: options.text,
+      replyTo: options.replyTo ? formatAddress(options.replyTo) : undefined,
+      tags: options.tags
+        ? Object.entries(options.tags).map(([name, value]) => ({ name, value }))
+        : undefined,
     });
 
     if (error) {
@@ -37,18 +46,23 @@ export class ResendEmailAdapter implements IEmailProvider {
         `Failed to send email: ${error.message}`
       );
     }
+
+    return { messageId: data?.id ?? "" };
   }
 
-  async sendBatch(messages: BatchEmailMessage[]): Promise<void> {
-    const { error } = await this.client.batch.send(
-      messages.map((m) => ({
-        from: m.from,
-        to: Array.isArray(m.to) ? m.to : [m.to],
-        subject: m.subject,
-        html: m.html,
-        text: m.text,
-        reply_to: m.replyTo,
-      }))
+  async sendBatch(messages: SendEmailOptions[]): Promise<SendEmailResult[]> {
+    const { data, error } = await this.client.batch.send(
+      messages.map((m) => {
+        const toAddresses = Array.isArray(m.to) ? m.to : [m.to];
+        return {
+          from: formatAddress(m.from),
+          to: toAddresses.map(formatAddress),
+          subject: m.subject,
+          html: m.html,
+          text: m.text,
+          replyTo: m.replyTo ? formatAddress(m.replyTo) : undefined,
+        };
+      })
     );
 
     if (error) {
@@ -57,5 +71,7 @@ export class ResendEmailAdapter implements IEmailProvider {
         `Failed to send batch emails: ${error.message}`
       );
     }
+
+    return (data ?? []).map((d) => ({ messageId: d.id ?? "" }));
   }
 }

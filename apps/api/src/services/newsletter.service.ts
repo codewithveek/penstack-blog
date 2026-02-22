@@ -2,7 +2,6 @@
  * apps/api/src/services/newsletter.service.ts
  */
 
-import crypto from "node:crypto";
 import type {
   INewsletterRepository,
   IMemberRepository,
@@ -32,10 +31,6 @@ export class NewsletterService {
     return newsletter;
   }
 
-  async getDefault(siteId: string): Promise<Newsletter | null> {
-    return this.newsletterRepo.findDefault(siteId);
-  }
-
   async listNewsletters(
     siteId: string,
     pagination: PaginationParams
@@ -57,18 +52,24 @@ export class NewsletterService {
       (await this.newsletterRepo.findMany(siteId, { page: 1, limit: 1 })).meta
         .total === 0;
 
+    const slug = input.name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .slice(0, 100);
+
     return this.newsletterRepo.create({
-      id: crypto.randomUUID(),
       site_id: siteId,
       name: input.name,
+      slug,
       description: input.description ?? null,
-      sender_name: input.senderName,
-      sender_email: input.senderEmail,
-      reply_to_email: input.replyToEmail ?? input.senderEmail,
-      status: "active",
-      is_default: isFirst,
-      created_at: new Date(),
-      updated_at: new Date(),
+      sender_name: input.senderName ?? null,
+      sender_email: input.senderEmail ?? null,
+      reply_to_email: input.replyToEmail ?? input.senderEmail ?? null,
+      active: true,
+      subscribe_on_signup: isFirst,
+      header_html: null,
+      footer_html: null,
     });
   }
 
@@ -106,14 +107,11 @@ export class NewsletterService {
     newsletterId: string,
     memberId: string
   ): Promise<void> {
-    await this.newsletterRepo.subscribeMember({
-      id: crypto.randomUUID(),
-      site_id: siteId,
-      member_id: memberId,
-      newsletter_id: newsletterId,
-      subscribed: true,
-      created_at: new Date(),
-    });
+    await this.memberRepo.upsertMemberNewsletterSubscription(
+      memberId,
+      newsletterId,
+      true
+    );
   }
 
   async unsubscribeEmail(
@@ -121,7 +119,11 @@ export class NewsletterService {
     newsletterId: string,
     memberId: string
   ): Promise<void> {
-    await this.newsletterRepo.unsubscribeMember(siteId, memberId, newsletterId);
+    await this.memberRepo.upsertMemberNewsletterSubscription(
+      memberId,
+      newsletterId,
+      false
+    );
   }
 
   async sendTestEmail(
@@ -135,8 +137,8 @@ export class NewsletterService {
     if (!newsletter) throw new NotFoundError("Newsletter", newsletterId);
 
     await this.emailProvider.send({
-      from: `${newsletter.sender_name} <${newsletter.sender_email}>`,
-      to: toEmail,
+      from: { email: newsletter.sender_email ?? `noreply@cms`, name: newsletter.sender_name ?? newsletter.name },
+      to: { email: toEmail },
       subject: `[TEST] ${subject}`,
       html,
     });

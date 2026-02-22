@@ -50,10 +50,4 @@ export class MediaController {
   ): Promise<MediaAsset> {
     return this.mediaService.updateMedia(siteId, id, data);
   }
-
-  async getStorageUsage(
-    siteId: string
-  ): Promise<{ bytes: number; mb: number }> {
-    return this.mediaService.getStorageUsage(siteId);
-  }
 }
