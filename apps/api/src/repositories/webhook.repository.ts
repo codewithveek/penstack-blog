@@ -78,6 +78,39 @@ export class WebhookRepository implements IWebhookRepository {
     }
   }
 
+  async findMany(
+    siteId: string,
+    params: PaginationParams
+  ): Promise<PaginatedResult<Webhook>> {
+    const page = params.page ?? 1;
+    const limit = Math.min(params.limit ?? 20, 100);
+    const offset = (page - 1) * limit;
+
+    try {
+      const [rows, [countRow]] = await Promise.all([
+        this.db
+          .select()
+          .from(webhooks)
+          .where(eq(webhooks.site_id, siteId))
+          .orderBy(desc(webhooks.created_at))
+          .limit(limit)
+          .offset(offset),
+        this.db
+          .select({ count: sql<number>`count(*)` })
+          .from(webhooks)
+          .where(eq(webhooks.site_id, siteId)),
+      ]);
+
+      const total = countRow?.count ?? 0;
+      return {
+        data: rows.map((r) => this.decryptWebhook(r)),
+        meta: { total, page, limit, pages: Math.ceil(total / limit) },
+      };
+    } catch (err) {
+      throw new RepositoryError("Failed to list webhooks", "findMany", err);
+    }
+  }
+
   async findByEvent(siteId: string, event: string): Promise<Webhook[]> {
     try {
       const rows = await this.db

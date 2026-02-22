@@ -196,6 +196,20 @@ export interface IMemberRepository {
     subscribed: boolean
   ): Promise<void>;
   getMemberNewsletterSubscriptions(memberId: string): Promise<string[]>;
+  /** Create a new HTTP-only member session (7-day TTL). */
+  createMemberSession(
+    memberId: string,
+    sessionToken: string,
+    expiresAt: Date,
+    ipAddress?: string,
+    userAgent?: string
+  ): Promise<{ id: string; session_token: string; expires_at: Date }>;
+  /** Find a session by its raw token. Returns null if expired or not found. */
+  findMemberSession(
+    token: string
+  ): Promise<{ id: string; member_id: string; expires_at: Date } | null>;
+  /** Delete a session (logout). */
+  deleteMemberSession(token: string): Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -284,7 +298,8 @@ export interface IWebhookRepository {
     siteId: string,
     params: PaginationParams
   ): Promise<PaginatedResult<Webhook>>;
-  findActiveByEvent(siteId: string, event: string): Promise<Webhook[]>;
+  findBySiteId(siteId: string): Promise<Webhook[]>;
+  findByEvent(siteId: string, event: string): Promise<Webhook[]>;
   create(data: Omit<Webhook, "id" | "created_at">): Promise<Webhook>;
   update(
     siteId: string,
@@ -295,11 +310,11 @@ export interface IWebhookRepository {
   createDelivery(
     data: Omit<WebhookDelivery, "id" | "created_at">
   ): Promise<WebhookDelivery>;
-  updateDelivery(
-    id: string,
-    data: Partial<WebhookDelivery>
-  ): Promise<WebhookDelivery>;
-  findPendingDeliveries(): Promise<WebhookDelivery[]>;
+  findDeliveries(
+    siteId: string,
+    webhookId: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResult<WebhookDelivery>>;
 }
 
 // ---------------------------------------------------------------------------

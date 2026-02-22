@@ -94,12 +94,12 @@ export class PostService {
     input: {
       title: string;
       type?: "post" | "page";
-      slug?: string;
-      lexical?: string;
-      html?: string;
-      excerpt?: string;
-      featureImage?: string;
-      visibility?: NewPost["visibility"];
+      slug?: string | undefined;
+      lexical?: string | undefined;
+      html?: string | undefined;
+      excerpt?: string | undefined;
+      featureImage?: string | undefined;
+      visibility?: NewPost["visibility"] | undefined;
       authorId: string;
     }
   ): Promise<PostWithAuthorsAndTags> {
@@ -123,7 +123,7 @@ export class PostService {
       lexical: input.lexical ?? null,
       html: input.html ?? null,
       excerpt: input.excerpt ?? null,
-      feature_image: input.featureImage ?? null,
+      featured_image: input.featureImage ?? null,
       published_at: null,
       updated_at: now,
       created_at: now,

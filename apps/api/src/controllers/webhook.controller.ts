@@ -12,6 +12,13 @@ import type {
 export class WebhookController {
   constructor(private readonly webhookService: WebhookService) {}
 
+  async list(
+    siteId: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResult<Webhook>> {
+    return this.webhookService.list(siteId, pagination);
+  }
+
   async getById(siteId: string, id: string): Promise<Webhook> {
     return this.webhookService.getById(siteId, id);
   }

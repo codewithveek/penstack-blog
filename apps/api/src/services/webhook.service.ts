@@ -25,6 +25,13 @@ export interface WebhookEventPayload {
 export class WebhookService {
   constructor(private readonly webhookRepo: IWebhookRepository) {}
 
+  async list(
+    siteId: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResult<Webhook>> {
+    return this.webhookRepo.findMany(siteId, pagination);
+  }
+
   async getById(siteId: string, id: string): Promise<Webhook> {
     const hook = await this.webhookRepo.findById(siteId, id);
     if (!hook) throw new NotFoundError("Webhook", id);
