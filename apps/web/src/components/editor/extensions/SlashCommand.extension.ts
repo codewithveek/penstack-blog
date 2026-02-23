@@ -1,8 +1,14 @@
 import { Extension } from "@tiptap/core";
-import Suggestion, { type SuggestionOptions } from "@tiptap/suggestion";
+import Suggestion, {
+  type SuggestionOptions,
+  type SuggestionProps,
+  type SuggestionKeyDownProps,
+} from "@tiptap/suggestion";
 import { ReactRenderer } from "@tiptap/react";
 import tippy, { type Instance as TippyInstance } from "tippy.js";
 import { SlashCommandList, type SlashCommandItem } from "../SlashCommandList";
+// Import so TypeScript picks up the Commands<> module augmentation from ImageBlock
+import type {} from "./ImageBlock.extension";
 
 const COMMANDS: SlashCommandItem[] = [
   {
@@ -69,6 +75,19 @@ const COMMANDS: SlashCommandItem[] = [
       editor.chain().focus().deleteRange(range).setHorizontalRule().run();
     },
   },
+  {
+    title: "Image",
+    icon: "🖼",
+    description: "Insert an image block",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setImageBlock({ src: "", alt: "", caption: "" })
+        .run();
+    },
+  },
 ];
 
 export const SlashCommandExtension = Extension.create({
@@ -97,17 +116,7 @@ export const SlashCommandExtension = Extension.create({
           let popup: TippyInstance[] | null = null;
 
           return {
-            onStart(
-              props: Parameters<
-                NonNullable<SuggestionOptions["render"]>
-              >[0] extends () => infer R
-                ? R extends { onStart: infer S }
-                  ? S extends (props: infer P) => void
-                    ? P
-                    : never
-                  : never
-                : never
-            ) {
+            onStart(props: SuggestionProps<SlashCommandItem>) {
               component = new ReactRenderer(SlashCommandList, {
                 props,
                 editor: props.editor,
@@ -123,14 +132,15 @@ export const SlashCommandExtension = Extension.create({
                 placement: "bottom-start",
               });
             },
-            onUpdate(props: unknown) {
+            onUpdate(props: SuggestionProps<SlashCommandItem>) {
               component?.updateProps(props);
-              const p = props as { clientRect?: () => DOMRect };
-              if (p.clientRect) {
-                popup?.[0]?.setProps({ getReferenceClientRect: p.clientRect });
+              if (props.clientRect) {
+                popup?.[0]?.setProps({
+                  getReferenceClientRect: props.clientRect as () => DOMRect,
+                });
               }
             },
-            onKeyDown(props: { event: KeyboardEvent }) {
+            onKeyDown(props: SuggestionKeyDownProps) {
               if (props.event.key === "Escape") {
                 popup?.[0]?.hide();
                 return true;
@@ -153,7 +163,7 @@ export const SlashCommandExtension = Extension.create({
     return [
       Suggestion({
         editor: this.editor,
-        ...(this.options.suggestion as SuggestionOptions),
+        ...(this.options.suggestion as Omit<SuggestionOptions, "editor">),
       }),
     ];
   },

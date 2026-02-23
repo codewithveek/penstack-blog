@@ -20,11 +20,13 @@
   },
   "dependencies": {
     "drizzle-orm": "latest",
-    "mysql2": "latest",
     "zod": "latest",
     "bcryptjs": "latest",
     "date-fns": "latest",
     "uuid": "latest"
+  },
+  "peerDependencies": {
+    "mysql2": "*"
   },
   "devDependencies": {
     "@types/bcryptjs": "latest",

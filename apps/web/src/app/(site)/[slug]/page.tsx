@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import type { ThemePageProps } from "@cms/core/types/theme";
+import type { ThemePageProps, ThemePostContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
 import { headers } from "next/headers";
@@ -9,7 +9,7 @@ export const revalidate = 60;
 
 interface PostData {
   site: ThemePageProps["site"];
-  post: unknown;
+  post: ThemePostContext;
   isPage: boolean;
   visibility: string;
 }

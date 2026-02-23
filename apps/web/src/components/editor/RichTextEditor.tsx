@@ -14,6 +14,8 @@ import { common, createLowlight } from "lowlight";
 import { useEffect, useCallback } from "react";
 import { EditorToolbar } from "./EditorToolbar";
 import { SlashCommandExtension } from "./extensions/SlashCommand.extension";
+import { AutosaveExtension } from "./extensions/Autosave.extension";
+import { ImageBlockExtension } from "./extensions/ImageBlock.extension";
 import "./editor.css";
 
 const lowlight = createLowlight(common);
@@ -21,12 +23,16 @@ const lowlight = createLowlight(common);
 interface RichTextEditorProps {
   content?: object;
   onChange?: (json: object) => void;
+  onSave?: (json: object) => void;
+  autosave?: boolean;
   editable?: boolean;
 }
 
 export function RichTextEditor({
   content,
   onChange,
+  onSave,
+  autosave = true,
   editable = true,
 }: RichTextEditorProps) {
   const handleUpdate = useCallback(
@@ -60,9 +66,15 @@ export function RichTextEditor({
       Typography,
       CharacterCount,
       CodeBlockLowlight.configure({ lowlight }),
+      ImageBlockExtension,
       SlashCommandExtension,
+      AutosaveExtension.configure({
+        enabled: autosave && !!onSave,
+        onSave: onSave ?? (() => undefined),
+        delay: 2000,
+      }),
     ],
-    content: content && Object.keys(content).length > 0 ? content : undefined,
+    ...(content && Object.keys(content).length > 0 ? { content } : {}),
     editable,
     onUpdate: handleUpdate,
     editorProps: {
@@ -78,7 +90,7 @@ export function RichTextEditor({
     if (!editor || !content || Object.keys(content).length === 0) return;
     const current = editor.getJSON();
     if (JSON.stringify(current) !== JSON.stringify(content)) {
-      editor.commands.setContent(content, false);
+      editor.commands.setContent(content);
     }
     // Only run when content prop changes from outside
     // eslint-disable-next-line react-hooks/exhaustive-deps

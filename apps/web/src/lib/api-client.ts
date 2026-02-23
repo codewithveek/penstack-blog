@@ -60,7 +60,7 @@ async function request<T>(
       "Content-Type": "application/json",
       ...(headers as Record<string, string> | undefined),
     },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: body !== undefined ? JSON.stringify(body) : null,
   });
 
   if (!res.ok) {
@@ -89,7 +89,9 @@ async function request<T>(
 
 export const api = {
   get<T>(path: string, params?: RequestOptions["params"]): Promise<T> {
-    return request<T>(path, { method: "GET", params });
+    return params
+      ? request<T>(path, { method: "GET", params })
+      : request<T>(path, { method: "GET" });
   },
   post<T>(path: string, body?: unknown): Promise<T> {
     return request<T>(path, { method: "POST", body });

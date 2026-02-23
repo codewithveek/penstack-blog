@@ -9,6 +9,8 @@ interface SiteRendererProps {
   site: ThemePageProps["site"];
   context: ThemeContext;
   pagination?: ThemePageProps["pagination"];
+  /** Active theme slug — defaults to "default" */
+  themeName?: string;
 }
 
 // Map route type → manifest route key
@@ -25,8 +27,8 @@ export async function SiteRenderer({
   site,
   context,
   pagination,
+  themeName = "default",
 }: SiteRendererProps) {
-  const themeName = site.activeTheme ?? "default";
   const manifest = getThemeManifest(themeName);
 
   if (!manifest) {
@@ -59,15 +61,14 @@ export async function SiteRenderer({
   // Build the request context from headers (minimal for SSR)
   const request: ThemePageProps["request"] = {
     url: "/",
-    path: "/",
-    params: {},
-    query: {},
+    pathname: "/",
+    searchParams: {},
   };
 
   const props: ThemePageProps = {
     site,
     context,
-    pagination,
+    ...(pagination !== undefined ? { pagination } : {}),
     request,
   };
 

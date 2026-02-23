@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import type { ThemePageProps } from "@cms/core/types/theme";
+import type { ThemePageProps, ThemePostContext, ThemeAuthorContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
 
@@ -7,8 +7,8 @@ export const revalidate = 60;
 
 interface AuthorData {
   site: ThemePageProps["site"];
-  author: unknown;
-  posts: unknown[];
+  author: ThemeAuthorContext;
+  posts: ThemePostContext[];
   pagination: ThemePageProps["pagination"];
 }
 

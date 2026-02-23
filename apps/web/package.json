@@ -47,10 +47,12 @@
     "tailwind-merge": "latest",
     "tippy.js": "latest",
     "zod": "latest",
+    "lodash-es": "latest",
     "zustand": "latest"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
+    "@types/lodash-es": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

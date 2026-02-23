@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import type { ThemePageProps } from "@cms/core/types/theme";
+import type { ThemePageProps, ThemePostContext, ThemeTagContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
 
@@ -7,8 +7,8 @@ export const revalidate = 60;
 
 interface TagData {
   site: ThemePageProps["site"];
-  tag: unknown;
-  posts: unknown[];
+  tag: ThemeTagContext;
+  posts: ThemePostContext[];
   pagination: ThemePageProps["pagination"];
 }
 
