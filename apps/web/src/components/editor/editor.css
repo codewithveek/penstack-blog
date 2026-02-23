@@ -1,0 +1,83 @@
+.editor-wrapper .ProseMirror {
+  outline: none;
+}
+
+.editor-wrapper .ProseMirror p.is-editor-empty:first-child::before {
+  color: #9ca3af;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.editor-wrapper .ProseMirror pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.editor-wrapper .ProseMirror pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.editor-wrapper .ProseMirror blockquote {
+  border-left: 4px solid #6366f1;
+  padding-left: 1rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.editor-wrapper .ProseMirror img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+.editor-wrapper .ProseMirror a {
+  color: #6366f1;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Slash command dropdown */
+.slash-command-menu {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+  width: 220px;
+  z-index: 50;
+}
+
+.slash-command-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #374151;
+  transition: background 0.1s;
+}
+
+.slash-command-item:hover,
+.slash-command-item.is-selected {
+  background: #f5f3ff;
+  color: #6366f1;
+}
+
+.slash-command-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  background: #f3f4f6;
+  font-size: 1rem;
+  flex-shrink: 0;
+}

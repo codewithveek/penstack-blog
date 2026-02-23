@@ -1,0 +1,21 @@
+{
+  "name": "@cms/emails",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./templates/*": "./templates/*.tsx",
+    "./templates": "./templates/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-email/components": "latest",
+    "react": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "typescript": "latest"
+  }
+}

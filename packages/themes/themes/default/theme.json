@@ -1,0 +1,20 @@
+/**
+ * packages/themes/themes/default/theme.json
+ *
+ * Default theme manifest. Loaded by the theme engine at startup.
+ */
+{
+  "slug": "default",
+  "name": "Default",
+  "author": "CMS Platform",
+  "version": "1.0.0",
+  "stylesheet": "styles/theme.css",
+  "routes": {
+    "index": { "component": "pages/Index.tsx" },
+    "post": { "component": "pages/Post.tsx" },
+    "page": { "component": "pages/Page.tsx" },
+    "tag": { "component": "pages/Tag.tsx" },
+    "author": { "component": "pages/Author.tsx" },
+    "archive": { "component": "pages/Archive.tsx" }
+  }
+}

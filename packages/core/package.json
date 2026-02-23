@@ -19,18 +19,18 @@
     "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.1",
-    "mysql2": "^3.10.3",
-    "zod": "^4.3.5",
-    "bcryptjs": "^2.4.3",
-    "date-fns": "^3.6.0",
-    "uuid": "^11.0.0"
+    "drizzle-orm": "latest",
+    "mysql2": "latest",
+    "zod": "latest",
+    "bcryptjs": "latest",
+    "date-fns": "latest",
+    "uuid": "latest"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/uuid": "^10.0.0",
-    "drizzle-kit": "^0.31.8",
-    "tsx": "^4.19.2",
-    "typescript": "^5"
+    "@types/bcryptjs": "latest",
+    "@types/uuid": "latest",
+    "drizzle-kit": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
   }
 }

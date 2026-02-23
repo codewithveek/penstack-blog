@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@cms/core/*": ["../core/src/*"],
+      "@cms/themes/engine": ["./src/engine/index.ts"],
+      "@cms/themes/default": ["./themes/default/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "themes/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
