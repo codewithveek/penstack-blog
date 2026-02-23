@@ -125,6 +125,20 @@ app.onError((err, c) => {
   );
 });
 
+// ── Background workers ────────────────────────────────────────────────────────
+
+const redisUrl = process.env.REDIS_URL;
+if (redisUrl && process.env.ENABLE_WORKERS !== "false") {
+  import("./workers/index").then(({ startAllWorkers }) => {
+    startAllWorkers(redisUrl);
+    logger.info("Background workers started");
+  }).catch((err) => {
+    logger.error("Failed to start background workers", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+  });
+}
+
 // ── Start server ──────────────────────────────────────────────────────────────
 
 const port = parseInt(process.env.API_PORT ?? "4000", 10);

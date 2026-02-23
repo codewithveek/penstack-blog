@@ -50,6 +50,9 @@ import { MediaService } from "./services/media.service";
 import { SettingsService } from "./services/settings.service";
 import { WebhookService } from "./services/webhook.service";
 import { SetupService } from "./services/setup.service";
+import { RedirectService } from "./services/redirect.service";
+import { TierService } from "./services/tier.service";
+import { AuthSettingsService } from "./services/auth-settings.service";
 
 // ── Controllers ─────────────────────────────────────────────────────────────
 import { PostController } from "./controllers/post.controller";
@@ -61,6 +64,9 @@ import { SettingsController } from "./controllers/settings.controller";
 import { WebhookController } from "./controllers/webhook.controller";
 import { UserController } from "./controllers/user.controller";
 import { SetupController } from "./controllers/setup.controller";
+import { RedirectController } from "./controllers/redirect.controller";
+import { TierController } from "./controllers/tier.controller";
+import { AuthSettingsController } from "./controllers/auth-settings.controller";
 
 // ── Middleware factories ─────────────────────────────────────────────────────
 import { createSiteResolverMiddleware } from "./middleware/site-resolver.middleware";
@@ -125,6 +131,10 @@ const postService = new PostService(
   cache
 );
 
+const redirectService = new RedirectService(redirectRepo, cache);
+const tierService = new TierService(memberRepo);
+const authSettingsService = new AuthSettingsService(authSettingsRepo);
+
 // Media service gets storage lazily
 async function getMediaService() {
   const storage = await getStorage();
@@ -148,6 +158,9 @@ const settingsController = new SettingsController(settingsService);
 const webhookController = new WebhookController(webhookService);
 const userController = new UserController(userService);
 const setupController = new SetupController(setupService);
+const redirectController = new RedirectController(redirectService);
+const tierController = new TierController(tierService);
+const authSettingsController = new AuthSettingsController(authSettingsService);
 
 // Media controller is async (storage provider)
 async function getMediaController() {
@@ -188,6 +201,9 @@ export {
   memberService,
   postService,
   setupService,
+  redirectService,
+  tierService,
+  authSettingsService,
   // Async helpers
   getMediaController,
   // Controllers
@@ -199,6 +215,9 @@ export {
   webhookController,
   userController,
   setupController,
+  redirectController,
+  tierController,
+  authSettingsController,
   // Middleware
   siteResolverMiddleware,
   requireAdminAuth,

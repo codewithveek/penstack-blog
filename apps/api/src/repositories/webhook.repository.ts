@@ -208,6 +208,24 @@ export class WebhookRepository implements IWebhookRepository {
     }
   }
 
+  async updateDelivery(
+    id: string,
+    data: Partial<Omit<WebhookDelivery, "id" | "webhook_id" | "created_at">>
+  ): Promise<void> {
+    try {
+      await this.db
+        .update(webhookDeliveries)
+        .set(data)
+        .where(eq(webhookDeliveries.id, id));
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to update webhook delivery",
+        "updateDelivery",
+        err
+      );
+    }
+  }
+
   async findDeliveries(
     siteId: string,
     webhookId: string,

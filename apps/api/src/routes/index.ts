@@ -24,6 +24,15 @@ import { createSettingsHandler } from "../handlers/settings.handler";
 import { createWebhookHandler } from "../handlers/webhook.handler";
 import { createUserHandler } from "../handlers/user.handler";
 import { createSetupHandler } from "../handlers/setup.handler";
+import {
+  createContentAuthorsHandler,
+  createContentPagesHandler,
+  createContentSettingsHandler,
+  createContentTiersHandler,
+} from "../handlers/content.handler";
+import { createRedirectHandler } from "../handlers/redirect.handler";
+import { createTierHandler } from "../handlers/tier.handler";
+import { createAuthSettingsHandler } from "../handlers/auth-settings.handler";
 
 import {
   postController,
@@ -34,6 +43,9 @@ import {
   webhookController,
   userController,
   setupController,
+  redirectController,
+  tierController,
+  authSettingsController,
   getMediaController,
   siteResolverMiddleware,
   requireAdminAuth,
@@ -54,6 +66,15 @@ const settingsApp = createSettingsHandler(settingsController);
 const webhookApp = createWebhookHandler(webhookController);
 const userApp = createUserHandler(userController);
 const setupApp = createSetupHandler(setupController);
+const redirectApp = createRedirectHandler(redirectController);
+const tierApp = createTierHandler(tierController);
+const authSettingsApp = createAuthSettingsHandler(authSettingsController);
+
+// Content API (public, read-only)
+const contentAuthorsApp = createContentAuthorsHandler(userController);
+const contentPagesApp = createContentPagesHandler(postController);
+const contentSettingsApp = createContentSettingsHandler(settingsController);
+const contentTiersApp = createContentTiersHandler(memberController);
 
 // Media handler is async because the controller depends on the async storage provider.
 // Eagerly initialize so it's ready before the first request arrives.
@@ -117,6 +138,15 @@ adminRouter.route("/webhooks", webhookApp);
 // Users
 adminRouter.route("/users", userApp);
 
+// Redirects
+adminRouter.route("/redirects", redirectApp);
+
+// Tiers
+adminRouter.route("/tiers", tierApp);
+
+// Auth settings (per-site OAuth config)
+adminRouter.route("/auth-settings", authSettingsApp);
+
 router.route("/admin/v1", adminRouter);
 
 // ── Public content API ────────────────────────────────────────────────────────
@@ -129,5 +159,9 @@ contentRouter.use("*", optionalMemberAuth);
 // Public post reading (returns only published posts at service layer)
 contentRouter.route("/posts", postApp);
 contentRouter.route("/tags", tagApp);
+contentRouter.route("/authors", contentAuthorsApp);
+contentRouter.route("/pages", contentPagesApp);
+contentRouter.route("/settings", contentSettingsApp);
+contentRouter.route("/tiers", contentTiersApp);
 
 router.route("/content/v1", contentRouter);

@@ -9,7 +9,8 @@
     "./errors": "./src/errors/index.ts",
     "./types/*": "./src/types/*.ts",
     "./validators/*": "./src/validators/*.ts",
-    "./utils/*": "./src/utils/*.ts"
+    "./utils/*": "./src/utils/*.ts",
+    "./content/*": "./src/content/*.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -23,6 +23,12 @@ export class UserService {
     return user;
   }
 
+  async getBySlug(siteId: string, slug: string): Promise<User> {
+    const user = await this.userRepo.findBySlug(siteId, slug);
+    if (!user) throw new NotFoundError("User", slug);
+    return user;
+  }
+
   async getByEmail(siteId: string, email: string): Promise<User | null> {
     return this.userRepo.findByEmail(siteId, email);
   }

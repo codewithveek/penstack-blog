@@ -16,6 +16,10 @@ export class UserController {
     return this.userService.getById(siteId, id);
   }
 
+  async getBySlug(siteId: string, slug: string): Promise<User> {
+    return this.userService.getBySlug(siteId, slug);
+  }
+
   async list(
     siteId: string,
     pagination: PaginationParams
