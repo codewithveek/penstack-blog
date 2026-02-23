@@ -3,11 +3,13 @@
  *
  * Sends a welcome email when a new member signs up.
  * Queue name: "welcome-email"
- * Job data: { email: string; name: string; siteName: string; siteUrl: string }
+ * Job data: { email, name, siteName, siteUrl, fromEmail }
+ *
+ * Per AGENTS.md: email provider injected via DI — no direct provider resolution.
  */
 
 import { Worker } from "bullmq";
-import { resolveEmailProvider } from "../providers/email/index";
+import type { IEmailProvider } from "@cms/core/types/providers";
 import { logger } from "../lib/logger";
 
 interface WelcomeEmailJobData {
@@ -18,8 +20,15 @@ interface WelcomeEmailJobData {
   fromEmail: string;
 }
 
-export function createWelcomeEmailWorker(redisUrl: string): Worker {
-  const emailProvider = resolveEmailProvider();
+export interface WelcomeEmailWorkerDeps {
+  emailProvider: IEmailProvider;
+}
+
+export function createWelcomeEmailWorker(
+  redisUrl: string,
+  deps: WelcomeEmailWorkerDeps
+): Worker {
+  const { emailProvider } = deps;
 
   return new Worker<WelcomeEmailJobData>(
     "welcome-email",

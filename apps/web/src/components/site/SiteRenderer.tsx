@@ -21,6 +21,7 @@ const ROUTE_MAP = {
   tag: "tag",
   author: "author",
   archive: "archive",
+  error: "error",
 } as const;
 
 export async function SiteRenderer({

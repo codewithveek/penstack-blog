@@ -3,13 +3,15 @@
  *
  * Delivers webhook payloads to registered endpoints with exponential retry.
  * Queue name: "webhook-deliver"
- * Job data: { webhookId: string; deliveryId: string; targetUrl: string; secret: string; eventType: string; payload: string }
+ * Job data: { webhookId, deliveryId, targetUrl, secret, eventType, payload }
+ *
+ * Per AGENTS.md: repo injected via DI — no direct DB access.
  */
 
 import crypto from "node:crypto";
 import { Worker } from "bullmq";
-import { db } from "@cms/core/db/client";
-import { WebhookRepository } from "../repositories/webhook.repository";
+import type { WebhookRepository } from "../repositories/webhook.repository";
+import type { WebhookDelivery } from "@cms/core/db/schema";
 import { logger } from "../lib/logger";
 
 interface WebhookDeliverJobData {
@@ -21,8 +23,15 @@ interface WebhookDeliverJobData {
   payload: string;
 }
 
-export function createWebhookDeliverWorker(redisUrl: string): Worker {
-  const webhookRepo = new WebhookRepository(db);
+export interface WebhookDeliverWorkerDeps {
+  webhookRepo: WebhookRepository;
+}
+
+export function createWebhookDeliverWorker(
+  redisUrl: string,
+  deps: WebhookDeliverWorkerDeps
+): Worker {
+  const { webhookRepo } = deps;
 
   return new Worker<WebhookDeliverJobData>(
     "webhook-deliver",
@@ -30,7 +39,6 @@ export function createWebhookDeliverWorker(redisUrl: string): Worker {
       const { deliveryId, targetUrl, secret, eventType, payload } = job.data;
       logger.info(`Delivering webhook ${deliveryId} to ${targetUrl}`);
 
-      // Sign payload with HMAC-SHA256
       const signature = crypto
         .createHmac("sha256", secret)
         .update(payload)
@@ -54,16 +62,16 @@ export function createWebhookDeliverWorker(redisUrl: string): Worker {
 
         const responseBody = await response.text().catch(() => "");
 
-        const updateData: Record<string, unknown> = {
-          status: response.ok ? "success" as const : "failed" as const,
+        const deliveryUpdate: Partial<Omit<WebhookDelivery, "id" | "webhook_id" | "created_at">> = {
+          status: response.ok ? "success" : "failed",
           http_status: String(response.status),
           response_body: responseBody.slice(0, 2000),
           attempt_count: String(attemptNumber),
         };
         if (response.ok) {
-          updateData.delivered_at = new Date();
+          deliveryUpdate.delivered_at = new Date();
         }
-        await webhookRepo.updateDelivery(deliveryId, updateData as Partial<import("@cms/core/db/schema").WebhookDelivery>);
+        await webhookRepo.updateDelivery(deliveryId, deliveryUpdate);
 
         if (!response.ok) {
           throw new Error(`Webhook delivery failed with status ${response.status}`);
@@ -76,7 +84,7 @@ export function createWebhookDeliverWorker(redisUrl: string): Worker {
           attempt_count: String(attemptNumber),
           response_body: err instanceof Error ? err.message : String(err),
         });
-        throw err; // Let BullMQ retry
+        throw err;
       }
     },
     {

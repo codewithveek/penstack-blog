@@ -188,7 +188,10 @@ export {
   payment,
   queue,
   search,
-  // Repositories (exposed for middleware factories and tests)
+  // Repositories (exposed for middleware factories, workers, and tests)
+  postRepo,
+  newsletterRepo,
+  webhookRepo,
   apiKeyRepo,
   memberRepo,
   // Services

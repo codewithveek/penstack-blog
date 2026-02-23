@@ -137,7 +137,8 @@ export type ThemeContext =
   | { type: "page"; post: ThemePostContext }
   | { type: "tag"; tag: ThemeTagContext; posts: ThemePostContext[] }
   | { type: "author"; author: ThemeAuthorContext; posts: ThemePostContext[] }
-  | { type: "archive"; posts: ThemePostContext[] };
+  | { type: "archive"; posts: ThemePostContext[] }
+  | { type: "error"; statusCode: number; message: string };
 
 export interface ThemePageProps<T extends ThemeContext = ThemeContext> {
   site: ThemeSiteContext;

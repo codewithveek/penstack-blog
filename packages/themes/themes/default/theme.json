@@ -15,6 +15,7 @@
     "page": { "component": "pages/Page.tsx" },
     "tag": { "component": "pages/Tag.tsx" },
     "author": { "component": "pages/Author.tsx" },
-    "archive": { "component": "pages/Archive.tsx" }
+    "archive": { "component": "pages/Archive.tsx" },
+    "error": { "component": "pages/Error.tsx" }
   }
 }

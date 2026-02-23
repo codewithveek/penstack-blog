@@ -371,12 +371,121 @@ function renderNode(node: TiptapNode): string {
       return `<details class="toggle-heading"><summary><h${level}>${inner}</h${level}></summary></details>`;
     }
 
+    // ── Video embed ──
+    case "videoEmbed": {
+      const src = String(node.attrs?.["src"] ?? "");
+      const provider = String(node.attrs?.["provider"] ?? "direct");
+      const caption = String(node.attrs?.["caption"] ?? "");
+      const width = node.attrs?.["width"] as number | null | undefined;
+      const height = node.attrs?.["height"] as number | null | undefined;
+      const w = width ?? 560;
+      const h = height ?? 315;
+
+      let media: string;
+      if (provider === "youtube" || provider === "vimeo") {
+        media = `<iframe src="${escapeAttr(src)}" width="${w}" height="${h}" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+      } else {
+        media = `<video src="${escapeAttr(src)}" width="${w}" height="${h}" controls preload="metadata"></video>`;
+      }
+
+      const captionTag = caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : "";
+      return `<figure data-type="video-embed" data-provider="${escapeAttr(provider)}">${media}${captionTag}</figure>`;
+    }
+
+    // ── Divider block ──
+    case "dividerBlock": {
+      const style = String(node.attrs?.["style"] ?? "solid");
+      return `<hr class="divider-block divider-${escapeAttr(style)}" />`;
+    }
+
+    // ── Newsletter box ──
+    case "newsletterBox": {
+      const heading = String(node.attrs?.["heading"] ?? "Subscribe to our newsletter");
+      const subtext = String(node.attrs?.["subtext"] ?? "");
+      const buttonLabel = String(node.attrs?.["buttonLabel"] ?? "Subscribe");
+      const slug = String(node.attrs?.["newsletterSlug"] ?? "");
+      return `<div data-type="newsletter-box" data-newsletter-slug="${escapeAttr(slug)}" class="newsletter-box">` +
+        `<h3>${escapeHtml(heading)}</h3>` +
+        (subtext ? `<p>${escapeHtml(subtext)}</p>` : "") +
+        `<form class="newsletter-box-form" data-newsletter="${escapeAttr(slug)}">` +
+        `<input type="email" placeholder="your@email.com" required />` +
+        `<button type="submit">${escapeHtml(buttonLabel)}</button>` +
+        `</form></div>`;
+    }
+
+    // ── Related post block ──
+    case "relatedPostBlock": {
+      const postSlug = String(node.attrs?.["postSlug"] ?? "");
+      const postTitle = String(node.attrs?.["postTitle"] ?? "");
+      const postExcerpt = String(node.attrs?.["postExcerpt"] ?? "");
+      return `<div data-type="related-post" data-post-slug="${escapeAttr(postSlug)}" class="related-post-block">` +
+        `<a href="/${escapeAttr(postSlug)}" class="related-post-link">` +
+        `<span class="related-post-label">Read also</span>` +
+        `<strong class="related-post-title">${escapeHtml(postTitle)}</strong>` +
+        (postExcerpt ? `<span class="related-post-excerpt">${escapeHtml(postExcerpt)}</span>` : "") +
+        `</a></div>`;
+    }
+
+    // ── File attachment ──
+    case "fileAttachment": {
+      const fileSrc = String(node.attrs?.["src"] ?? "");
+      const fileName = String(node.attrs?.["fileName"] ?? "Download");
+      const fileSize = (node.attrs?.["fileSize"] as number | undefined) ?? 0;
+      const mimeType = String(node.attrs?.["mimeType"] ?? "application/octet-stream");
+      return `<div data-type="file-attachment" class="file-attachment">` +
+        `<a href="${escapeAttr(fileSrc)}" download="${escapeAttr(fileName)}" class="file-attachment-link">` +
+        `<span class="file-attachment-icon">\uD83D\uDCCE</span>` +
+        `<span class="file-attachment-name">${escapeHtml(fileName)}</span>` +
+        `<span class="file-attachment-meta">${formatFileSize(fileSize)} · ${escapeHtml(mimeType)}</span>` +
+        `</a></div>`;
+    }
+
+    // ── Product card ──
+    case "productCard": {
+      const pTitle = String(node.attrs?.["title"] ?? "");
+      const pDesc = String(node.attrs?.["description"] ?? "");
+      const pImg = String(node.attrs?.["imageUrl"] ?? "");
+      const pRating = (node.attrs?.["rating"] as number | undefined) ?? 0;
+      const pPrice = String(node.attrs?.["price"] ?? "");
+      const pCurrency = String(node.attrs?.["currency"] ?? "USD");
+      const pUrl = String(node.attrs?.["affiliateUrl"] ?? "");
+      const pBtn = String(node.attrs?.["buttonLabel"] ?? "Buy Now");
+
+      let html = `<div data-type="product-card" class="product-card">`;
+      if (pImg) html += `<img src="${escapeAttr(pImg)}" alt="${escapeAttr(pTitle)}" class="product-card-image" loading="lazy" />`;
+      html += `<h4 class="product-card-title">${escapeHtml(pTitle)}</h4>`;
+      if (pDesc) html += `<p class="product-card-description">${escapeHtml(pDesc)}</p>`;
+      if (pRating > 0) {
+        const fullStars = Math.floor(pRating);
+        const halfStar = pRating % 1 >= 0.5 ? 1 : 0;
+        const emptyStars = 5 - fullStars - halfStar;
+        html += `<span class="product-card-rating">${"★".repeat(fullStars)}${halfStar ? "½" : ""}${"☆".repeat(emptyStars)}</span>`;
+      }
+      if (pPrice) html += `<span class="product-card-price">${escapeHtml(pCurrency)} ${escapeHtml(pPrice)}</span>`;
+      if (pUrl) html += `<a href="${escapeAttr(pUrl)}" class="product-card-button" target="_blank" rel="noopener noreferrer sponsored">${escapeHtml(pBtn)}</a>`;
+      html += `</div>`;
+      return html;
+    }
+
     // ── Fallback: render children if any ──
     default: {
       if (node.content) return renderChildren(node.content);
       return "";
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
+  const label = sizes[i] ?? "B";
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${label}`;
 }
 
 // ---------------------------------------------------------------------------

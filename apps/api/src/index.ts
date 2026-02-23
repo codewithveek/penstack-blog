@@ -23,6 +23,13 @@ import { loggerMiddleware } from "./middleware/logger.middleware";
 import { router } from "./routes/index";
 import { logger } from "./lib/logger";
 import { isAppError } from "@cms/core/errors";
+import {
+  postRepo,
+  newsletterRepo,
+  webhookRepo,
+  email as emailProvider,
+  search as searchProvider,
+} from "./container";
 
 // ── App ───────────────────────────────────────────────────────────────────────
 
@@ -130,7 +137,13 @@ app.onError((err, c) => {
 const redisUrl = process.env.REDIS_URL;
 if (redisUrl && process.env.ENABLE_WORKERS !== "false") {
   import("./workers/index").then(({ startAllWorkers }) => {
-    startAllWorkers(redisUrl);
+    startAllWorkers(redisUrl, {
+      postRepo,
+      newsletterRepo,
+      webhookRepo,
+      emailProvider,
+      searchProvider,
+    });
     logger.info("Background workers started");
   }).catch((err) => {
     logger.error("Failed to start background workers", {

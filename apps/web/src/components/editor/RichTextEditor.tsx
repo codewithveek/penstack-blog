@@ -16,6 +16,16 @@ import { EditorToolbar } from "./EditorToolbar";
 import { SlashCommandExtension } from "./extensions/SlashCommand.extension";
 import { AutosaveExtension } from "./extensions/Autosave.extension";
 import { ImageBlockExtension } from "./extensions/ImageBlock.extension";
+import { VideoEmbedExtension } from "./extensions/VideoEmbed.extension";
+import { CalloutBlockExtension } from "./extensions/CalloutBlock.extension";
+import { HTMLBlockExtension } from "./extensions/HTMLBlock.extension";
+import { DividerBlockExtension } from "./extensions/DividerBlock.extension";
+import { ToggleBlockExtension } from "./extensions/ToggleBlock.extension";
+import { NewsletterBoxExtension } from "./extensions/NewsletterBox.extension";
+import { RelatedPostBlockExtension } from "./extensions/RelatedPostBlock.extension";
+import { FileAttachmentExtension } from "./extensions/FileAttachment.extension";
+import { ProductCardExtension } from "./extensions/ProductCard.extension";
+import { TableBlockExtensions } from "./extensions/TableBlock.extension";
 import "./editor.css";
 
 const lowlight = createLowlight(common);
@@ -67,6 +77,16 @@ export function RichTextEditor({
       CharacterCount,
       CodeBlockLowlight.configure({ lowlight }),
       ImageBlockExtension,
+      VideoEmbedExtension,
+      CalloutBlockExtension,
+      HTMLBlockExtension,
+      DividerBlockExtension,
+      ToggleBlockExtension,
+      NewsletterBoxExtension,
+      RelatedPostBlockExtension,
+      FileAttachmentExtension,
+      ProductCardExtension,
+      ...TableBlockExtensions,
       SlashCommandExtension,
       AutosaveExtension.configure({
         enabled: autosave && !!onSave,

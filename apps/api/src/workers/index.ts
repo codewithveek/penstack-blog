@@ -9,30 +9,43 @@
  *   3. webhook-deliver     — deliver webhook payloads with retry
  *   4. welcome-email       — send welcome email to new members
  *   5. search-index        — index/update post in the search provider
- *   6. search-deindex      — remove a post from the search index
- *   7. subscription-expire — check for expired subscriptions
- *   8. email-analytics     — process email open/click tracking
  *
  * All worker files are in apps/api/src/workers/.
- * Workers are started via `startAllWorkers()`, called from the API entry point
- * (or a separate worker process).
+ * Workers are started via `startAllWorkers()`, called from the API entry point.
+ *
+ * Per AGENTS.md: workers receive all dependencies via DI — no direct DB access
+ * or provider resolution inside worker files.
  */
 
-import type IORedis from "ioredis";
 import { createScheduledPublishWorker } from "./scheduled-publish.worker";
 import { createNewsletterSendWorker } from "./newsletter-send.worker";
 import { createWebhookDeliverWorker } from "./webhook-deliver.worker";
 import { createWelcomeEmailWorker } from "./welcome-email.worker";
 import { createSearchIndexWorker } from "./search-index.worker";
 import { logger } from "../lib/logger";
+import type { PostRepository } from "../repositories/post.repository";
+import type { NewsletterRepository } from "../repositories/newsletter.repository";
+import type { WebhookRepository } from "../repositories/webhook.repository";
+import type { IEmailProvider, ISearchProvider } from "@cms/core/types/providers";
 
-export function startAllWorkers(redisUrl: string): void {
+export interface WorkerDeps {
+  postRepo: PostRepository;
+  newsletterRepo: NewsletterRepository;
+  webhookRepo: WebhookRepository;
+  emailProvider: IEmailProvider;
+  searchProvider: ISearchProvider;
+}
+
+export function startAllWorkers(redisUrl: string, deps: WorkerDeps): void {
   const workers = [
-    createScheduledPublishWorker(redisUrl),
-    createNewsletterSendWorker(redisUrl),
-    createWebhookDeliverWorker(redisUrl),
-    createWelcomeEmailWorker(redisUrl),
-    createSearchIndexWorker(redisUrl),
+    createScheduledPublishWorker(redisUrl, { postRepo: deps.postRepo }),
+    createNewsletterSendWorker(redisUrl, {
+      newsletterRepo: deps.newsletterRepo,
+      emailProvider: deps.emailProvider,
+    }),
+    createWebhookDeliverWorker(redisUrl, { webhookRepo: deps.webhookRepo }),
+    createWelcomeEmailWorker(redisUrl, { emailProvider: deps.emailProvider }),
+    createSearchIndexWorker(redisUrl, { searchProvider: deps.searchProvider }),
   ];
 
   for (const worker of workers) {

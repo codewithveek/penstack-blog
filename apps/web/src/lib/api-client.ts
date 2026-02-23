@@ -197,6 +197,43 @@ export const settingsApi = {
     api.patch<unknown>("/api/admin/v1/settings/email", data),
 };
 
+// Settings — per-tab helpers used by individual settings tabs
+export const authSettingsApi = {
+  get: () => api.get<unknown>("/api/admin/v1/settings/auth"),
+  update: (data: unknown) =>
+    api.patch<unknown>("/api/admin/v1/settings/auth", data),
+};
+
+export const memberSettingsApi = {
+  get: () => api.get<unknown>("/api/admin/v1/settings/members"),
+  update: (data: unknown) =>
+    api.patch<unknown>("/api/admin/v1/settings/members", data),
+};
+
+export const designSettingsApi = {
+  get: () => api.get<unknown>("/api/admin/v1/settings/design"),
+  update: (data: unknown) =>
+    api.patch<unknown>("/api/admin/v1/settings/design", data),
+};
+
+export const integrationsSettingsApi = {
+  get: () => api.get<unknown>("/api/admin/v1/settings/integrations"),
+  update: (data: unknown) =>
+    api.patch<unknown>("/api/admin/v1/settings/integrations", data),
+};
+
+// Newsletters
+export const newslettersApi = {
+  list: (params?: { page?: number; limit?: number }) =>
+    api.get<{ items: unknown[]; meta: unknown }>("/api/admin/v1/newsletters", params),
+  get: (id: string) => api.get<unknown>(`/api/admin/v1/newsletters/${id}`),
+  create: (data: unknown) =>
+    api.post<unknown>("/api/admin/v1/newsletters", data),
+  update: (id: string, data: unknown) =>
+    api.patch<unknown>(`/api/admin/v1/newsletters/${id}`, data),
+  delete: (id: string) => api.delete(`/api/admin/v1/newsletters/${id}`),
+};
+
 // Users
 export const usersApi = {
   list: () => api.get<unknown[]>("/api/admin/v1/users"),

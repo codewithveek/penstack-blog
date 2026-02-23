@@ -4,12 +4,12 @@
  * Picks up posts whose scheduled_at timestamp has arrived and publishes them.
  * Queue name: "scheduled-publish"
  * Job data: { siteId: string; postId: string }
+ *
+ * Per AGENTS.md: no direct DB access — delegates to PostRepository via DI.
  */
 
 import { Worker } from "bullmq";
-import { db } from "@cms/core/db/client";
-import { posts } from "@cms/core/db/schema";
-import { eq, and, lte, sql } from "drizzle-orm";
+import type { PostRepository } from "../repositories/post.repository";
 import { logger } from "../lib/logger";
 
 interface ScheduledPublishJobData {
@@ -17,27 +17,34 @@ interface ScheduledPublishJobData {
   postId: string;
 }
 
-export function createScheduledPublishWorker(redisUrl: string): Worker {
+export interface ScheduledPublishWorkerDeps {
+  postRepo: PostRepository;
+}
+
+export function createScheduledPublishWorker(
+  redisUrl: string,
+  deps: ScheduledPublishWorkerDeps
+): Worker {
+  const { postRepo } = deps;
+
   return new Worker<ScheduledPublishJobData>(
     "scheduled-publish",
     async (job) => {
       const { siteId, postId } = job.data;
       logger.info(`Publishing scheduled post ${postId} for site ${siteId}`);
 
-      await db
-        .update(posts)
-        .set({
-          status: "published",
-          published_at: new Date(),
-          updated_at: new Date(),
-        })
-        .where(
-          and(
-            eq(posts.id, postId),
-            eq(posts.site_id, siteId),
-            eq(posts.status, "scheduled")
-          )
-        );
+      const post = await postRepo.findById(siteId, postId);
+      if (!post) {
+        logger.warn(`Scheduled post ${postId} not found, skipping`);
+        return;
+      }
+      if (post.status !== "scheduled") {
+        logger.warn(`Post ${postId} is no longer scheduled (status: ${post.status}), skipping`);
+        return;
+      }
+
+      const permalink = post.permalink ?? `/${post.slug}`;
+      await postRepo.publish(siteId, postId, permalink);
 
       logger.info(`Scheduled post ${postId} published successfully`);
     },

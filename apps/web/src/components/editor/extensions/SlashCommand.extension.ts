@@ -7,8 +7,17 @@ import Suggestion, {
 import { ReactRenderer } from "@tiptap/react";
 import tippy, { type Instance as TippyInstance } from "tippy.js";
 import { SlashCommandList, type SlashCommandItem } from "../SlashCommandList";
-// Import so TypeScript picks up the Commands<> module augmentation from ImageBlock
+// Import so TypeScript picks up the Commands<> module augmentation from custom extensions
 import type {} from "./ImageBlock.extension";
+import type {} from "./VideoEmbed.extension";
+import type {} from "./CalloutBlock.extension";
+import type {} from "./HTMLBlock.extension";
+import type {} from "./DividerBlock.extension";
+import type {} from "./ToggleBlock.extension";
+import type {} from "./NewsletterBox.extension";
+import type {} from "./RelatedPostBlock.extension";
+import type {} from "./FileAttachment.extension";
+import type {} from "./ProductCard.extension";
 
 const COMMANDS: SlashCommandItem[] = [
   {
@@ -85,6 +94,136 @@ const COMMANDS: SlashCommandItem[] = [
         .focus()
         .deleteRange(range)
         .setImageBlock({ src: "", alt: "", caption: "" })
+        .run();
+    },
+  },
+  {
+    title: "Video",
+    icon: "🎬",
+    description: "Embed a video (YouTube, Vimeo, or direct)",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setVideoEmbed({ src: "" })
+        .run();
+    },
+  },
+  {
+    title: "Callout",
+    icon: "💡",
+    description: "Highlighted callout box",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setCalloutBlock({ type: "info" })
+        .run();
+    },
+  },
+  {
+    title: "HTML",
+    icon: "{ }",
+    description: "Raw HTML block",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setHtmlBlock({ content: "" })
+        .run();
+    },
+  },
+  {
+    title: "Styled divider",
+    icon: "···",
+    description: "Styled content divider",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setDividerBlock({})
+        .run();
+    },
+  },
+  {
+    title: "Toggle",
+    icon: "▸",
+    description: "Collapsible toggle section",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setToggleBlock({})
+        .run();
+    },
+  },
+  {
+    title: "Newsletter",
+    icon: "📧",
+    description: "Newsletter subscribe form",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setNewsletterBox({})
+        .run();
+    },
+  },
+  {
+    title: "Related post",
+    icon: "🔗",
+    description: '"Read also" post card',
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setRelatedPostBlock({})
+        .run();
+    },
+  },
+  {
+    title: "File attachment",
+    icon: "📎",
+    description: "Attach a downloadable file",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setFileAttachment({ src: "", fileName: "", fileSize: 0, mimeType: "" })
+        .run();
+    },
+  },
+  {
+    title: "Table",
+    icon: "▦",
+    description: "Insert a table",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+        .run();
+    },
+  },
+  {
+    title: "Product card",
+    icon: "🛒",
+    description: "Product review / recommendation card",
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setProductCard({})
         .run();
     },
   },

@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { label: "Pages", href: "/admin/pages", icon: "☰" },
   { label: "Tags", href: "/admin/tags", icon: "⌗" },
   { label: "Members", href: "/admin/members", icon: "♟" },
+  { label: "Newsletters", href: "/admin/newsletters", icon: "✉" },
   { label: "Media", href: "/admin/media", icon: "⊡" },
   { label: "Settings", href: "/admin/settings", icon: "⚙" },
 ] as const;

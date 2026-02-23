@@ -4,12 +4,12 @@
  * Index / deindex posts in the search provider.
  * Queue name: "search-index"
  * Job names: "index" | "deindex"
+ *
+ * Per AGENTS.md: search provider injected via DI — no direct DB access.
  */
 
 import { Worker } from "bullmq";
-import { resolveSearchProvider } from "../providers/search/index";
-import { db } from "@cms/core/db/client";
-import type { SearchDocument } from "@cms/core/types/providers";
+import type { ISearchProvider, SearchDocument } from "@cms/core/types/providers";
 import { logger } from "../lib/logger";
 
 interface SearchIndexJobData {
@@ -24,8 +24,15 @@ interface SearchIndexJobData {
   url?: string;
 }
 
-export function createSearchIndexWorker(redisUrl: string): Worker {
-  const searchProvider = resolveSearchProvider(db);
+export interface SearchIndexWorkerDeps {
+  searchProvider: ISearchProvider;
+}
+
+export function createSearchIndexWorker(
+  redisUrl: string,
+  deps: SearchIndexWorkerDeps
+): Worker {
+  const { searchProvider } = deps;
 
   return new Worker<SearchIndexJobData>(
     "search-index",
@@ -38,7 +45,6 @@ export function createSearchIndexWorker(redisUrl: string): Worker {
         return;
       }
 
-      // Index
       logger.info(`Indexing post ${postId} in search`);
       const doc: SearchDocument = {
         id: postId,
