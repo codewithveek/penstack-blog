@@ -51,7 +51,7 @@ export const MagicLinkEmail = ({
     <Html lang="en">
       <Head />
       <Preview>
-        Your magic login link for {siteName} — expires in {expiryMinutes}{" "}
+        Your magic login link for {siteName} — expires in {expiryMinutes + ""}{" "}
         minutes
       </Preview>
       <Body style={body}>
