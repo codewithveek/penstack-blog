@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import type { ThemePostContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
 import { fetchSiteContext } from "@/lib/site-context";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
+import { mapPost } from "@/lib/mappers";
 import { headers } from "next/headers";
 
 // Post pages are ISR. Member-gated posts use dynamic rendering per the AGENTS.md rule.
@@ -15,19 +15,19 @@ export default async function SlugPage({
 }) {
   const { slug } = await params;
 
-  let post: ThemePostContext & { type?: string; visibility?: string };
+  let rawPost: Record<string, unknown>;
   let isPage = false;
 
   try {
     // Try fetching by slug — the content handler returns matching post/page
-    post = await api.get<ThemePostContext & { type?: string; visibility?: string }>(
+    rawPost = await api.get<Record<string, unknown>>(
       `/api/content/v1/posts/slug/${slug}`
     );
-    isPage = post.type === "page";
+    isPage = rawPost.type === "page";
   } catch {
     // Try as a page via the pages endpoint
     try {
-      post = await api.get<ThemePostContext & { type?: string; visibility?: string }>(
+      rawPost = await api.get<Record<string, unknown>>(
         `/api/content/v1/pages/${slug}`
       );
       isPage = true;
@@ -35,6 +35,8 @@ export default async function SlugPage({
       notFound();
     }
   }
+
+  const post = mapPost(rawPost as Parameters<typeof mapPost>[0]);
 
   // Member-gated: force dynamic rendering
   if (post.visibility === "members" || post.visibility === "paid") {

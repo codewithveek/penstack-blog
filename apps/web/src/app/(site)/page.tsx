@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import type { ThemePostContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
 import { fetchSiteContext } from "@/lib/site-context";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
+import { mapPosts } from "@/lib/mappers";
 
 export const revalidate = 60;
 
@@ -17,17 +17,19 @@ export default async function SiteIndexPage({
   try {
     const [site, postsResult] = await Promise.all([
       fetchSiteContext(),
-      api.getWithMeta<ThemePostContext[]>("/api/content/v1/posts", {
+      api.getWithMeta<Record<string, unknown>[]>("/api/content/v1/posts", {
         page,
         limit: 15,
       }),
     ]);
 
+    const posts = mapPosts(postsResult.data as Parameters<typeof mapPosts>[0]);
+
     return (
       <SiteRenderer
         context={{
           type: "index",
-          posts: postsResult.data,
+          posts,
         }}
         site={site}
         pagination={{

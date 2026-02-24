@@ -4,7 +4,7 @@
   "name": "Default",
   "author": "CMS Platform",
   "version": "1.0.0",
-  "stylesheet": "styles/theme.css",
+  "stylesheet": "/themes/default/theme.css",
   "routes": {
     "index": { "component": "pages/Index.tsx" },
     "post": { "component": "pages/Post.tsx" },

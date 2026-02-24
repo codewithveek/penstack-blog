@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import type { ThemePostContext, ThemeAuthorContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
 import { fetchSiteContext } from "@/lib/site-context";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
+import { mapPosts, mapAuthor } from "@/lib/mappers";
 
 export const revalidate = 60;
 
@@ -18,20 +18,24 @@ export default async function AuthorPage({
   const page = pageParam ? parseInt(pageParam, 10) : 1;
 
   try {
-    const [site, author] = await Promise.all([
+    const [site, rawAuthor] = await Promise.all([
       fetchSiteContext(),
-      api.get<ThemeAuthorContext>(`/api/content/v1/authors/${slug}`),
+      api.get<Record<string, unknown>>(`/api/content/v1/authors/${slug}`),
     ]);
 
+    const author = mapAuthor(rawAuthor as Parameters<typeof mapAuthor>[0]);
+
     // Fetch that author's posts (may need a separate endpoint; for now use general posts)
-    const postsResult = await api.getWithMeta<ThemePostContext[]>(
+    const postsResult = await api.getWithMeta<Record<string, unknown>[]>(
       "/api/content/v1/posts",
       { page, limit: 15 }
     );
 
+    const posts = mapPosts(postsResult.data as Parameters<typeof mapPosts>[0]);
+
     return (
       <SiteRenderer
-        context={{ type: "author", author, posts: postsResult.data }}
+        context={{ type: "author", author, posts }}
         site={site}
         pagination={{
           page: postsResult.meta.page,

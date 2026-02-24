@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import type { ThemePostContext, ThemeTagContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
 import { fetchSiteContext } from "@/lib/site-context";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
+import { mapPosts, mapTag } from "@/lib/mappers";
 
 export const revalidate = 60;
 
@@ -18,20 +18,24 @@ export default async function TagPage({
   const page = pageParam ? parseInt(pageParam, 10) : 1;
 
   try {
-    const [site, tag] = await Promise.all([
+    const [site, rawTag] = await Promise.all([
       fetchSiteContext(),
-      api.get<ThemeTagContext>(`/api/content/v1/tags/${slug}`),
+      api.get<Record<string, unknown>>(`/api/content/v1/tags/${slug}`),
     ]);
 
+    const tag = mapTag(rawTag as Parameters<typeof mapTag>[0]);
+
     // Fetch posts for this tag
-    const postsResult = await api.getWithMeta<ThemePostContext[]>(
+    const postsResult = await api.getWithMeta<Record<string, unknown>[]>(
       "/api/content/v1/posts",
       { page, limit: 15, tag: slug }
     );
 
+    const posts = mapPosts(postsResult.data as Parameters<typeof mapPosts>[0]);
+
     return (
       <SiteRenderer
-        context={{ type: "tag", tag, posts: postsResult.data }}
+        context={{ type: "tag", tag, posts }}
         site={site}
         pagination={{
           page: postsResult.meta.page,
