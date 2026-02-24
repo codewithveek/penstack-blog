@@ -97,7 +97,7 @@ export const memberSessions = mysqlTable(
     member_id: varchar("member_id", { length: 36 })
       .notNull()
       .references(() => members.id, { onDelete: "cascade" }),
-    token: varchar("token", { length: 512 }).notNull(),
+    token: varchar("token", { length: 500 }).notNull(),
     expires_at: timestamp("expires_at").notNull(),
     ip_address: varchar("ip_address", { length: 64 }),
     user_agent: text("user_agent"),

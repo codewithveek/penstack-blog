@@ -15,6 +15,7 @@ import {
   uniqueIndex,
   index,
   json,
+  longtext,
 } from "drizzle-orm/mysql-core";
 import {
   id,
@@ -40,22 +41,22 @@ export const posts = mysqlTable(
     id: id(),
     site_id: siteIdCol().references(() => sites.id, { onDelete: "cascade" }),
     type: postTypeEnum.notNull().default("post"),
-    title: varchar("title", { length: 512 }).notNull(),
-    slug: varchar("slug", { length: 512 }).notNull(),
+    title: varchar("title", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull(),
     /**
      * Denormalized resolved permalink (stored at publish time using the site's
      * active permalink_pattern). Never recomputed on read.
      */
-    permalink: varchar("permalink", { length: 512 }),
+    permalink: varchar("permalink", { length: 255 }),
     /**
      * Tiptap JSON stored here (the canonical source of truth).
      * html column is a derived render cache.
      */
     lexical: json("lexical"),
-    html: text("html"),
+    html: longtext("html"),
     excerpt: text("excerpt"),
     featured_image: text("featured_image"),
-    featured_image_alt: varchar("featured_image_alt", { length: 512 }),
+    featured_image_alt: varchar("featured_image_alt", { length: 255 }),
     status: postStatusEnum.notNull().default("draft"),
     visibility: postVisibilityEnum.notNull().default("public"),
     /** Estimated reading time in minutes */
@@ -71,11 +72,11 @@ export const posts = mysqlTable(
     custom_head_code: text("custom_head_code"),
     custom_foot_code: text("custom_foot_code"),
     /** SEO fields */
-    og_title: varchar("og_title", { length: 512 }),
-    og_description: text("og_description"),
+    og_title: varchar("og_title", { length: 255 }),
+    og_description: varchar("og_description", { length: 500 }),
     og_image: text("og_image"),
-    twitter_title: varchar("twitter_title", { length: 512}),
-    twitter_description: text("twitter_description"),
+    twitter_title: varchar("twitter_title", { length: 255 }),
+    twitter_description: varchar("twitter_description", { length: 500 }),
     twitter_image: text("twitter_image"),
     canonical_url: text("canonical_url"),
     /** Associated newsletter (for email sending) */
@@ -84,21 +85,20 @@ export const posts = mysqlTable(
     updated_at: updatedAt(),
     deleted_at: deletedAt(),
   },
-  (t) => ({
-    siteIdIdx: index("posts_site_id").on(t.site_id),
-    siteSlugIdx: uniqueIndex("posts_site_slug_unique").on(t.site_id, t.slug),
-    sitePermalinkIdx: uniqueIndex("posts_site_permalink_unique").on(
+  (t) => ([ index("posts_site_id").on(t.site_id),
+ uniqueIndex("posts_site_slug_unique").on(t.site_id, t.slug),
+     uniqueIndex("posts_site_permalink_unique").on(
       t.site_id,
       t.permalink
     ),
-    statusIdx: index("posts_status").on(t.site_id, t.status),
-    typeIdx: index("posts_type").on(t.site_id, t.type),
-    publishedAtIdx: index("posts_published_at").on(t.site_id, t.published_at),
-    visibilityIdx: index("posts_visibility").on(t.site_id, t.visibility),
-    scheduledIdx: index("posts_scheduled").on(t.status, t.scheduled_at),
-    /** TiDB full-text search on title and html */
-    titleHtmlFulltext: index("posts_title_html_fulltext").on(t.title, t.html),
-  })
+    index("posts_status").on(t.site_id, t.status),
+   index("posts_type").on(t.site_id, t.type),
+    index("posts_published_at").on(t.site_id, t.published_at),
+     index("posts_visibility").on(t.site_id, t.visibility),
+  index("posts_scheduled").on(t.status, t.scheduled_at),
+    /** TiDB full-text search on title and [html] */
+  index("posts_title").on(t.title),
+  ])
 );
 
 // ---------------------------------------------------------------------------
@@ -135,15 +135,15 @@ export const tags = mysqlTable(
     site_id: siteIdCol().references(() => sites.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull(),
-    description: text("description"),
+    description: varchar("description", { length: 500 }),
     feature_image: text("feature_image"),
     /** Internal tags start with # and are not shown publicly */
     visibility: varchar("visibility", { length: 16 })
       .default("public")
       .notNull(),
-    og_title: varchar("og_title", { length:512 }),
-    og_description: text("og_description"),
-    og_image: text("og_image"),
+    og_title: varchar("og_title", { length:255 }),
+    og_description: varchar("og_description", { length:500 }),
+    og_image: varchar("og_image", { length:255 }),
     created_at: createdAt(),
     updated_at: updatedAt(),
   },

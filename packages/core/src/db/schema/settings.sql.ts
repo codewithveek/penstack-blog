@@ -150,8 +150,8 @@ export const redirects = mysqlTable(
   {
     id: id(),
     site_id: siteIdCol().references(() => sites.id, { onDelete: "cascade" }),
-    from_path: varchar("from_path", { length: 1024 }).notNull(),
-    to_path: varchar("to_path", { length: 1024 }).notNull(),
+    from_path: varchar("from_path", { length: 500 }).notNull(),
+    to_path: varchar("to_path", { length: 500 }).notNull(),
     type: redirectTypeEnum.notNull().default("301"),
     active: boolean("active").default(true).notNull(),
     created_at: createdAt(),

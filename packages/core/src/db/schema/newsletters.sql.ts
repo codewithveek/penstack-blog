@@ -96,7 +96,7 @@ export const emailSends = mysqlTable(
       .notNull()
       .references(() => newsletters.id, { onDelete: "cascade" }),
     post_id: varchar("post_id", { length: 36 }),
-    subject: varchar("subject", { length: 998 }).notNull(),
+    subject: varchar("subject", { length: 500 }).notNull(),
     from_email: varchar("from_email", { length: 255 }).notNull(),
     from_name: varchar("from_name", { length: 255 }).notNull(),
     reply_to: varchar("reply_to", { length: 255 }),

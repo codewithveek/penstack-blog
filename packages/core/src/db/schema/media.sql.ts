@@ -32,7 +32,7 @@ export const mediaAssets = mysqlTable(
     id: id(),
     site_id: siteIdCol().references(() => sites.id, { onDelete: "cascade" }),
     /** ID returned by the storage provider (e.g. Cloudinary public_id) */
-    provider_id: varchar("provider_id", { length: 512 }),
+    provider_id: varchar("provider_id", { length: 100 }),
     /** Name of the storage provider: cloudinary | s3 | r2 */
     provider: varchar("provider", { length: 32 }).notNull(),
     /** Stable public URL */
@@ -46,10 +46,10 @@ export const mediaAssets = mysqlTable(
     size_bytes: int("size_bytes"),
     width: int("width"),
     height: int("height"),
-    alt_text: varchar("alt_text", { length: 512 }),
+    alt_text: varchar("alt_text", { length: 255 }),
     caption: text("caption"),
     /** Logical folder path (virtual, not a real filesystem folder) */
-    folder: varchar("folder", { length: 512 }).default("/").notNull(),
+    folder: varchar("folder", { length: 255 }).default("/").notNull(),
     uploaded_by_id: varchar("uploaded_by_id", { length: 36 }).references(
       () => users.id,
       { onDelete: "set null" }

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e1b8cb48-3f27-40ce-a270-3d44c3349d09",
+  "id": "58d1a230-4b0c-46be-ade8-f0bba0a7bb8e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "media_assets": {
@@ -23,7 +23,7 @@
         },
         "provider_id": {
           "name": "provider_id",
-          "type": "varchar(512)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -94,7 +94,7 @@
         },
         "alt_text": {
           "name": "alt_text",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -108,7 +108,7 @@
         },
         "folder": {
           "name": "folder",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -319,7 +319,7 @@
         },
         "token": {
           "name": "token",
-          "type": "varchar(512)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1146,7 +1146,7 @@
         },
         "subject": {
           "name": "subject",
-          "type": "varchar(998)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1862,21 +1862,21 @@
         },
         "title": {
           "name": "title",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "slug": {
           "name": "slug",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "permalink": {
           "name": "permalink",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1890,7 +1890,7 @@
         },
         "html": {
           "name": "html",
-          "type": "text",
+          "type": "longtext",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1911,7 +1911,7 @@
         },
         "featured_image_alt": {
           "name": "featured_image_alt",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1986,14 +1986,14 @@
         },
         "og_title": {
           "name": "og_title",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "og_description": {
           "name": "og_description",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2007,14 +2007,14 @@
         },
         "twitter_title": {
           "name": "twitter_title",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "twitter_description": {
           "name": "twitter_description",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2129,11 +2129,10 @@
           ],
           "isUnique": false
         },
-        "posts_title_html_fulltext": {
-          "name": "posts_title_html_fulltext",
+        "posts_title": {
+          "name": "posts_title",
           "columns": [
-            "title",
-            "html"
+            "title"
           ],
           "isUnique": false
         }
@@ -2197,7 +2196,7 @@
         },
         "description": {
           "name": "description",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2219,21 +2218,21 @@
         },
         "og_title": {
           "name": "og_title",
-          "type": "varchar(512)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "og_description": {
           "name": "og_description",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "og_image": {
           "name": "og_image",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2554,14 +2553,14 @@
         },
         "from_path": {
           "name": "from_path",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "to_path": {
           "name": "to_path",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3348,7 +3347,7 @@
         },
         "token": {
           "name": "token",
-          "type": "varchar(512)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
