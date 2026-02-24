@@ -122,7 +122,11 @@ const userService = new UserService(userRepo);
 const tagService = new TagService(tagRepo);
 const webhookService = new WebhookService(webhookRepo);
 const settingsService = new SettingsService(settingsRepo, apiKeyRepo, cache);
-const newsletterService = new NewsletterService(newsletterRepo, memberRepo, email);
+const newsletterService = new NewsletterService(
+  newsletterRepo,
+  memberRepo,
+  email
+);
 const memberService = new MemberService(memberRepo, email, payment);
 const postService = new PostService(
   postRepo,

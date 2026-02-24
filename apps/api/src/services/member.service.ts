@@ -220,7 +220,9 @@ export class MemberService {
         ? tier.stripe_monthly_price_id
         : tier.stripe_yearly_price_id;
     if (!priceId)
-      throw new ValidationError("Tier does not have a price configured for this interval");
+      throw new ValidationError(
+        "Tier does not have a price configured for this interval"
+      );
 
     if (!this.paymentProvider) {
       throw new ValidationError("Payment provider is not configured");
@@ -287,5 +289,4 @@ export class MemberService {
       }
     }
   }
-
 }

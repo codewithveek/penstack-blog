@@ -17,7 +17,10 @@ import { Hono } from "hono";
 
 import { createPostHandler } from "../handlers/post.handler";
 import { createTagHandler } from "../handlers/tag.handler";
-import { createMemberAdminHandler, createMemberAuthHandler } from "../handlers/member.handler";
+import {
+  createMemberAdminHandler,
+  createMemberAuthHandler,
+} from "../handlers/member.handler";
 import { createNewsletterHandler } from "../handlers/newsletter.handler";
 import { createMediaHandler } from "../handlers/media.handler";
 import { createSettingsHandler } from "../handlers/settings.handler";
@@ -103,7 +106,9 @@ router.route("/member/auth", memberAuthApp);
 
 // ── Admin API ─────────────────────────────────────────────────────────────────
 
-const adminRouter = new Hono<{ Variables: { siteId: string; userId: string; role: string } }>();
+const adminRouter = new Hono<{
+  Variables: { siteId: string; userId: string; role: string };
+}>();
 
 // All admin routes: admin rate limit + admin auth
 adminRouter.use("*", adminApiRateLimiterMw);

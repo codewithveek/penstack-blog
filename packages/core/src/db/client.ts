@@ -10,7 +10,7 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "./schema";
 import mysql from "mysql2/promise";
-import 'dotenv/config'
+import "dotenv/config";
 
 function getConnectionUri(): string {
   const {

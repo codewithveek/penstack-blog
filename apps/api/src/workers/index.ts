@@ -26,7 +26,10 @@ import { logger } from "../lib/logger";
 import type { PostRepository } from "../repositories/post.repository";
 import type { NewsletterRepository } from "../repositories/newsletter.repository";
 import type { WebhookRepository } from "../repositories/webhook.repository";
-import type { IEmailProvider, ISearchProvider } from "@cms/core/types/providers";
+import type {
+  IEmailProvider,
+  ISearchProvider,
+} from "@cms/core/types/providers";
 
 export interface WorkerDeps {
   postRepo: PostRepository;
@@ -45,7 +48,9 @@ export function startAllWorkers(redisUrl: string, deps: WorkerDeps): void {
             newsletterRepo: deps.newsletterRepo,
             emailProvider: deps.emailProvider,
           }),
-          createWelcomeEmailWorker(redisUrl, { emailProvider: deps.emailProvider }),
+          createWelcomeEmailWorker(redisUrl, {
+            emailProvider: deps.emailProvider,
+          }),
         ]
       : []),
     createWebhookDeliverWorker(redisUrl, { webhookRepo: deps.webhookRepo }),

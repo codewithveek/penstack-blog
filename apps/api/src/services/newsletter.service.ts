@@ -141,7 +141,10 @@ export class NewsletterService {
     }
 
     await this.emailProvider.send({
-      from: { email: newsletter.sender_email ?? `noreply@cms`, name: newsletter.sender_name ?? newsletter.name },
+      from: {
+        email: newsletter.sender_email ?? `noreply@cms`,
+        name: newsletter.sender_name ?? newsletter.name,
+      },
       to: { email: toEmail },
       subject: `[TEST] ${subject}`,
       html,

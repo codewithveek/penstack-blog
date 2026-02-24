@@ -196,7 +196,10 @@ export class PostService {
     // Bust HTML cache
     await this.cache.invalidate(Cache.postHtml(siteId, id));
 
-    return this.postRepo.findById(siteId, id) as Promise<PostWithAuthorsAndTags>;
+    return this.postRepo.findById(
+      siteId,
+      id
+    ) as Promise<PostWithAuthorsAndTags>;
   }
 
   async updatePostAuthors(
@@ -209,9 +212,7 @@ export class PostService {
 
     const hasPrimary = authors.some((a) => a.role === "primary");
     if (!hasPrimary) {
-      throw new ValidationError(
-        "At least one primary author is required"
-      );
+      throw new ValidationError("At least one primary author is required");
     }
 
     await this.postRepo.setAuthors(postId, authors);
@@ -333,7 +334,10 @@ export class PostService {
 
     await this.searchProvider.delete(id, siteId);
     await this.cache.invalidate(Cache.postHtml(siteId, id));
-    return this.postRepo.findById(siteId, id) as Promise<PostWithAuthorsAndTags>;
+    return this.postRepo.findById(
+      siteId,
+      id
+    ) as Promise<PostWithAuthorsAndTags>;
   }
 
   async deletePost(siteId: string, id: string): Promise<void> {
