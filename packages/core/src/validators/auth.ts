@@ -42,9 +42,9 @@ export const createUserSchema = z.object({
     .max(255)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
     .optional(),
-  bio: z.string().max(2000).optional().nullable(),
-  avatar: z.url().max(2048).optional().nullable(),
-  website: z.url().max(2048).optional().nullable(),
+  bio: z.string().max(500).optional().nullable(),
+  avatar: z.url().max(512).optional().nullable(),
+  website: z.url().max(255).optional().nullable(),
   twitter: z.string().max(255).optional().nullable(),
   facebook: z.string().max(255).optional().nullable(),
   location: z.string().max(255).optional().nullable(),

@@ -7,7 +7,7 @@ import { z } from "zod";
 export const createMemberSchema = z.object({
   email: z.string().email().max(255),
   name: z.string().max(255).optional(),
-  avatar: z.string().url().max(2048).optional().nullable(),
+  avatar: z.string().url().max(512).optional().nullable(),
   subscribed: z.boolean().default(true),
   note: z.string().max(2000).optional().nullable(),
 });

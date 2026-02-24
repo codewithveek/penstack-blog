@@ -10,9 +10,9 @@ export const createRedirectSchema = z.object({
   from_path: z
     .string()
     .min(1)
-    .max(2048)
+    .max(512)
     .startsWith("/", { message: "from_path must start with /" }),
-  to_path: z.string().min(1).max(2048),
+  to_path: z.string().min(1).max(512),
   type: z.enum(["301", "302"]).default("301"),
   active: z.boolean().default(true),
 });

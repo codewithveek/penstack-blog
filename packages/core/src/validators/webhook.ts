@@ -6,7 +6,7 @@ import { z } from "zod";
 
 export const createWebhookSchema = z.object({
   name: z.string().min(1).max(255),
-  target_url: z.string().url().max(2048),
+  target_url: z.string().url().max(1024),
   event_triggers: z
     .array(
       z.enum([
@@ -41,9 +41,9 @@ export const updateSiteSettingsSchema = z.object({
   /** Site metadata */
   title: z.string().min(1).max(255).optional(),
   description: z.string().max(2000).optional(),
-  logo: z.string().url().max(2048).optional().nullable(),
-  favicon: z.string().url().max(2048).optional().nullable(),
-  cover_image: z.string().url().max(2048).optional().nullable(),
+  logo: z.string().url().max(512).optional().nullable(),
+  favicon: z.string().url().max(512).optional().nullable(),
+  cover_image: z.string().url().max(512).optional().nullable(),
   timezone: z.string().max(64).optional(),
   locale: z.string().max(16).optional(),
   /** Permalink pattern (PRD §10) */

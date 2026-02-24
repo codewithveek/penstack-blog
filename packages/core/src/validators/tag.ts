@@ -16,11 +16,11 @@ export const createTagSchema = z.object({
   name: z.string().min(1).max(255),
   slug: tagSlugField.optional(),
   description: z.string().max(2000).optional().nullable(),
-  feature_image: z.string().url().max(2048).optional().nullable(),
+  feature_image: z.string().url().max(512).optional().nullable(),
   visibility: z.enum(["public", "internal"]).default("public"),
   og_title: z.string().max(2000).optional().nullable(),
   og_description: z.string().max(4000).optional().nullable(),
-  og_image: z.string().url().max(2048).optional().nullable(),
+  og_image: z.string().url().max(512).optional().nullable(),
 });
 
 export type CreateTagInput = z.infer<typeof createTagSchema>;

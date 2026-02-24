@@ -26,9 +26,9 @@ import {
   postTypeEnum,
   postVisibilityEnum,
   authorRoleEnum,
-} from "./helpers.sql.js";
-import { sites } from "./sites.sql.js";
-import { users } from "./users.sql.js";
+} from "./helpers.sql";
+import { sites } from "./sites.sql";
+import { users } from "./users.sql";
 
 // ---------------------------------------------------------------------------
 // Posts (type: 'post' | 'page')
@@ -40,13 +40,13 @@ export const posts = mysqlTable(
     id: id(),
     site_id: siteIdCol().references(() => sites.id, { onDelete: "cascade" }),
     type: postTypeEnum.notNull().default("post"),
-    title: varchar("title", { length: 2000 }).notNull(),
-    slug: varchar("slug", { length: 2000 }).notNull(),
+    title: varchar("title", { length: 512 }).notNull(),
+    slug: varchar("slug", { length: 512 }).notNull(),
     /**
      * Denormalized resolved permalink (stored at publish time using the site's
      * active permalink_pattern). Never recomputed on read.
      */
-    permalink: varchar("permalink", { length: 2000 }),
+    permalink: varchar("permalink", { length: 512 }),
     /**
      * Tiptap JSON stored here (the canonical source of truth).
      * html column is a derived render cache.
@@ -71,10 +71,10 @@ export const posts = mysqlTable(
     custom_head_code: text("custom_head_code"),
     custom_foot_code: text("custom_foot_code"),
     /** SEO fields */
-    og_title: varchar("og_title", { length: 2000 }),
+    og_title: varchar("og_title", { length: 512 }),
     og_description: text("og_description"),
     og_image: text("og_image"),
-    twitter_title: varchar("twitter_title", { length: 2000 }),
+    twitter_title: varchar("twitter_title", { length: 512}),
     twitter_description: text("twitter_description"),
     twitter_image: text("twitter_image"),
     canonical_url: text("canonical_url"),
@@ -141,7 +141,7 @@ export const tags = mysqlTable(
     visibility: varchar("visibility", { length: 16 })
       .default("public")
       .notNull(),
-    og_title: varchar("og_title", { length: 2000 }),
+    og_title: varchar("og_title", { length:512 }),
     og_description: text("og_description"),
     og_image: text("og_image"),
     created_at: createdAt(),
@@ -190,7 +190,7 @@ export const postViews = mysqlTable(
     member_id: varchar("member_id", { length: 36 }),
     ip_hash: varchar("ip_hash", { length: 64 }),
     user_agent_hash: varchar("user_agent_hash", { length: 64 }),
-    referrer: varchar("referrer", { length: 2048 }),
+    referrer: text("referrer"),
     country: varchar("country", { length: 4 }),
     device_type: varchar("device_type", { length: 32 }),
     viewed_at: timestamp("viewed_at").notNull(),

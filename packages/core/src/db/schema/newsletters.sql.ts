@@ -23,9 +23,9 @@ import {
   newsletterStatusEnum,
   emailSendStatusEnum,
   emailEventTypeEnum,
-} from "./helpers.sql.js";
-import { sites } from "./sites.sql.js";
-import { members } from "./members.sql.js";
+} from "./helpers.sql";
+import { sites } from "./sites.sql";
+import { members } from "./members.sql";
 
 // ---------------------------------------------------------------------------
 // Newsletters (publication email channels)

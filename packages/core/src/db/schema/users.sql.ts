@@ -21,8 +21,8 @@ import {
   deletedAt,
   siteIdCol,
   siteAdminRoleEnum,
-} from "./helpers.sql.js";
-import { sites } from "./sites.sql.js";
+} from "./helpers.sql";
+import { sites } from "./sites.sql";
 
 export const users = mysqlTable(
   "users",
@@ -40,7 +40,7 @@ export const users = mysqlTable(
     /** Profile photo URL */
     avatar: text("avatar"),
     cover_image: text("cover_image"),
-    website: varchar("website", { length: 2048 }),
+    website: varchar("website", { length: 255 }),
     twitter: varchar("twitter", { length: 255 }),
     facebook: varchar("facebook", { length: 255 }),
     location: varchar("location", { length: 255 }),
