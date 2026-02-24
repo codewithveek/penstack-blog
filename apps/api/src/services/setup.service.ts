@@ -40,7 +40,7 @@ export class SetupService {
   }
 
   async runSetup(input: {
-    admin: { name: string; email: string; password?: string };
+    admin: { name: string; email: string; password: string };
     site: { name: string; description?: string; subdomain: string };
     email?: { provider: string; fromName: string; fromEmail: string };
   }): Promise<{ siteId: string; userId: string }> {
@@ -62,11 +62,18 @@ export class SetupService {
       updated_at: new Date(),
     });
 
-    // 2. Create the admin user
-    const user = await this.userService.createUser(site.id, {
+    // 2. Create the admin user with password hash via Better Auth's
+    //    password hashing utility. This ensures password format
+    //    compatibility with Better Auth's sign-in flow.
+    const { auth } = await import("../lib/auth");
+    const ctx = await auth.$context;
+    const passwordHash = await ctx.password.hash(input.admin.password);
+
+    const user = await this.userService.createUserWithPassword(site.id, {
       email: input.admin.email,
       name: input.admin.name,
       role: "owner",
+      passwordHash,
     });
 
     // 3. Create the default newsletter
@@ -80,8 +87,8 @@ export class SetupService {
     await this.settingsService.updateSiteSettings(site.id, {
       permalink_format: "/{slug}/",
       timezone: "UTC",
-      meta_title: "",
-      meta_description: "",
+      meta_title: input.site.name,
+      meta_description: input.site.description ?? "",
       cover_image: "",
       logo: "",
       icon: "",

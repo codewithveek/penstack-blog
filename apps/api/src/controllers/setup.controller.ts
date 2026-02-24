@@ -13,7 +13,7 @@ export class SetupController {
   }
 
   async runSetup(input: {
-    admin: { name: string; email: string };
+    admin: { name: string; email: string; password: string };
     site: { name: string; description?: string; subdomain: string };
     email?: { provider: string; fromName: string; fromEmail: string };
   }): Promise<{ siteId: string; userId: string }> {

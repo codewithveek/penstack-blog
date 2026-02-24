@@ -19,6 +19,8 @@ import { db } from "@cms/core/db/client";
 import * as schema from "@cms/core/db/schema";
 
 export const auth = betterAuth({
+  basePath: "/api/auth",
+
   database: drizzleAdapter(db, {
     provider: "mysql",
     schema: {
@@ -28,6 +30,10 @@ export const auth = betterAuth({
       verification: schema.verifications,
     },
   }),
+
+  emailAndPassword: {
+    enabled: true,
+  },
 
   session: {
     expiresIn: 604800, // 7 days
@@ -42,10 +48,15 @@ export const auth = betterAuth({
     useSecureCookies: process.env.NODE_ENV === "production",
     cookiePrefix: "cms_admin",
     defaultCookieAttributes: {
-      sameSite: "strict",
+      sameSite: "lax",
       httpOnly: true,
     },
   },
+
+  trustedOrigins: [
+    "http://localhost:3000",
+    "http://localhost:3100",
+  ],
 
   plugins: [],
 });

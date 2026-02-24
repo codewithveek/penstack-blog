@@ -63,7 +63,7 @@ export function createSetupHandler(controller: SetupController) {
       const { admin, site, email } = c.req.valid("json");
 
       const result = await controller.runSetup({
-        admin: { name: admin.name, email: admin.email },
+        admin: { name: admin.name, email: admin.email, password: admin.password },
         site: {
           name: site.site_name,
           ...(site.site_description !== undefined && {

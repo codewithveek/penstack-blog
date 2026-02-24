@@ -66,14 +66,54 @@ export class UserService {
       name: input.name,
       slug,
       role: input.role,
-      avatar: input.avatarUrl ?? null,
+      image: input.avatarUrl ?? null,
       bio: input.bio ?? null,
       website: input.website ?? null,
       twitter: input.twitter ?? null,
-      email_verified: false,
-      created_at: new Date(),
-      updated_at: new Date(),
+      emailVerified: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
+  }
+
+  /**
+   * Create a user with a pre-hashed password. Used during setup to create
+   * the admin user with credentials that Better Auth can verify on sign-in.
+   */
+  async createUserWithPassword(
+    siteId: string,
+    input: {
+      email: string;
+      name: string;
+      role: User["role"];
+      passwordHash: string;
+    }
+  ): Promise<User> {
+    const baseSlug = generateSlug(input.name);
+    const slug = await this.ensureUniqueSlug(siteId, baseSlug);
+
+    const userId = crypto.randomUUID();
+
+    const user = await this.userRepo.create({
+      id: userId,
+      site_id: siteId,
+      email: input.email,
+      name: input.name,
+      password: input.passwordHash,
+      slug,
+      role: input.role,
+      emailVerified: true,
+      is_super_admin: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    // Create the "credential" account entry that Better Auth needs for
+    // email/password sign-in to work. Without this row, Better Auth's
+    // sign-in flow will reject the credentials.
+    await this.userRepo.createCredentialAccount(userId, input.passwordHash);
+
+    return user;
   }
 
   async updateUser(
@@ -94,7 +134,7 @@ export class UserService {
     return this.userRepo.update(siteId, id, {
       ...(input.name !== undefined && { name: input.name }),
       ...(input.role !== undefined && { role: input.role }),
-      ...(input.avatarUrl !== undefined && { avatar_url: input.avatarUrl }),
+      ...(input.avatarUrl !== undefined && { image: input.avatarUrl }),
       ...(input.bio !== undefined && { bio: input.bio }),
       ...(input.website !== undefined && { website: input.website }),
       ...(input.twitter !== undefined && { twitter: input.twitter }),
@@ -105,6 +145,23 @@ export class UserService {
     const user = await this.userRepo.findById(siteId, id);
     if (!user) throw new NotFoundError("User", id);
     await this.userRepo.delete(siteId, id);
+  }
+
+  /**
+   * Update CMS-specific fields on a user record by id (no site_id scoping).
+   * Used during setup to patch the Better Auth-created user with site_id, slug, role, etc.
+   */
+  async updateUserFieldsById(
+    id: string,
+    data: Partial<{
+      site_id: string;
+      slug: string;
+      role: User["role"];
+      emailVerified: boolean;
+      is_super_admin: boolean;
+    }>
+  ): Promise<void> {
+    await this.userRepo.updateById(id, data);
   }
 
   private async ensureUniqueSlug(

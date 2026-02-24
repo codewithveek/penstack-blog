@@ -1,15 +1,10 @@
 import { notFound } from "next/navigation";
-import type { ThemePageProps, ThemePostContext } from "@cms/core/types/theme";
+import type { ThemePostContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
+import { fetchSiteContext } from "@/lib/site-context";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
 
 export const revalidate = 60;
-
-interface ArchiveData {
-  site: ThemePageProps["site"];
-  posts: ThemePostContext[];
-  pagination: ThemePageProps["pagination"];
-}
 
 export default async function ArchivePage({
   searchParams,
@@ -19,21 +14,30 @@ export default async function ArchivePage({
   const { page: pageParam } = await searchParams;
   const page = pageParam ? parseInt(pageParam, 10) : 1;
 
-  let data: ArchiveData;
   try {
-    data = await api.get<ArchiveData>("/api/content/v1/posts/archive", {
-      page,
-      limit: 20,
-    });
+    const [site, postsResult] = await Promise.all([
+      fetchSiteContext(),
+      api.getWithMeta<ThemePostContext[]>("/api/content/v1/posts", {
+        page,
+        limit: 20,
+      }),
+    ]);
+
+    return (
+      <SiteRenderer
+        context={{ type: "archive", posts: postsResult.data }}
+        site={site}
+        pagination={{
+          page: postsResult.meta.page,
+          pages: postsResult.meta.pages,
+          total: postsResult.meta.total,
+          limit: postsResult.meta.limit,
+          hasPrev: postsResult.meta.page > 1,
+          hasNext: postsResult.meta.page < postsResult.meta.pages,
+        }}
+      />
+    );
   } catch {
     notFound();
   }
-
-  return (
-    <SiteRenderer
-      context={{ type: "archive", posts: data.posts }}
-      site={data.site}
-      pagination={data.pagination}
-    />
-  );
 }

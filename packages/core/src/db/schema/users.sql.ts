@@ -14,6 +14,7 @@ import {
   uniqueIndex,
   index,
 } from "drizzle-orm/mysql-core";
+import { sql } from "drizzle-orm";
 import {
   id,
   createdAt,
@@ -24,6 +25,13 @@ import {
 } from "./helpers.sql";
 import { sites } from "./sites.sql";
 
+/**
+ * Users table — admin / author accounts.
+ *
+ * JS property names for Better Auth fields use camelCase (e.g. emailVerified)
+ * while DB column names stay snake_case. CMS-specific fields retain
+ * snake_case JS names since Better Auth doesn't access them.
+ */
 export const users = mysqlTable(
   "users",
   {
@@ -31,83 +39,101 @@ export const users = mysqlTable(
     site_id: siteIdCol().references(() => sites.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull(),
-    /** bcrypt hash. Null for OAuth-only accounts. */
-    password_hash: text("password_hash"),
+    /** bcrypt hash. Null for OAuth-only accounts. Better Auth expects "password". */
+    password: text("password_hash"),
     /** URL-safe unique identifier shown publicly on author pages */
     slug: varchar("slug", { length: 255 }).notNull(),
     role: siteAdminRoleEnum.notNull().default("contributor"),
     bio: text("bio"),
-    /** Profile photo URL */
-    avatar: text("avatar"),
+    /** Profile photo URL — also mapped as "image" for Better Auth */
+    image: text("avatar"),
     cover_image: text("cover_image"),
     website: varchar("website", { length: 255 }),
     twitter: varchar("twitter", { length: 255 }),
     facebook: varchar("facebook", { length: 255 }),
     location: varchar("location", { length: 255 }),
-    email_verified: boolean("email_verified").default(false).notNull(),
+    /** Better Auth field (camelCase) — DB column stays email_verified */
+    emailVerified: boolean("email_verified").default(false).notNull(),
     /** Whether this user is the platform super_admin (crosses site boundaries) */
     is_super_admin: boolean("is_super_admin").default(false).notNull(),
     last_login_at: timestamp("last_login_at"),
-    created_at: createdAt(),
-    updated_at: updatedAt(),
+    /** Better Auth fields (camelCase) — DB columns stay snake_case */
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .onUpdateNow()
+      .notNull(),
     deleted_at: deletedAt(),
   },
-  (t) => ({
-    siteEmailIdx: uniqueIndex("users_site_email_unique").on(t.site_id, t.email),
-    siteSlugIdx: uniqueIndex("users_site_slug_unique").on(t.site_id, t.slug),
-    siteRoleIdx: index("users_site_role").on(t.site_id, t.role),
-  })
+  (t) => ([ uniqueIndex("users_site_email_unique").on(t.site_id, t.email),
+    uniqueIndex("users_site_slug_unique").on(t.site_id, t.slug),
+    index("users_site_role").on(t.site_id, t.role),
+  ])
 );
 
 // ---------------------------------------------------------------------------
-// Better Auth session/account tables (platform-wide, no site_id)
+// Better Auth session/account/verification tables (platform-wide, no site_id)
+// All JS property names are camelCase for Better Auth compatibility.
+// DB column names remain snake_case.
 // ---------------------------------------------------------------------------
 
 export const sessions = mysqlTable(
   "sessions",
   {
     id: varchar("id", { length: 255 }).primaryKey().notNull(),
-    user_id: varchar("user_id", { length: 36 })
+    userId: varchar("user_id", { length: 36 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     token: varchar("token", { length: 500 }).notNull(),
-    expires_at: timestamp("expires_at").notNull(),
-    ip_address: varchar("ip_address", { length: 64 }),
-    user_agent: text("user_agent"),
-    created_at: createdAt(),
-    updated_at: updatedAt(),
+    expiresAt: timestamp("expires_at").notNull(),
+    ipAddress: varchar("ip_address", { length: 64 }),
+    userAgent: text("user_agent"),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .onUpdateNow()
+      .notNull(),
   },
-  (t) => ({
-    tokenUniqueIdx: uniqueIndex("sessions_token_unique").on(t.token),
-    userIdx: index("sessions_user_id").on(t.user_id),
-  })
+  (t) => ([ uniqueIndex("sessions_token_unique").on(t.token),
+    index("sessions_user_id").on(t.userId),
+  ])
 );
 
 export const accounts = mysqlTable(
   "accounts",
   {
     id: id(),
-    user_id: varchar("user_id", { length: 36 })
+    userId: varchar("user_id", { length: 36 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    provider_id: varchar("provider_id", { length: 64 }).notNull(),
-    account_id: varchar("account_id", { length: 255 }).notNull(),
-    access_token: text("access_token"),
-    refresh_token: text("refresh_token"),
-    id_token: text("id_token"),
-    access_token_expires_at: timestamp("access_token_expires_at"),
-    refresh_token_expires_at: timestamp("refresh_token_expires_at"),
+    providerId: varchar("provider_id", { length: 64 }).notNull(),
+    accountId: varchar("account_id", { length: 255 }).notNull(),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
     scope: text("scope"),
-    created_at: createdAt(),
-    updated_at: updatedAt(),
+    password: text("password"),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .onUpdateNow()
+      .notNull(),
   },
-  (t) => ({
-    providerAccountIdx: uniqueIndex("accounts_provider_account_unique").on(
-      t.provider_id,
-      t.account_id
+  (t) => ([
+   uniqueIndex("accounts_provider_account_unique").on(
+      t.providerId,
+      t.accountId
     ),
-    userIdx: index("accounts_user_id").on(t.user_id),
-  })
+   index("accounts_user_id").on(t.userId),
+  ])
 );
 
 export const verifications = mysqlTable(
@@ -116,13 +142,18 @@ export const verifications = mysqlTable(
     id: id(),
     identifier: varchar("identifier", { length: 255 }).notNull(),
     value: text("value").notNull(),
-    expires_at: timestamp("expires_at").notNull(),
-    created_at: createdAt(),
-    updated_at: updatedAt(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .onUpdateNow()
+      .notNull(),
   },
-  (t) => ({
-    identifierIdx: index("verifications_identifier").on(t.identifier),
-  })
+  (t) => ([
+ index("verifications_identifier").on(t.identifier),
+  ])
 );
 
 export type User = typeof users.$inferSelect;

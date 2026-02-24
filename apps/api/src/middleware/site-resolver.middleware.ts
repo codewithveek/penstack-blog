@@ -26,11 +26,19 @@ export function createSiteResolverMiddleware(siteService: SiteService) {
     const host = c.req.header("host") ?? c.req.header("x-forwarded-host") ?? "";
     const hostname = host.split(":")[0] ?? host;
 
-    // Internal health/setup routes — no site resolution needed
+    // Internal health/setup routes — no site resolution needed.
+    // Check both with and without /api prefix because inside a sub-router
+    // mounted at /api, c.req.path may strip the mount prefix.
+    const path = c.req.path;
     if (
-      c.req.path.startsWith("/api/_internal") ||
-      c.req.path.startsWith("/api/internal") ||
-      c.req.path.startsWith("/api/setup")
+      path.startsWith("/api/_internal") ||
+      path.startsWith("/api/internal") ||
+      path.startsWith("/api/setup") ||
+      path.startsWith("/api/auth") ||
+      path.startsWith("/_internal") ||
+      path.startsWith("/internal") ||
+      path.startsWith("/setup") ||
+      path.startsWith("/auth")
     ) {
       await next();
       return;

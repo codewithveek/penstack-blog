@@ -55,11 +55,15 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   requestHeaders.set("x-site-host", hostname);
 
   // Guard admin routes: ensure admin session cookie exists
+  // Better Auth uses the prefix "cms_admin" → cookie name is "cms_admin.session_token"
   if (
     ADMIN_PATHS.some((p) => pathname.startsWith(p)) &&
     pathname !== "/setup"
   ) {
-    const adminSession = request.cookies.get("admin_session");
+    const adminSession =
+      request.cookies.get("cms_admin.session_token") ??
+      request.cookies.get("cms_admin.session_token.0") ??
+      request.cookies.get("admin_session");
     if (!adminSession && !pathname.startsWith("/admin/login")) {
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("from", pathname);

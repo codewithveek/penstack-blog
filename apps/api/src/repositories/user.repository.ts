@@ -5,9 +5,10 @@
  * Implements IUserRepository.
  */
 
+import crypto from "node:crypto";
 import { eq, and, sql, like } from "drizzle-orm";
 import type { DB } from "@cms/core/db/client";
-import { users, sessions } from "@cms/core/db/schema";
+import { users, sessions, accounts } from "@cms/core/db/schema";
 import type { User, NewUser, Session } from "@cms/core/db/schema";
 import type {
   IUserRepository,
@@ -154,6 +155,37 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  async updateById(id: string, data: Partial<NewUser>): Promise<void> {
+    try {
+      await this.db
+        .update(users)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(users.id, id));
+    } catch (err) {
+      throw new RepositoryError("Failed to update user by id", "updateById", err);
+    }
+  }
+
+  async createCredentialAccount(userId: string, passwordHash?: string): Promise<void> {
+    try {
+      await this.db.insert(accounts).values({
+        id: crypto.randomUUID(),
+        userId: userId,
+        providerId: "credential",
+        accountId: userId,
+        password: passwordHash ?? null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    } catch (err) {
+      throw new RepositoryError(
+        "Failed to create credential account",
+        "createCredentialAccount",
+        err
+      );
+    }
+  }
+
   async delete(siteId: string, id: string): Promise<void> {
     try {
       await this.db
@@ -220,7 +252,7 @@ export class UserRepository implements IUserRepository {
       await this.db
         .delete(sessions)
         .where(
-          and(eq(sessions.user_id, userId), sql`${sessions.expires_at} < NOW()`)
+          and(eq(sessions.userId, userId), sql`${sessions.expiresAt} < NOW()`)
         );
     } catch (err) {
       throw new RepositoryError(

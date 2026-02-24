@@ -96,6 +96,10 @@ export interface IUserRepository {
   ): Promise<PaginatedResult<User>>;
   create(data: NewUser): Promise<User>;
   update(siteId: string, id: string, data: Partial<NewUser>): Promise<User>;
+  /** Update user by id without site_id scoping (for setup / super-admin ops) */
+  updateById(id: string, data: Partial<NewUser>): Promise<void>;
+  /** Create a credential account entry for Better Auth email/password sign-in */
+  createCredentialAccount(userId: string, passwordHash?: string): Promise<void>;
   delete(siteId: string, id: string): Promise<void>;
   /** Find super_admin user (crosses site boundaries) */
   findSuperAdmin(email: string): Promise<User | null>;

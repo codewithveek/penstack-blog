@@ -83,6 +83,53 @@ async function request<T>(
   return json.data;
 }
 
+/**
+ * Like request() but returns both `data` and `meta` from paginated responses.
+ */
+async function requestFull<T>(
+  path: string,
+  options: RequestOptions = {}
+): Promise<{ data: T; meta: { total: number; page: number; limit: number; pages: number } }> {
+  const { params, body, headers, ...rest } = options;
+
+  let url = `${API_BASE}${path}`;
+  if (params) {
+    const qs = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) {
+      if (v !== undefined) qs.set(k, String(v));
+    }
+    const str = qs.toString();
+    if (str) url += `?${str}`;
+  }
+
+  const res = await fetch(url, {
+    ...rest,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(headers as Record<string, string> | undefined),
+    },
+    body: body !== undefined ? JSON.stringify(body) : null,
+  });
+
+  if (!res.ok) {
+    let errBody: Partial<ApiError> = {};
+    try {
+      errBody = (await res.json()) as Partial<ApiError>;
+    } catch {
+      /* ignore parse failures */
+    }
+    throw new ApiRequestError(
+      errBody.error?.code ?? "UNKNOWN",
+      errBody.error?.message ?? res.statusText,
+      res.status
+    );
+  }
+
+  const json = (await res.json()) as { data: T; meta: { total: number; page: number; limit: number; pages: number } };
+  return { data: json.data, meta: json.meta };
+}
+
 // ---------------------------------------------------------------------------
 // Typed helpers
 // ---------------------------------------------------------------------------
@@ -92,6 +139,15 @@ export const api = {
     return params
       ? request<T>(path, { method: "GET", params })
       : request<T>(path, { method: "GET" });
+  },
+  /** GET with pagination meta preserved in the return value */
+  getWithMeta<T>(
+    path: string,
+    params?: RequestOptions["params"]
+  ): Promise<{ data: T; meta: { total: number; page: number; limit: number; pages: number } }> {
+    return params
+      ? requestFull<T>(path, { method: "GET", params })
+      : requestFull<T>(path, { method: "GET" });
   },
   post<T>(path: string, body?: unknown): Promise<T> {
     return request<T>(path, { method: "POST", body });
@@ -111,24 +167,58 @@ export const api = {
 // Domain-specific helpers
 // ---------------------------------------------------------------------------
 
-// Auth
+// Auth — uses Better Auth endpoints at /api/auth/*
 export const authApi = {
-  adminLogin: (email: string, password: string) =>
-    api.post<{ token: string }>("/api/admin/v1/auth/login", {
-      email,
-      password,
-    }),
-  adminLogout: () => api.post("/api/admin/v1/auth/logout"),
+  adminLogin: async (email: string, password: string) => {
+    const res = await fetch(`${API_BASE}/api/auth/sign-in/email`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!res.ok) {
+      let errBody: Partial<ApiError> = {};
+      try {
+        errBody = (await res.json()) as Partial<ApiError>;
+      } catch {
+        /* ignore */
+      }
+      throw new ApiRequestError(
+        errBody.error?.code ?? "AUTH_FAILED",
+        errBody.error?.message ?? (res.status === 401 ? "Invalid email or password" : res.statusText),
+        res.status
+      );
+    }
+    return res.json() as Promise<{ user: { id: string; name: string; email: string }; session: unknown }>;
+  },
+  adminLogout: async () => {
+    await fetch(`${API_BASE}/api/auth/sign-out`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+  },
   sendMagicLink: (email: string) =>
     api.post("/api/content/v1/auth/magic-link", { email }),
   verifyMagicLink: (token: string) =>
     api.post<{ member: unknown }>("/api/content/v1/auth/magic-link/verify", {
       token,
     }),
-  me: () =>
-    api.get<{ id: string; name: string; email: string; role: string }>(
-      "/api/admin/v1/auth/me"
-    ),
+  me: async () => {
+    const res = await fetch(`${API_BASE}/api/auth/get-session`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) {
+      throw new ApiRequestError("UNAUTHENTICATED", "Not authenticated", res.status);
+    }
+    const data = await res.json() as { user: { id: string; name: string; email: string; role?: string }; session: unknown } | null;
+    if (!data?.user) {
+      throw new ApiRequestError("UNAUTHENTICATED", "No session found", 401);
+    }
+    return { id: data.user.id, name: data.user.name, email: data.user.email, role: data.user.role ?? "owner" };
+  },
 };
 
 // Setup (outside admin auth — no site needed yet)

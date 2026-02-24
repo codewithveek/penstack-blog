@@ -1,18 +1,12 @@
 import { notFound } from "next/navigation";
-import type { ThemePageProps, ThemePostContext } from "@cms/core/types/theme";
+import type { ThemePostContext } from "@cms/core/types/theme";
 import { api } from "@/lib/api-client";
+import { fetchSiteContext } from "@/lib/site-context";
 import { SiteRenderer } from "@/components/site/SiteRenderer";
 import { headers } from "next/headers";
 
 // Post pages are ISR. Member-gated posts use dynamic rendering per the AGENTS.md rule.
 export const revalidate = 60;
-
-interface PostData {
-  site: ThemePageProps["site"];
-  post: ThemePostContext;
-  isPage: boolean;
-  visibility: string;
-}
 
 export default async function SlugPage({
   params,
@@ -21,20 +15,29 @@ export default async function SlugPage({
 }) {
   const { slug } = await params;
 
-  let data: PostData;
+  let post: ThemePostContext & { type?: string; visibility?: string };
+  let isPage = false;
+
   try {
-    data = await api.get<PostData>(`/api/content/v1/posts/${slug}`);
+    // Try fetching by slug — the content handler returns matching post/page
+    post = await api.get<ThemePostContext & { type?: string; visibility?: string }>(
+      `/api/content/v1/posts/slug/${slug}`
+    );
+    isPage = post.type === "page";
   } catch {
-    // Try as a static page
+    // Try as a page via the pages endpoint
     try {
-      data = await api.get<PostData>(`/api/content/v1/posts/${slug}?type=page`);
+      post = await api.get<ThemePostContext & { type?: string; visibility?: string }>(
+        `/api/content/v1/pages/${slug}`
+      );
+      isPage = true;
     } catch {
       notFound();
     }
   }
 
   // Member-gated: force dynamic rendering
-  if (data.visibility === "members" || data.visibility === "paid") {
+  if (post.visibility === "members" || post.visibility === "paid") {
     const hdrs = await headers();
     const memberSession = hdrs.get("x-member-session");
     if (!memberSession) {
@@ -42,14 +45,16 @@ export default async function SlugPage({
     }
   }
 
+  const site = await fetchSiteContext();
+
   return (
     <SiteRenderer
       context={
-        data.isPage
-          ? { type: "page", post: data.post }
-          : { type: "post", post: data.post }
+        isPage
+          ? { type: "page", post }
+          : { type: "post", post }
       }
-      site={data.site}
+      site={site}
     />
   );
 }
