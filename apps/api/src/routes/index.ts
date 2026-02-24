@@ -100,6 +100,32 @@ router.use("*", siteResolverMiddleware);
 // ── Setup (no auth) ───────────────────────────────────────────────────────────
 router.route("/setup", setupApp);
 
+// ── Internal endpoints (server-to-server, bypasses site resolver) ─────────────
+router.get("/internal/sites/resolve", async (c) => {
+  const host = c.req.query("host");
+  if (!host) {
+    return c.json(
+      { error: { code: "BAD_REQUEST", message: "Missing host query param" } },
+      400
+    );
+  }
+  const { siteService: siteSvc } = await import("../container");
+  const site = await siteSvc.getByHost(host);
+  if (!site) {
+    return c.json(
+      { error: { code: "SITE_NOT_FOUND", message: "Site not found" } },
+      404
+    );
+  }
+  return c.json({
+    data: {
+      id: site.id,
+      name: site.name,
+      setup_completed: site.setup_completed,
+    },
+  });
+});
+
 // ── Member auth (public, rate-limited) ────────────────────────────────────────
 router.use("/member/auth/*", authRateLimiterMw);
 router.route("/member/auth", memberAuthApp);

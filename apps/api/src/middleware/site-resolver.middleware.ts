@@ -29,6 +29,7 @@ export function createSiteResolverMiddleware(siteService: SiteService) {
     // Internal health/setup routes — no site resolution needed
     if (
       c.req.path.startsWith("/api/_internal") ||
+      c.req.path.startsWith("/api/internal") ||
       c.req.path.startsWith("/api/setup")
     ) {
       await next();

@@ -79,14 +79,14 @@ app.use("*", async (c, next) => {
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 
-// Mount all API routes.
+// Mount all API routes under /api.
 // The router in routes/index.ts handles /setup, /admin/v1, /content/v1, /member/auth.
-// The prefix /api is stripped by the reverse-proxy or Next.js rewrite before reaching here.
-app.route("/", router);
+// Next.js rewrites /api/:path* → http://localhost:<port>/api/:path* (prefix preserved).
+app.route("/api", router);
 
 // Better Auth handles its own routes at /api/auth/** via the Better Auth handler.
 // Import auth from lib/auth and mount it for admin authentication.
-app.on(["GET", "POST"], "/auth/**", async (c) => {
+app.on(["GET", "POST"], "/api/auth/**", async (c) => {
   const { auth } = await import("./lib/auth");
   return auth.handler(c.req.raw);
 });

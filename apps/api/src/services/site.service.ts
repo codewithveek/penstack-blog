@@ -51,6 +51,21 @@ export class SiteService {
       }
     }
 
+    // Dev / single-site fallback: if running on localhost (or no platform domain
+    // is configured) and exactly one site exists, resolve to it automatically.
+    if (
+      !platformDomain ||
+      hostname === "localhost" ||
+      hostname === "127.0.0.1"
+    ) {
+      const all = await this.siteRepo.findAll({ page: 1, limit: 1 });
+      if (all.meta.total === 1 && all.data[0]) {
+        const site = all.data[0];
+        await this.cache.set(cacheKey, site, TTL.SITE_RESOLUTION);
+        return site;
+      }
+    }
+
     return null;
   }
 

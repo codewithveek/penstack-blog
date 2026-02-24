@@ -131,13 +131,10 @@ export const authApi = {
     ),
 };
 
-// Setup
+// Setup (outside admin auth — no site needed yet)
 export const setupApi = {
-  status: () =>
-    api.get<{ completed: boolean; steps: string[] }>(
-      "/api/admin/v1/setup/status"
-    ),
-  complete: (data: unknown) => api.post("/api/admin/v1/setup/complete", data),
+  status: () => api.get<{ setupRequired: boolean }>("/api/setup/status"),
+  complete: (data: unknown) => api.post("/api/setup/run", data),
 };
 
 // Posts
