@@ -6,7 +6,14 @@
   "exports": {
     "./engine": "./src/engine/index.ts",
     "./engine/*": "./src/engine/*.ts",
-    "./default": "./themes/default/index.ts"
+    "./default": "./themes/default/index.ts",
+    "./default/pages/Index": "./themes/default/pages/Index.tsx",
+    "./default/pages/Post": "./themes/default/pages/Post.tsx",
+    "./default/pages/Page": "./themes/default/pages/Page.tsx",
+    "./default/pages/Tag": "./themes/default/pages/Tag.tsx",
+    "./default/pages/Author": "./themes/default/pages/Author.tsx",
+    "./default/pages/Archive": "./themes/default/pages/Archive.tsx",
+    "./default/pages/Error": "./themes/default/pages/Error.tsx"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

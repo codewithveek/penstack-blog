@@ -6,7 +6,7 @@
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ??
   (typeof window === "undefined"
-    ? (process.env.API_INTERNAL_URL ?? "http://localhost:3001")
+    ? (process.env.API_INTERNAL_URL ?? "http://localhost:3100")
     : "");
 
 // ---------------------------------------------------------------------------
@@ -30,7 +30,7 @@ export class ApiRequestError extends Error {
   constructor(
     public readonly code: string,
     message: string,
-    public readonly status: number,
+    public readonly status: number
   ) {
     super(message);
     this.name = "ApiRequestError";
@@ -39,7 +39,7 @@ export class ApiRequestError extends Error {
 
 async function request<T>(
   path: string,
-  options: RequestOptions = {},
+  options: RequestOptions = {}
 ): Promise<T> {
   const { params, body, headers, ...rest } = options;
 
@@ -73,7 +73,7 @@ async function request<T>(
     throw new ApiRequestError(
       errBody.error?.code ?? "UNKNOWN",
       errBody.error?.message ?? res.statusText,
-      res.status,
+      res.status
     );
   }
 
@@ -114,18 +114,29 @@ export const api = {
 // Auth
 export const authApi = {
   adminLogin: (email: string, password: string) =>
-    api.post<{ token: string }>("/api/admin/v1/auth/login", { email, password }),
+    api.post<{ token: string }>("/api/admin/v1/auth/login", {
+      email,
+      password,
+    }),
   adminLogout: () => api.post("/api/admin/v1/auth/logout"),
   sendMagicLink: (email: string) =>
     api.post("/api/content/v1/auth/magic-link", { email }),
   verifyMagicLink: (token: string) =>
-    api.post<{ member: unknown }>("/api/content/v1/auth/magic-link/verify", { token }),
-  me: () => api.get<{ id: string; name: string; email: string; role: string }>("/api/admin/v1/auth/me"),
+    api.post<{ member: unknown }>("/api/content/v1/auth/magic-link/verify", {
+      token,
+    }),
+  me: () =>
+    api.get<{ id: string; name: string; email: string; role: string }>(
+      "/api/admin/v1/auth/me"
+    ),
 };
 
 // Setup
 export const setupApi = {
-  status: () => api.get<{ completed: boolean; steps: string[] }>("/api/admin/v1/setup/status"),
+  status: () =>
+    api.get<{ completed: boolean; steps: string[] }>(
+      "/api/admin/v1/setup/status"
+    ),
   complete: (data: unknown) => api.post("/api/admin/v1/setup/complete", data),
 };
 
@@ -167,7 +178,10 @@ export const tagsApi = {
 // Members
 export const membersApi = {
   list: (params?: { page?: number; limit?: number; status?: string }) =>
-    api.get<{ items: unknown[]; meta: unknown }>("/api/admin/v1/members", params),
+    api.get<{ items: unknown[]; meta: unknown }>(
+      "/api/admin/v1/members",
+      params
+    ),
   get: (id: string) => api.get<unknown>(`/api/admin/v1/members/${id}`),
   delete: (id: string) => api.delete(`/api/admin/v1/members/${id}`),
 };
@@ -177,10 +191,14 @@ export const mediaApi = {
   list: (params?: { page?: number; limit?: number }) =>
     api.get<{ items: unknown[]; meta: unknown }>("/api/admin/v1/media", params),
   delete: (id: string) => api.delete(`/api/admin/v1/media/${id}`),
-  getUploadToken: (data: { filename: string; mimeType: string; size: number }) =>
+  getUploadToken: (data: {
+    filename: string;
+    mimeType: string;
+    size: number;
+  }) =>
     api.post<{ uploadUrl: string; key: string; mediaId: string }>(
       "/api/admin/v1/media/upload-token",
-      data,
+      data
     ),
 };
 
@@ -225,7 +243,10 @@ export const integrationsSettingsApi = {
 // Newsletters
 export const newslettersApi = {
   list: (params?: { page?: number; limit?: number }) =>
-    api.get<{ items: unknown[]; meta: unknown }>("/api/admin/v1/newsletters", params),
+    api.get<{ items: unknown[]; meta: unknown }>(
+      "/api/admin/v1/newsletters",
+      params
+    ),
   get: (id: string) => api.get<unknown>(`/api/admin/v1/newsletters/${id}`),
   create: (data: unknown) =>
     api.post<unknown>("/api/admin/v1/newsletters", data),
@@ -237,7 +258,8 @@ export const newslettersApi = {
 // Users
 export const usersApi = {
   list: () => api.get<unknown[]>("/api/admin/v1/users"),
-  invite: (data: unknown) => api.post<unknown>("/api/admin/v1/users/invite", data),
+  invite: (data: unknown) =>
+    api.post<unknown>("/api/admin/v1/users/invite", data),
   update: (id: string, data: unknown) =>
     api.patch<unknown>(`/api/admin/v1/users/${id}`, data),
   delete: (id: string) => api.delete(`/api/admin/v1/users/${id}`),

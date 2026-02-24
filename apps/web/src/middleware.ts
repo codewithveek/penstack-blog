@@ -11,13 +11,15 @@ const PUBLIC_PATHS = [
 const ADMIN_PATHS = ["/admin", "/setup"];
 
 async function resolveSiteFromHost(host: string): Promise<string | null> {
-  const apiBase =
-    process.env.API_INTERNAL_URL ?? "http://localhost:3001";
+  const apiBase = process.env.API_INTERNAL_URL ?? "http://localhost:3100";
   try {
-    const res = await fetch(`${apiBase}/api/internal/sites/resolve?host=${encodeURIComponent(host)}`, {
-      cache: "no-store",
-      headers: { "x-internal-secret": process.env.INTERNAL_API_SECRET ?? "" },
-    });
+    const res = await fetch(
+      `${apiBase}/api/internal/sites/resolve?host=${encodeURIComponent(host)}`,
+      {
+        cache: "no-store",
+        headers: { "x-internal-secret": process.env.INTERNAL_API_SECRET ?? "" },
+      }
+    );
     if (!res.ok) return null;
     const json = (await res.json()) as { data: { id: string } };
     return json.data.id;
@@ -53,7 +55,10 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   requestHeaders.set("x-site-host", hostname);
 
   // Guard admin routes: ensure admin session cookie exists
-  if (ADMIN_PATHS.some((p) => pathname.startsWith(p)) && pathname !== "/setup") {
+  if (
+    ADMIN_PATHS.some((p) => pathname.startsWith(p)) &&
+    pathname !== "/setup"
+  ) {
     const adminSession = request.cookies.get("admin_session");
     if (!adminSession && !pathname.startsWith("/admin/login")) {
       const loginUrl = new URL("/admin/login", request.url);
@@ -66,7 +71,5 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|public/).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
 };

@@ -1,4 +1,4 @@
-import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
 import type { ThemePageProps, ThemeContext } from "@cms/core/types/theme";
 import { getThemeManifest } from "@cms/themes/engine";
 
@@ -24,6 +24,28 @@ const ROUTE_MAP = {
   error: "error",
 } as const;
 
+type RouteKey = (typeof ROUTE_MAP)[keyof typeof ROUTE_MAP];
+
+// ---------------------------------------------------------------------------
+// Theme page loaders — static import paths so webpack can resolve them.
+// When adding a new theme, add a matching entry here.
+// ---------------------------------------------------------------------------
+
+const THEME_PAGE_LOADERS: Record<
+  string,
+  Record<RouteKey, () => Promise<{ default: ComponentType<ThemePageProps> }>>
+> = {
+  default: {
+    index: () => import("@cms/themes/default/pages/Index"),
+    post: () => import("@cms/themes/default/pages/Post"),
+    page: () => import("@cms/themes/default/pages/Page"),
+    tag: () => import("@cms/themes/default/pages/Tag"),
+    author: () => import("@cms/themes/default/pages/Author"),
+    archive: () => import("@cms/themes/default/pages/Archive"),
+    error: () => import("@cms/themes/default/pages/Error"),
+  },
+};
+
 export async function SiteRenderer({
   site,
   context,
@@ -45,19 +67,22 @@ export async function SiteRenderer({
 
   const routeKey = ROUTE_MAP[context.type];
 
-  // Dynamically import the theme page component
-  const ThemePage = dynamic<ThemePageProps>(
-    () =>
-      import(
-        `../../../packages/themes/themes/${themeName}/pages/${routeKey.charAt(0).toUpperCase() + routeKey.slice(1)}.tsx`
-      ).then((m: Record<string, unknown>) => {
-        const Component = m["default"] ?? m[Object.keys(m)[0] ?? ""];
-        return { default: Component } as {
-          default: React.ComponentType<ThemePageProps>;
-        };
-      }),
-    { ssr: true }
-  );
+  // Resolve the theme page component via the static loader map
+  const themeLoaders = THEME_PAGE_LOADERS[themeName];
+  if (!themeLoaders) {
+    return (
+      <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+        <h1>Theme loader not registered</h1>
+        <p>
+          No page loaders found for theme: <code>{themeName}</code>
+        </p>
+      </div>
+    );
+  }
+
+  const loader = themeLoaders[routeKey];
+  const mod = await loader();
+  const ThemePage = mod.default;
 
   // Build the request context from headers (minimal for SSR)
   const request: ThemePageProps["request"] = {
