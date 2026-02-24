@@ -16,7 +16,7 @@
     "@cms/core": "workspace:*",
     "@fluxmedia/cloudinary": "latest",
     "@fluxmedia/core": "latest",
-    "@fluxmedia/plugins": "latest",
+    "@fluxmedia/plugins": "^1.0.1",
     "@fluxmedia/r2": "latest",
     "@fluxmedia/s3": "latest",
     "@hono/node-server": "latest",

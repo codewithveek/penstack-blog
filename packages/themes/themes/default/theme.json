@@ -1,8 +1,4 @@
-/**
- * packages/themes/themes/default/theme.json
- *
- * Default theme manifest. Loaded by the theme engine at startup.
- */
+
 {
   "slug": "default",
   "name": "Default",

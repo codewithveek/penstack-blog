@@ -23,6 +23,7 @@
   "dependencies": {
     "@chakra-ui/react": "latest",
     "@emotion/react": "latest",
+    "@fluxmedia/plugins": "^1.0.1",
     "@green-auth/snowflake-unique-id": "latest",
     "@radix-ui/react-scroll-area": "latest",
     "@react-email/components": "latest",
