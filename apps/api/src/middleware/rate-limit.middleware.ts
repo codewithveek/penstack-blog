@@ -86,7 +86,8 @@ export function createRateLimiter(
 
 // ─── Pre-built limiter factories ────────────────────────────────────────────
 
-export function authRateLimiter(redis: Redis): MiddlewareHandler {
+export function authRateLimiter(redis: Redis | null): MiddlewareHandler {
+  if (!redis) return async (_c, next) => next();
   return createRateLimiter(redis, {
     prefix: "auth",
     limit: 10,
@@ -94,7 +95,8 @@ export function authRateLimiter(redis: Redis): MiddlewareHandler {
   });
 }
 
-export function publicApiRateLimiter(redis: Redis): MiddlewareHandler {
+export function publicApiRateLimiter(redis: Redis | null): MiddlewareHandler {
+  if (!redis) return async (_c, next) => next();
   return createRateLimiter(redis, {
     prefix: "public",
     limit: 60,
@@ -102,7 +104,8 @@ export function publicApiRateLimiter(redis: Redis): MiddlewareHandler {
   });
 }
 
-export function adminApiRateLimiter(redis: Redis): MiddlewareHandler {
+export function adminApiRateLimiter(redis: Redis | null): MiddlewareHandler {
+  if (!redis) return async (_c, next) => next();
   return createRateLimiter(redis, {
     prefix: "admin",
     limit: 500,

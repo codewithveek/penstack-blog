@@ -26,7 +26,7 @@ export class SetupService {
     private readonly userService: UserService,
     private readonly newsletterService: NewsletterService,
     private readonly settingsService: SettingsService,
-    private readonly emailProvider: IEmailProvider
+    private readonly emailProvider: IEmailProvider | null
   ) {}
 
   async isSetupRequired(): Promise<boolean> {

@@ -6,22 +6,22 @@
  */
 
 // Sites
-export * from "./sites.js";
+export * from "./sites.sql.js";
 
 // Users and auth session tables
-export * from "./users.js";
+export * from "./users.sql.js";
 
 // Content
-export * from "./posts.js";
+export * from "./posts.sql.js";
 
 // Members (readers)
-export * from "./members.js";
+export * from "./members.sql.js";
 
 // Newsletters and email
-export * from "./newsletters.js";
+export * from "./newsletters.sql.js";
 
 // Settings, API keys, webhooks, redirects, auth settings
-export * from "./settings.js";
+export * from "./settings.sql.js";
 
 // Media
-export * from "./media.js";
+export * from "./media.sql.js";

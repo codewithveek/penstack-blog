@@ -5,8 +5,8 @@
  * Pure function — no DB access, no external dependencies.
  */
 
-import type { Post } from "../db/schema/posts.js";
-import type { Tag } from "../db/schema/posts.js";
+import type { Post } from "../db/schema/posts.sql.js";
+import type { Tag } from "../db/schema/posts.sql.js";
 
 /** Supported permalink pattern tokens */
 export type PermalinkPattern =

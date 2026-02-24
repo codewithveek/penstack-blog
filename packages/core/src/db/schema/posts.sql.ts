@@ -26,9 +26,9 @@ import {
   postTypeEnum,
   postVisibilityEnum,
   authorRoleEnum,
-} from "./helpers.js";
-import { sites } from "./sites.js";
-import { users } from "./users.js";
+} from "./helpers.sql.js";
+import { sites } from "./sites.sql.js";
+import { users } from "./users.sql.js";
 
 // ---------------------------------------------------------------------------
 // Posts (type: 'post' | 'page')
@@ -97,8 +97,7 @@ export const posts = mysqlTable(
     visibilityIdx: index("posts_visibility").on(t.site_id, t.visibility),
     scheduledIdx: index("posts_scheduled").on(t.status, t.scheduled_at),
     /** TiDB full-text search on title and html */
-    titleHtmlFulltext: index("posts_title_html_fulltext").on(t.title, t.html)
-
+    titleHtmlFulltext: index("posts_title_html_fulltext").on(t.title, t.html),
   })
 );
 

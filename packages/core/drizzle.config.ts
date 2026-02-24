@@ -1,5 +1,5 @@
 import { defineConfig } from "drizzle-kit";
-
+import "dotenv/config";
 // Load env for migration scripts
 const DATABASE_URL = process.env.DATABASE_URL;
 
@@ -13,7 +13,7 @@ function getConnectionUri(): string {
 }
 
 export default defineConfig({
-  schema: ["./src/db/schema/*.ts"],
+  schema: ["./src/db/schema/*.sql.ts"],
   dialect: "mysql",
   out: "./src/db/migrations",
   dbCredentials: { url: getConnectionUri() },

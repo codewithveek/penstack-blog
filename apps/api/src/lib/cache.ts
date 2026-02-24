@@ -18,9 +18,10 @@ export const TTL = {
 } as const;
 
 export class Cache {
-  constructor(private readonly redis: IORedis) {}
+  constructor(private readonly redis: IORedis | null) {}
 
   async get<T>(key: string): Promise<T | null> {
+    if (!this.redis) return null;
     try {
       const raw = await this.redis.get(key);
       if (raw == null) return null;
@@ -31,6 +32,7 @@ export class Cache {
   }
 
   async set<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
+    if (!this.redis) return;
     try {
       await this.redis.set(key, JSON.stringify(value), "EX", ttlSeconds);
     } catch (err) {
@@ -39,6 +41,7 @@ export class Cache {
   }
 
   async invalidate(key: string): Promise<void> {
+    if (!this.redis) return;
     try {
       await this.redis.del(key);
     } catch (err) {
@@ -47,6 +50,7 @@ export class Cache {
   }
 
   async invalidatePattern(pattern: string): Promise<void> {
+    if (!this.redis) return;
     try {
       const keys = await this.redis.keys(pattern);
       if (keys.length > 0) {

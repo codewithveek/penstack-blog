@@ -77,8 +77,15 @@ const contentSettingsApp = createContentSettingsHandler(settingsController);
 const contentTiersApp = createContentTiersHandler(memberController);
 
 // Media handler is async because the controller depends on the async storage provider.
-// Eagerly initialize so it's ready before the first request arrives.
-const _mediaInit = getMediaController().then((ctrl) => createMediaHandler(ctrl));
+// Lazily initialized — only resolved when the first media request arrives.
+let _mediaApp: ReturnType<typeof createMediaHandler> | null = null;
+async function getMediaApp() {
+  if (!_mediaApp) {
+    const ctrl = await getMediaController();
+    _mediaApp = createMediaHandler(ctrl);
+  }
+  return _mediaApp;
+}
 
 // ── Root router ───────────────────────────────────────────────────────────────
 
@@ -116,13 +123,13 @@ adminRouter.route("/newsletters", newsletterApp);
 
 // Media — async init (proxy with path-prefix stripping)
 adminRouter.all("/media", async (c) => {
-  const app = await _mediaInit;
+  const app = await getMediaApp();
   const url = new URL(c.req.raw.url);
   url.pathname = "/";
   return app.fetch(new Request(url.href, c.req.raw));
 });
 adminRouter.all("/media/*", async (c) => {
-  const app = await _mediaInit;
+  const app = await getMediaApp();
   // Strip /media prefix so the inner app sees /upload, /:id, etc.
   const url = new URL(c.req.raw.url);
   url.pathname = c.req.path.replace(/^\/media/, "") || "/";

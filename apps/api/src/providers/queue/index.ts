@@ -12,11 +12,11 @@ import { BullMQQueueAdapter } from "./bullmq.adapter";
 
 let sharedRedis: IORedis | null = null;
 
-export function getRedisConnection(): IORedis {
+export function getRedisConnection(): IORedis | null {
   if (sharedRedis) return sharedRedis;
 
   const url = process.env.REDIS_URL;
-  if (!url) throw new ConfigurationError("REDIS_URL is required");
+  if (!url) return null;
 
   sharedRedis = new IORedis(url, {
     maxRetriesPerRequest: null,
@@ -25,12 +25,12 @@ export function getRedisConnection(): IORedis {
   return sharedRedis;
 }
 
-export function resolveQueueProvider(): IQueueProvider {
+export function resolveQueueProvider(): IQueueProvider | null {
   const provider = process.env.QUEUE_PROVIDER ?? "bullmq";
 
   if (provider === "bullmq") {
     const url = process.env.REDIS_URL;
-    if (!url) throw new ConfigurationError("REDIS_URL is required");
+    if (!url) return null;
     return new BullMQQueueAdapter(url);
   }
 

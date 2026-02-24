@@ -92,7 +92,9 @@ const cache = new Cache(redis);
 const email = resolveEmailProvider();
 const payment = resolvePaymentProvider();
 const queue = resolveQueueProvider();
-const search = resolveSearchProvider(db);
+// Search provider resolved async (meilisearch adapter uses dynamic import to avoid
+// requiring the meilisearch npm package when SEARCH_PROVIDER defaults to "tidb")
+const search = await resolveSearchProvider(db);
 // Storage is initialized lazily the first time it's needed (async resolver)
 let _storage: Awaited<ReturnType<typeof resolveStorageProvider>> | null = null;
 async function getStorage() {

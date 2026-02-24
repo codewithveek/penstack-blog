@@ -10,6 +10,7 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "./schema";
 import mysql from "mysql2/promise";
+import 'dotenv/config'
 
 function getConnectionUri(): string {
   const {
@@ -32,16 +33,28 @@ function getConnectionUri(): string {
     );
   }
 
-  const sslParam = process.env["DB_SSL_CONFIG"]
-    ? encodeURIComponent(process.env["DB_SSL_CONFIG"])
-    : "true";
   const port = DB_PORT ?? "3306";
-  return `mysql://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}:${port}/${DB_NAME}?ssl=${sslParam}`;
+  return `mysql://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}:${port}/${DB_NAME}?ssl=true`;
+}
+
+import type { SslOptions } from "mysql2";
+
+function getSSLConfig(): SslOptions | string | undefined {
+  const raw = process.env["DB_SSL_CONFIG"];
+  if (!raw || raw === "true") return {};
+  if (raw === "false") return undefined;
+  try {
+    return JSON.parse(raw) as SslOptions;
+  } catch {
+    return {};
+  }
 }
 
 const connectionUri = getConnectionUri();
+const sslConfig = getSSLConfig();
 const poolConnection = mysql.createPool({
   uri: connectionUri,
+  ...(sslConfig !== undefined ? { ssl: sslConfig } : {}),
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

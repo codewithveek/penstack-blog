@@ -21,8 +21,8 @@ import {
   deletedAt,
   siteIdCol,
   siteAdminRoleEnum,
-} from "./helpers.js";
-import { sites } from "./sites.js";
+} from "./helpers.sql.js";
+import { sites } from "./sites.sql.js";
 
 export const users = mysqlTable(
   "users",

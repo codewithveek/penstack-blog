@@ -22,7 +22,7 @@ export class NewsletterService {
   constructor(
     private readonly newsletterRepo: INewsletterRepository,
     private readonly memberRepo: IMemberRepository,
-    private readonly emailProvider: IEmailProvider
+    private readonly emailProvider: IEmailProvider | null
   ) {}
 
   async getById(siteId: string, id: string): Promise<Newsletter> {
@@ -135,6 +135,10 @@ export class NewsletterService {
   ): Promise<void> {
     const newsletter = await this.newsletterRepo.findById(siteId, newsletterId);
     if (!newsletter) throw new NotFoundError("Newsletter", newsletterId);
+
+    if (!this.emailProvider) {
+      throw new UnprocessableError("Email provider is not configured");
+    }
 
     await this.emailProvider.send({
       from: { email: newsletter.sender_email ?? `noreply@cms`, name: newsletter.sender_name ?? newsletter.name },

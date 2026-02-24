@@ -9,21 +9,14 @@ import type { IPaymentProvider } from "@cms/core/types/providers";
 import { ConfigurationError } from "@cms/core/errors";
 import { StripePaymentAdapter } from "./stripe.adapter";
 
-export function resolvePaymentProvider(): IPaymentProvider {
+export function resolvePaymentProvider(): IPaymentProvider | null {
   const provider = process.env.PAYMENT_PROVIDER ?? "stripe";
 
   if (provider === "stripe") {
     const secretKey = process.env.STRIPE_SECRET_KEY;
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (!secretKey)
-      throw new ConfigurationError(
-        "STRIPE_SECRET_KEY is required when PAYMENT_PROVIDER=stripe"
-      );
-    if (!webhookSecret)
-      throw new ConfigurationError(
-        "STRIPE_WEBHOOK_SECRET is required when PAYMENT_PROVIDER=stripe"
-      );
+    if (!secretKey || !webhookSecret) return null;
 
     return new StripePaymentAdapter(secretKey, webhookSecret);
   }

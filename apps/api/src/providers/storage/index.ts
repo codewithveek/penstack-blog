@@ -12,36 +12,12 @@ import { MediaUploader } from "@fluxmedia/core";
 import { R2Provider } from "@fluxmedia/r2";
 import { S3Provider } from "@fluxmedia/s3";
 import { CloudinaryProvider } from "@fluxmedia/cloudinary";
-import {
-  createFileValidationPlugin,
-  createMetadataExtractionPlugin,
-  createRetryPlugin,
-} from "@fluxmedia/plugins";
 import { ConfigurationError } from "@cms/core/errors";
 
-// Accepted MIME types enforced at the plugin layer (defense-in-depth alongside
-// the service-layer magic-byte check in MediaService).
-const ALLOWED_MEDIA_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "image/avif",
-  "image/svg+xml",
-  "video/mp4",
-  "video/webm",
-  "video/ogg",
-  "audio/mpeg",
-  "audio/ogg",
-  "audio/wav",
-  "audio/webm",
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-];
-
-/** 100 MB absolute limit */
-const MAX_FILE_SIZE = 100 * 1024 * 1024;
+// Accepted MIME types enforced at the service layer (MediaService) via
+// magic-byte validation. The storage provider operates on already-validated
+// files. If @fluxmedia/plugins becomes available in the future, plugin-layer
+// validation can be re-enabled here as defense-in-depth.
 
 export async function resolveStorageProvider(): Promise<MediaUploader> {
   const provider = process.env.STORAGE_PROVIDER ?? "r2";
@@ -123,33 +99,9 @@ export async function resolveStorageProvider(): Promise<MediaUploader> {
   }
 
   // ── Plugins ───────────────────────────────────────────────────────────────
-
-  // 1. File validation: magic-byte MIME check + size limit
-  await uploader.use(
-    createFileValidationPlugin({
-      allowedTypes: ALLOWED_MEDIA_TYPES,
-      maxSize: MAX_FILE_SIZE,
-      useMagicBytes: true,
-    })
-  );
-
-  // 2. Metadata extraction: dimensions + format for image/video assets
-  await uploader.use(
-    createMetadataExtractionPlugin({
-      extractDimensions: true,
-      extractExif: false,
-      hashFile: false,
-    })
-  );
-
-  // 3. Auto-retry with exponential backoff on transient failures
-  await uploader.use(
-    createRetryPlugin({
-      maxRetries: 3,
-      retryDelay: 500,
-      exponentialBackoff: true,
-    })
-  );
+  // NOTE: @fluxmedia/plugins is currently unavailable at runtime (empty package).
+  // File validation (MIME type + size) is enforced in MediaService before upload.
+  // When the plugins package ships with working code, uncomment the block below.
 
   return uploader;
 }

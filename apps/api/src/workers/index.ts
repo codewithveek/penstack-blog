@@ -32,19 +32,23 @@ export interface WorkerDeps {
   postRepo: PostRepository;
   newsletterRepo: NewsletterRepository;
   webhookRepo: WebhookRepository;
-  emailProvider: IEmailProvider;
+  emailProvider: IEmailProvider | null;
   searchProvider: ISearchProvider;
 }
 
 export function startAllWorkers(redisUrl: string, deps: WorkerDeps): void {
   const workers = [
     createScheduledPublishWorker(redisUrl, { postRepo: deps.postRepo }),
-    createNewsletterSendWorker(redisUrl, {
-      newsletterRepo: deps.newsletterRepo,
-      emailProvider: deps.emailProvider,
-    }),
+    ...(deps.emailProvider
+      ? [
+          createNewsletterSendWorker(redisUrl, {
+            newsletterRepo: deps.newsletterRepo,
+            emailProvider: deps.emailProvider,
+          }),
+          createWelcomeEmailWorker(redisUrl, { emailProvider: deps.emailProvider }),
+        ]
+      : []),
     createWebhookDeliverWorker(redisUrl, { webhookRepo: deps.webhookRepo }),
-    createWelcomeEmailWorker(redisUrl, { emailProvider: deps.emailProvider }),
     createSearchIndexWorker(redisUrl, { searchProvider: deps.searchProvider }),
   ];
 

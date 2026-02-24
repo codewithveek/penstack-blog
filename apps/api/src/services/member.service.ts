@@ -34,8 +34,8 @@ const MAGIC_LINK_EXPIRY_MINUTES = 15;
 export class MemberService {
   constructor(
     private readonly memberRepo: IMemberRepository,
-    private readonly emailProvider: IEmailProvider,
-    private readonly paymentProvider: IPaymentProvider
+    private readonly emailProvider: IEmailProvider | null,
+    private readonly paymentProvider: IPaymentProvider | null
   ) {}
 
   // ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -74,6 +74,10 @@ export class MemberService {
     await this.memberRepo.createAuthToken(member.id, tokenHash, expiresAt);
 
     const magicLinkUrl = `${siteUrl}/members/auth?token=${rawToken}&redirect=${encodeURIComponent(redirectUrl)}`;
+
+    if (!this.emailProvider) {
+      throw new ValidationError("Email provider is not configured");
+    }
 
     await this.emailProvider.send({
       from: { email: `noreply@${new URL(siteUrl).hostname}`, name: siteName },
@@ -218,6 +222,10 @@ export class MemberService {
     if (!priceId)
       throw new ValidationError("Tier does not have a price configured for this interval");
 
+    if (!this.paymentProvider) {
+      throw new ValidationError("Payment provider is not configured");
+    }
+
     const session = await this.paymentProvider.createCheckoutSession({
       siteId,
       memberId,
@@ -237,6 +245,10 @@ export class MemberService {
     rawBody: string,
     signature: string
   ): Promise<void> {
+    if (!this.paymentProvider) {
+      throw new ValidationError("Payment provider is not configured");
+    }
+
     const event = await this.paymentProvider.parseWebhookPayload(
       rawBody,
       signature,

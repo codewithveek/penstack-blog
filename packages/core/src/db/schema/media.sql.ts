@@ -22,9 +22,9 @@ import {
   updatedAt,
   siteIdCol,
   mediaTypeEnum,
-} from "./helpers.js";
-import { sites } from "./sites.js";
-import { users } from "./users.js";
+} from "./helpers.sql.js";
+import { sites } from "./sites.sql.js";
+import { users } from "./users.sql.js";
 
 export const mediaAssets = mysqlTable(
   "media_assets",

@@ -14,7 +14,7 @@ import {
   uniqueIndex,
   index,
 } from "drizzle-orm/mysql-core";
-import { id, createdAt, updatedAt } from "./helpers.js";
+import { id, createdAt, updatedAt } from "./helpers.sql.js";
 
 export const sites = mysqlTable(
   "sites",

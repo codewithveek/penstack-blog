@@ -42,7 +42,7 @@ export class PostService {
     private readonly postRepo: IPostRepository,
     private readonly tagRepo: ITagRepository,
     private readonly settingsRepo: ISettingsRepository,
-    private readonly queueProvider: IQueueProvider,
+    private readonly queueProvider: IQueueProvider | null,
     private readonly searchProvider: ISearchProvider,
     private readonly cache: Cache
   ) {}
@@ -309,12 +309,14 @@ export class PostService {
     });
 
     // Enqueue job
-    await this.queueProvider.scheduleAt(
-      POST_QUEUE,
-      "post.publish",
-      { siteId, postId: id },
-      scheduledAt
-    );
+    if (this.queueProvider) {
+      await this.queueProvider.scheduleAt(
+        POST_QUEUE,
+        "post.publish",
+        { siteId, postId: id },
+        scheduledAt
+      );
+    }
   }
 
   async unpublishPost(

@@ -2,9 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@cms/core", "@cms/themes", "@cms/emails"],
-  experimental: {
-    serverComponentsExternalPackages: ["@node-rs/argon2", "better-auth"],
-  },
+  serverExternalPackages: ["@node-rs/argon2", "better-auth"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**.r2.cloudflarestorage.com" },

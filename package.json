@@ -97,6 +97,7 @@
     "zustand": "latest"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "latest",
     "@types/bcryptjs": "latest",
     "@types/lodash": "latest",
     "@types/mixpanel-browser": "latest",
@@ -109,8 +110,7 @@
     "@types/react-window": "latest",
     "@types/turndown": "latest",
     "@types/ua-parser-js": "latest",
-    "@tailwindcss/postcss": "latest",
-    "drizzle-kit": "latest",
+    "drizzle-kit": "^0.31.9",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "lodash": "latest",

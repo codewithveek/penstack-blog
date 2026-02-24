@@ -25,8 +25,8 @@ import {
   memberStatusEnum,
   subscriptionStatusEnum,
   subscriptionIntervalEnum,
-} from "./helpers.js";
-import { sites } from "./sites.js";
+} from "./helpers.sql.js";
+import { sites } from "./sites.sql.js";
 
 // ---------------------------------------------------------------------------
 // Members (readers / subscribers)

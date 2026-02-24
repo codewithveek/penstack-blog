@@ -10,15 +10,12 @@ import { ConfigurationError } from "@cms/core/errors";
 import { ResendEmailAdapter } from "./resend.adapter";
 import { SmtpEmailAdapter } from "./smtp.adapter";
 
-export function resolveEmailProvider(): IEmailProvider {
+export function resolveEmailProvider(): IEmailProvider | null {
   const provider = process.env.EMAIL_PROVIDER ?? "resend";
 
   if (provider === "resend") {
     const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey)
-      throw new ConfigurationError(
-        "RESEND_API_KEY is required when EMAIL_PROVIDER=resend"
-      );
+    if (!apiKey) return null;
     return new ResendEmailAdapter(apiKey);
   }
 
@@ -28,11 +25,7 @@ export function resolveEmailProvider(): IEmailProvider {
     const user = process.env.SMTP_USER;
     const pass = process.env.SMTP_PASS;
 
-    if (!host || !port || !user || !pass) {
-      throw new ConfigurationError(
-        "SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS are all required when EMAIL_PROVIDER=smtp"
-      );
-    }
+    if (!host || !port || !user || !pass) return null;
 
     return new SmtpEmailAdapter({
       host,

@@ -9,9 +9,8 @@ import type { ISearchProvider } from "@cms/core/types/providers";
 import type { DB } from "@cms/core/db/client";
 import { ConfigurationError } from "@cms/core/errors";
 import { TiDBSearchAdapter } from "./tidb.adapter";
-import { MeilisearchAdapter } from "./meilisearch.adapter";
 
-export function resolveSearchProvider(db: DB): ISearchProvider {
+export async function resolveSearchProvider(db: DB): Promise<ISearchProvider> {
   const provider = process.env.SEARCH_PROVIDER ?? "tidb";
 
   if (provider === "tidb") {
@@ -28,6 +27,8 @@ export function resolveSearchProvider(db: DB): ISearchProvider {
       );
     }
 
+    // Dynamic import — meilisearch npm package only needed when this provider is selected
+    const { MeilisearchAdapter } = await import("./meilisearch.adapter");
     return new MeilisearchAdapter(host, apiKey);
   }
 
